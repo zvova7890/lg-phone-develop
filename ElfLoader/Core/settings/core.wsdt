@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<Workspace>
+  <ConfigDictionary>
+    
+  <CurrentConfigs><Project>core/KP501_v10H_00</Project></CurrentConfigs></ConfigDictionary>
+  <Desktop>
+    <Static>
+      <Workspace>
+        <ColumnWidths>
+          
+          
+          
+          
+        <Column0>128</Column0><Column1>30</Column1><Column2>24</Column2><Column3>0</Column3></ColumnWidths>
+      </Workspace>
+      <Build>
+        
+        
+        
+        
+      <ColumnWidth0>18</ColumnWidth0><ColumnWidth1>897</ColumnWidth1><ColumnWidth2>239</ColumnWidth2><ColumnWidth3>59</ColumnWidth3></Build>
+    </Static>
+    <Windows>
+      
+      
+    <Wnd2>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-10261-8105</Identity>
+            <TabName>Workspace</TabName>
+            <Factory>Workspace</Factory>
+            <Session>
+              
+            <NodeDict><ExpandedNode>core</ExpandedNode><ExpandedNode>core/loader3</ExpandedNode></NodeDict></Session>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd2><Wnd3>
+        <Tabs>
+          <Tab>
+            <Identity>TabID-23163-8477</Identity>
+            <TabName>Build</TabName>
+            <Factory>Build</Factory>
+            <Session/>
+          </Tab>
+        </Tabs>
+        
+      <SelectedTab>0</SelectedTab></Wnd3></Windows>
+    <Editor>
+      
+      
+      
+      
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\loader3\loadlib.c</Filename><XPos>0</XPos><YPos>340</YPos><SelStart>5976</SelStart><SelEnd>5976</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\loader3\loader.h</Filename><XPos>0</XPos><YPos>70</YPos><SelStart>1546</SelStart><SelEnd>1546</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\loader3\loader.c</Filename><XPos>0</XPos><YPos>797</YPos><SelStart>1998</SelStart><SelEnd>1998</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\loader3\initializer.c</Filename><XPos>0</XPos><YPos>97</YPos><SelStart>2876</SelStart><SelEnd>2876</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\init.c</Filename><XPos>0</XPos><YPos>103</YPos><SelStart>3484</SelStart><SelEnd>3484</SelEnd></Tab><ActiveTab>4</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\swihook.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>381</SelStart><SelEnd>381</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\elf.c</Filename><XPos>0</XPos><YPos>163</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\core.c</Filename><XPos>0</XPos><YPos>36</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\ejapi.c</Filename><XPos>0</XPos><YPos>139</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\loader3\env.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\loader3\env.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\loader3\loadelf.c</Filename><XPos>0</XPos><YPos>51</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\swihook.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>37</SelStart><SelEnd>37</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Positions>
+      
+      
+      
+      
+      
+    <Top><Row0><Sizes><Toolbar-0045afb8><key>iaridepm.enu1</key></Toolbar-0045afb8></Sizes></Row0></Top><Left><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>545</Bottom><Right>202</Right><x>-2</x><y>-2</y><xscreen>200</xscreen><yscreen>200</yscreen><sizeHorzCX>160385</sizeHorzCX><sizeHorzCY>254130</sizeHorzCY><sizeVertCX>163593</sizeVertCX><sizeVertCY>695044</sizeVertCY></Rect></Wnd2></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>198</Bottom><Right>1249</Right><x>-2</x><y>-2</y><xscreen>1251</xscreen><yscreen>200</yscreen><sizeHorzCX>1003208</sizeHorzCX><sizeHorzCY>254130</sizeHorzCY><sizeVertCX>160385</sizeVertCX><sizeVertCY>254130</sizeVertCY></Rect></Wnd3></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+  </Desktop>
+</Workspace>
+
+
