@@ -1,0 +1,481 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>2212797113</fileChecksum>
+  <configuration>
+    <name>KP501_v10H_00</name>
+    <outputs>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\loader.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\env.lst</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loader.s79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\elf.pbi</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\Mutex.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\swihook.lst</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\swihook.s79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loadlib.lst</file>
+      <file>$PROJ_DIR$\core.xcl</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\elf.lst</file>
+      <file>$PROJ_DIR$\ELF\core.elf</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\initializer.lst</file>
+      <file>$PROJ_DIR$\ejapi.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\swihook_body.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\core.lst</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\elf.s79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\Mutex.pbi</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\loadelf.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\log.pbi</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\env.s79</file>
+      <file>$PROJ_DIR$\fwlib.h</file>
+      <file>$PROJ_DIR$\loader3\env.c</file>
+      <file>$PROJ_DIR$\loader3\env.h</file>
+      <file>$PROJ_DIR$\loader3\initializer.c</file>
+      <file>$PROJ_DIR$\loader3\loader.c</file>
+      <file>$PROJ_DIR$\loader3\loadelf.c</file>
+      <file>$PROJ_DIR$\loader3\loader.h</file>
+      <file>$PROJ_DIR$\loader3\loadlib.c</file>
+      <file>$PROJ_DIR$\loader3\log.c</file>
+      <file>$PROJ_DIR$\loader3\mode.h</file>
+      <file>$PROJ_DIR$\core.c</file>
+      <file>$PROJ_DIR$\amem.c</file>
+      <file>$PROJ_DIR$\ejapi.c</file>
+      <file>$PROJ_DIR$\elf.c</file>
+      <file>$PROJ_DIR$\ejapi_hook.asm</file>
+      <file>$PROJ_DIR$\loader3\elf.h</file>
+      <file>$PROJ_DIR$\IMB.asm</file>
+      <file>$PROJ_DIR$\swihook_body.asm</file>
+      <file>$PROJ_DIR$\swihook.c</file>
+      <file>$PROJ_DIR$\init.c</file>
+      <file>$PROJ_DIR$\loader3\strchrnul.c</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\amem.lst</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\loadlib.r79</file>
+      <file>$TOOLKIT_DIR$\inc\xencoding_limits.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\core.pbd</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\ejapi_hook.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\ejapi.lst</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\amem.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\env.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\Dlib_Product.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\init.pbi</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\strchrnul.r79</file>
+      <file>$TOOLKIT_DIR$\inc\stdlib.h</file>
+      <file>$TOOLKIT_DIR$\inc\yvals.h</file>
+      <file>$TOOLKIT_DIR$\inc\DLib_Threads.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\core.map</file>
+      <file>$PROJ_DIR$\core.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\core.pbi</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\env.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\log.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\ejapi.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\ejapi.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\ysizet.h</file>
+      <file>$PROJ_DIR$\elf.h</file>
+      <file>$TOOLKIT_DIR$\inc\string.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\init.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\strchrnul.pbi</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\loadelf.pbi</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\core.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\init.lst</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\loadlib.pbi</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\amem.s79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\swihook.pbi</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loadelf.s79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\loader.pbi</file>
+      <file>$PROJ_DIR$\swihook.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\elf.r79</file>
+      <file>$TOOLKIT_DIR$\inc\stdio.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\amem.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\core.s79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loader.lst</file>
+      <file>$PROJ_DIR$\amem.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\initializer.pbi</file>
+      <file>$TOOLKIT_DIR$\lib\dl5tpainl8n.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loadlib.s79</file>
+      <file>$PROJ_DIR$\corelib.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\swihook.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loadelf.lst</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\init.s79</file>
+      <file>$PROJ_DIR$\loader3\Mutex.c</file>
+      <file>$TOOLKIT_DIR$\inc\stdarg.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\IMB.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\ejapi.s79</file>
+      <file>$TOOLKIT_DIR$\inc\DLib_Defaults.h</file>
+      <file>$TOOLKIT_DIR$\lib\dl5tpainl8n.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\initializer.s79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\log.lst</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\initializer.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\log.s79</file>
+    </outputs>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 10 55</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\ELF\core.elf</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 55</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 8 92 47 68 60 45 58 65 98 17 0 42 59 87 13 84</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\loader3\env.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 58 19 1</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 48</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 64 53 94 95 49 43 54 62 52 26 75 20 86 12 35 29 22</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 64 53 94 49 43 54 62 52 26 75 20 86 12 35 29 22</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\loader3\initializer.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 98 96 11</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 83</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 77 53 94 95 49 43 54 62 91 79 26 64 75 20 86 12 35 29 22</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 77 53 94 49 43 54 62 91 79 26 64 75 20 86 12 35 29 22</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\loader3\loader.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 0 2 81</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 74</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 64 53 94 95 49 43 54 62 77 26 75 20 86 12 35 29 56</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 64 53 94 49 43 54 62 77 26 75 20 86 12 35 29 56</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\loader3\loadelf.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 17 73 88</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 67</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 64 53 94 95 49 43 54 62 26 75 20 86 12 35 29</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 64 53 94 49 43 54 62 26 75 20 86 12 35 29</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\loader3\loadlib.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 42 85 7</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 70</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 64 53 94 95 49 43 54 62 77 56 26 75 20 86 12 35 29 22</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 64 53 94 49 43 54 62 77 56 26 75 20 86 12 35 29 22</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\loader3\log.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 59 99 97</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 18</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 26 64 53 94 95 49 43 54 62 75 20 86 12 35 29 56</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 26 64 53 94 49 43 54 62 75 20 86 12 35 29 56</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\core.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 68 80 14</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 57</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 77 53 94 95 49 43 54 62 52 64 91 20 56</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 77 53 94 49 43 54 62 52 64 91 20 56</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\amem.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 47 71 41</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 78</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 79 82 75</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 79 82 75</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\ejapi.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 60 93 46</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 61</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 77 53 94 95 49 43 54 62 64 79 75 12 26 20 86 35 29 56</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 77 53 94 49 43 54 62 64 79 75 12 26 20 86 35 29 56</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\elf.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 76 15 9</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 3</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 64 53 94 95 49 43 54 62 63 75 20</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 64 53 94 49 43 54 62 63 75 20</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\ejapi_hook.asm</name>
+      <outputs>
+        <tool>
+          <name>AARM</name>
+          <file> 45</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\IMB.asm</name>
+      <outputs>
+        <tool>
+          <name>AARM</name>
+          <file> 92</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\swihook_body.asm</name>
+      <outputs>
+        <tool>
+          <name>AARM</name>
+          <file> 13</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\swihook.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 87 6 5</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 72</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 79 75 56 64 53 94 95 49 43 54 62</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 79 75 56 64 53 94 49 43 54 62</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\init.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 65 89 69</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 50</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 64 53 94 95 49 43 54 62 77 79 86 12 20 56 75 82 26 35 29</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 64 53 94 49 43 54 62 77 79 86 12 20 56 75 82 26 35 29</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\loader3\strchrnul.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 51</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 66</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>BICOMP</name>
+          <file> 64 53 94 49 43 54 62</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\Other\KP501_v10H_00\Obj\core.pbd</name>
+      <inputs>
+        <tool>
+          <name>BILINK</name>
+          <file> 78 57 61 48 50 83 67 74 70 18 72</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\loader3\Mutex.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 4</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 16</file>
+        </tool>
+      </outputs>
+    </file>
+  </configuration>
+</project>
+
+
