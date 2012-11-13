@@ -52,7 +52,28 @@ _pxeapi`_`macro.h_
 
 Данный список функций управляет окнами в приложении. Определён в файле _pxeapi`_`windows.h_.
 
----- 
+<hr/>
+
+*GID: 0x012, FID: 0x006*
+
+{{{
+int Windows_Create(int window_id, int (*evt_handler)(int cmd, int subcmd, int status));
+}}}
+
+Создание окна с идентификатором *window_id* (есть любое число на ваш выбор) и обработчиком входящих событий *evt_handler*. 
+Обычно надо вызывать при событии создания приложения.
+
+<hr/>
+
+*GID: 0x012, FID: 0x007*
+
+{{{
+int Windows_Init(int window_id);
+}}}
+
+Посылка события инициализации для окна *window_id*.
+
+<hr/>
 
 *GID: 0x012, FID: 0x006*
 
@@ -65,15 +86,16 @@ int Windows_Create(int window_id, int (*evt_handler)(int cmd, int subcmd, int st
 
 <hr/>
 
-*GID: 0x012, FID: 0x007*
+*GID: 0x012, FID: 0x005*
 
 {{{
-int Windows_Init(int window_id);
+int Windows_DestroyAll();
 }}}
 
-Посылка события инициализации для окна *window_id*.
+Уничтожение всех окон приложения. Обычно надо вызывать при событии уничтожения приложения
 
----- 
+<hr/>
+
  
 == Графика ==
 
