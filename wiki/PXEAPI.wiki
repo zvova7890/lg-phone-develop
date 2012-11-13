@@ -95,8 +95,6 @@ int Windows_TransEvent(int cmd, int subcmd, int status);
 
 <hr/>
 
-===Windows_SendEvent===
-
 *GID: 0x012, FID: 0x000*
 
 {{{
@@ -104,7 +102,7 @@ int Windows_SendEvent(int window_id, int cmd, int subcmd, int status);
 }}}
 
 Посылка события в окно приложения с идентификатором *window_id*.
-Дело в том, что функция [PXE_API:Windows_TransEvent] служит только для стандартных событий, для других необходимо пользоваться этой процедурой, например, при событии акселерометра. 
+Дело в том, что функция _Windows`_`TransEvent_ служит только для стандартных событий, для других необходимо пользоваться этой процедурой, например, при событии акселерометра. 
 
 <hr/>
  
