@@ -75,17 +75,6 @@ int Windows_Init(int window_id);
 
 <hr/>
 
-*GID: 0x012, FID: 0x006*
-
-{{{
-int Windows_Create(int window_id, int (*evt_handler)(int cmd, int subcmd, int status));
-}}}
-
-Создание окна с идентификатором *window_id* (есть любое число на ваш выбор) и обработчиком входящих событий *evt_handler*. 
-Вызывается при событии создания приложения.
-
-<hr/>
-
 *GID: 0x012, FID: 0x005*
 
 {{{
@@ -96,6 +85,15 @@ int Windows_DestroyAll();
 
 <hr/>
 
+*GID: 0x012, FID: 0x003*
+
+{{{
+int Windows_TransEvent(int cmd, int subcmd, int status);
+}}}
+
+Перенаправление событий приложения в окно. Эту функцию необходимо ставить в обработчик приложения. 
+
+<hr/>
  
 == Графика ==
 
