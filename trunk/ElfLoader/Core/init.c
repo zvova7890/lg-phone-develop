@@ -9,7 +9,9 @@
 
 #include "swihook.h"
 #include "ejapi.h"
+#include "pxeapi.h"
 #include "amem.h"
+#include "exekiller.h"
 #include "loader3/loader.h"
 
 
@@ -118,7 +120,7 @@ void init()
         return;
       }
  
- if (!__swihook_install(swilib, fwlib->malloc))
+ if (!__swihook_install(swilib))
   {
    fwlib->free(swilib);
    __core_lprintf("swihook install error!\r\n");
@@ -127,8 +129,30 @@ void init()
   } else  __core_lprintf("swilib remaped to address: 0x%08X\r\n", swihook_getlib());  
   
  __core_lprintf(s_rn);
+ __core_lprintf("Init PXEAPI ...\r\n"); 
+ if (!__pxeapi_init())
+  {
+   fwlib->free(swilib);
+   __core_lprintf("pxeapi init error!\r\n");
+   __core_lprintf(s_coreeend);
+   return;
+  }  else  __core_lprintf("pxeapi remaped to address: 0x%08X\r\n", __pxeapi_getlib());  
+  
+ __core_lprintf(s_rn);
  __core_lprintf("Init AMEM ...\r\n");  
  __amem_init();
+ 
+ 
+ __core_lprintf(s_rn);
+ __core_lprintf("Init ExeKiller ...\r\n");  
+ 
+ if(!__exekiller_init())
+  {
+   fwlib->free(swilib);
+   __core_lprintf("ExeKiller init error!\r\n");
+   __core_lprintf(s_coreeend);
+   return;
+  }
  
  __core_lprintf(s_rn);
  __core_lprintf("Init ELF ...\r\n");  

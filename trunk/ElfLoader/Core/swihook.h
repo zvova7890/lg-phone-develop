@@ -16,7 +16,7 @@
 
 unsigned int *__swihook_getlib();
 
-int __swihook_install(unsigned int *swilib, void *(*malloc)(unsigned int size));
+int __swihook_install(unsigned int *swilib);
 int __swihook_setfunc(unsigned short swinum, unsigned int address);
 unsigned int __swihook_getfunc(unsigned short swinum);
 int __swihook_clearfunc(unsigned short swinum);

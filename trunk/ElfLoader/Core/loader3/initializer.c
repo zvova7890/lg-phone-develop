@@ -22,11 +22,9 @@ void *malloc(size_t size) {
   return mem_malloc(size);
 }
 
-
 void free(void *ptr) {
   mem_free(ptr);
 }
-
 
 void *realloc(void *ptr, size_t size) {
   return mem_realloc(ptr, size);
@@ -39,6 +37,9 @@ void *calloc(size_t n, size_t s){
   memset(adr, 0, n*s);
   return adr;
 }
+
+
+
 
 
 /*

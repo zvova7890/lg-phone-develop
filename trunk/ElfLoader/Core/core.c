@@ -9,7 +9,7 @@
 
 
 #pragma segment="CORESTART"
-const char __core_build[] = "Core v1.2 (C)Dimadze, builded "__TIME__" "__DATE__;
+const char __core_build[] = "Core v1.4, builded "__TIME__" "__DATE__;
 const char __core_ss[]="%s%s";
 
 extern void init();
