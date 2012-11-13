@@ -53,7 +53,6 @@ _pxeapi`_`macro.h_
 Данный список функций управляет окнами в приложении. Определён в файле _pxeapi`_`windows.h_.
 
 <hr/>
-
 *GID: 0x012, FID: 0x006*
 
 {{{
@@ -64,7 +63,6 @@ int Windows_Create(int window_id, int (*evt_handler)(int cmd, int subcmd, int st
 Обычно надо вызывать при событии создания приложения.
 
 <hr/>
-
 *GID: 0x012, FID: 0x007*
 
 {{{
@@ -74,7 +72,6 @@ int Windows_Init(int window_id);
 Посылка события инициализации для окна *window_id*.
 
 <hr/>
-
 *GID: 0x012, FID: 0x005*
 
 {{{
@@ -84,7 +81,6 @@ int Windows_DestroyAll();
 Уничтожение всех окон приложения. Обычно надо вызывать при событии уничтожения приложения.
 
 <hr/>
-
 *GID: 0x012, FID: 0x003*
 
 {{{
@@ -94,7 +90,6 @@ int Windows_TransEvent(int cmd, int subcmd, int status);
 Перенаправление событий приложения в окно. Эту функцию необходимо ставить в обработчик приложения. 
 
 <hr/>
-
 *GID: 0x012, FID: 0x000*
 
 {{{
@@ -103,6 +98,15 @@ int Windows_SendEvent(int window_id, int cmd, int subcmd, int status);
 
 Посылка события в окно приложения с идентификатором *window_id*.
 Дело в том, что функция `Windows_TransEvent` служит только для стандартных событий, для других необходимо пользоваться этой процедурой, например, при событии акселерометра. 
+
+<hr/>
+*GID: 0x012, FID: 0x009*
+
+{{{
+int Windows_Run(int window_id);
+}}}
+
+Запуск созданного окна с идентификатором *window_id*.
 
 <hr/>
  
