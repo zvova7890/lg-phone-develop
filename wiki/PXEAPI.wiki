@@ -26,7 +26,6 @@ _pxeapi`_`macro.h_
 #define __pxe_adr_imm_onearg(adr, arg)           ((int (*)(int))((adr)))((int)arg)
 #define __pxe_adr_imm(adr, arg0, ...)            ((int (*)(int, ...))((adr)))((int)arg0, __VA_ARGS__)
 
-
 //Непосредственный вызов функции из PXE API
 #define __pxe_api_imm_noargs(gid, fid)           ((int (*)())((PXEAPI[gid][fid])))()
 #define __pxe_api_imm_onearg(gid, fid, arg)      ((int (*)(int))((PXEAPI[gid][fid])))((int)arg)
