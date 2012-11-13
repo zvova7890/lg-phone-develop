@@ -2,12 +2,6 @@
 #define __EJAPI_H__
 
 
-//KP501 v10h_00
-#define EJAPI_HOOK_ADDRESS 0x465D18DC
-#define EJAPI_HOOK_SIZE    0x08
-
-
-
 #define EJAPI_PREFIX_LEN    6
 #define EJAPI_HEAD          "ejapi."
 #define EJAPI_AVAIL         "ejapi.avail"

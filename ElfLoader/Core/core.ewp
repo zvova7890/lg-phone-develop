@@ -21,7 +21,7 @@
         </option>
         <option>
           <name>ExePath</name>
-          <state>ELF</state>
+          <state>ELF\KP501_v10H_00</state>
         </option>
         <option>
           <name>ObjPath</name>
@@ -137,11 +137,11 @@
         <debug>0</debug>
         <option>
           <name>CCDefines</name>
-          <state>SG3</state>
+          <state></state>
         </option>
         <option>
           <name>CCPreprocFile</name>
-          <state>0</state>
+          <state>1</state>
         </option>
         <option>
           <name>CCPreprocComments</name>
@@ -308,7 +308,7 @@
         </option>
         <option>
           <name>PreInclude</name>
-          <state></state>
+          <state>$PROJ_DIR$\unidata\kp501_v10H_00.h</state>
         </option>
         <option>
           <name>CompilerMisraRules</name>
@@ -404,7 +404,7 @@
         </option>
         <option>
           <name>ADefines</name>
-          <state>SGOLD</state>
+          <state></state>
         </option>
         <option>
           <name>AList</name>
@@ -868,22 +868,19 @@
     <name>$PROJ_DIR$\ejapi_hook.asm</name>
   </file>
   <file>
-    <name>$PROJ_DIR$\elf.c</name>
-    <excluded>
-      <configuration>KP501_v10H_00</configuration>
-    </excluded>
+    <name>$PROJ_DIR$\exekiller.c</name>
   </file>
   <file>
-    <name>$PROJ_DIR$\loader3\elf.h</name>
-    <excluded>
-      <configuration>KP501_v10H_00</configuration>
-    </excluded>
-  </file>
-  <file>
-    <name>$PROJ_DIR$\IMB.asm</name>
+    <name>$PROJ_DIR$\imb.asm</name>
   </file>
   <file>
     <name>$PROJ_DIR$\init.c</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\pxeapi.c</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\remap.c</name>
   </file>
   <file>
     <name>$PROJ_DIR$\swihook.c</name>

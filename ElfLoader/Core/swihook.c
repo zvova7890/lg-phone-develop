@@ -2,6 +2,7 @@
 #include "intrinsics.h"
 #include "swihook.h"
 #include "core.h"
+#include "remap.h"
 
 #include "string.h"
 
@@ -22,7 +23,7 @@ unsigned int *__swihook_getlib()
 }
 
 
-int __swihook_install(unsigned int *swilib, void *(*malloc)(unsigned int size))
+int __swihook_install(unsigned int *swilib)
 {
  if (swilib)
   {
@@ -43,34 +44,28 @@ int __swihook_install(unsigned int *swilib, void *(*malloc)(unsigned int size))
        __swihook_setfunc(SWINUM_CLRSWIFUNC, (unsigned int)&__swihook_clearfunc);
        
        
-       // Переносим таблицу ф-ий на определённый адрес
-       if (malloc)
-        {
-         //Создаём таблицу второго уровня
-         unsigned int t = (unsigned int)malloc(0x1000*2);
-         unsigned int *m  = (unsigned int *)__MRC(15, 0, 2, 0, 0);
-         if (t)
-          {
-           unsigned int *ta  = (unsigned int *)((t & ~ (  0xFFF )) + 0x1000);
-           memset(ta, 0, 0x1000);
-           m[( ( SWILIB_BASE >> 20) & 0xFFF )] = (int)ta | 0x01;
-           //Создаём несколько страниц
-           for (int i = 0; i < 4; i++)
-            {
-             unsigned int p = (unsigned int)malloc(0x1000*2);
-             if (p)
-              {
-               unsigned int pa  = (unsigned int)((p & ~ (  0xFFF )) + 0x1000);
-               ta[i] =   pa | 0xFFE;
-              } else { __MCR(15, 0, doms, 3, 0, 0); return 0; }
+        // Создаём таблицу
+        unsigned int *t = __mmu_coarse_malloc();
+        if (t)
+         {
+          //Регистрируем
+          __mmu_coarse_set(SWILIB_BASE, (int)t); 
+          for (int i = 0; i < 4; i++)
+           {
+            unsigned char *p = __mmu_coarsepage_malloc();
+            if (p)
+             {
+              __mmu_coarsepage_set(t, SWILIB_BASE + MMU_PAGE_SIZE * i, (unsigned int)p);
+             } else { __MCR(15, 0, doms, 3, 0, 0); return 0; }
             }
-           
-           //Копируем таблицу на новый адрес
-           memcpy((void *)SWILIB_BASE, __swihook_lib, SWILIB_SIZE);
-           //Устанавливаем ноавй адрес таблицы
-           __swihook_lib = (unsigned int *)SWILIB_BASE;
+          
+          //Копируем таблицу на новый адрес
+          memcpy((void *)SWILIB_BASE, __swihook_lib, SWILIB_SIZE);
+          //Устанавливаем новый адрес таблицы
+          __swihook_lib = (unsigned int *)SWILIB_BASE;
+          
           } else { __MCR(15, 0, doms, 3, 0, 0); return 0; }
-        } else { __MCR(15, 0, doms, 3, 0, 0); return 0; }
+          
        
        __MCR(15, 0, doms, 3, 0, 0);
        

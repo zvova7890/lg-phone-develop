@@ -1,0 +1,15 @@
+//KP501 v10h_00
+
+#ifndef __PREINCLUDE_FILE__
+#define __PREINCLUDE_FILE__
+
+#define IAR_MALLOC_DISABLE
+
+#define EJAPI_HOOK_ADDRESS 0x465D18DC
+#define EJAPI_HOOK_SIZE    0x08
+
+#define PXEAPI_ADDRESS     0x46A9F5D4
+
+#endif // __PREINCLUDE_FILE__
+
+
