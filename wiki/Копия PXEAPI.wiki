@@ -1,0 +1,125 @@
+=PXE API=
+
+В телефонах *LG KP500 / KP501* и т.п. есть свой формат исполняемых файлов: *PXE*. Что это означает точно неизвестно, но такие файлы имеют расширение *`*`.pxo*. И естественно, они не должны зависеть от версии прошивки и поэтому используют некоторое *API*, т.е. набор функций для работы с телефоном. Это всё есть, оно представлено двухуровневой библиотекой функций , т.е. сначала идут указатели на группы функций. Для простоты будем называть группу *GID*, а саму функцию в ней идентифицировать как *FID*. Это *API* нигде непродекларировано, поэтому неизвестно, и всё что появляеться по мере поисков и исследования будет старательно собрано тут.
+Оно, как вы поняли, может свободно использоваться эльфами (*ELF*), поэтому так нужно для создания полноценных приложений. Загрузчик эльфов переносит эту таблицу на постоянный и выровненный адрес *0x400000*, имейте это ввиду. А также бытует мнение, что есть некоторые несостыковки на разных моделях, поэтому для полной достоверности, всё что здесь представлено относится к моделям *KP500 / KP501*.
+
+= Заголовочный файл и макросы =
+
+При разработке своих приложений следует подключить файл для использования PXE API файл _pxeapi.h_.
+Вызов функций осуществляется через макросы, которые прописаны в файле
+_pxeapi`_`macro.h_
+
+{{{
+#ifndef __PXEAPI_MACRO_H__
+#define __PXEAPI_MACRO_H__
+
+#define PXEAPI_BASE 0x400000
+#define PXEAPI ((unsigned int **)PXEAPI_BASE)
+
+#define __pxeapi static inline
+
+//Непосредственный вызов функции по адресу
+#define __pxe_adr_imm_noargs(adr)                ((int (*)())((adr)))()
+#define __pxe_adr_imm_onearg(adr, arg)           ((int (*)(int))((adr)))((int)arg)
+#define __pxe_adr_imm(adr, arg0, ...)            ((int (*)(int, ...))((adr)))((int)arg0, __VA_ARGS__)
+
+//Определение функции по адресу для вызова
+#define __pxe_adr_void_noargs(adr)               { ((void (*)())((adr)))(); }
+#define __pxe_adr_void_onearg(adr, arg)          { ((void (*)(int))((adr)))((int)arg); }
+#define __pxe_adr_void(adr, arg0, ...)           { ((void (*)(int, ...))((adr)))((int)arg0, __VA_ARGS__); }
+
+//Определение функции по адресу для вызова с возвратным значением
+#define __pxe_adr_ret_noargs(adr, ret)           { return ((ret (*)())((adr)))(); }
+#define __pxe_adr_ret_onearg(adr, ret, arg)      { return ((ret (*)(int))((adr)))((int)arg); }
+#define __pxe_adr_ret(adr, ret, arg0, ...)       { return ((ret (*)(int, ...))((adr)))((int)arg0, __VA_ARGS__); }
+
+//Непосредственный вызов функции из PXE API
+#define __pxe_api_imm_noargs(gid, fid)           ((int (*)())((PXEAPI[gid][fid])))()
+#define __pxe_api_imm_onearg(gid, fid, arg)      ((int (*)(int))((PXEAPI[gid][fid])))((int)arg)
+#define __pxe_api_imm(gid, fid, arg0, ...)       ((int (*)(int, ...))((PXEAPI[gid][fid])))((int)arg0, __VA_ARGS__)
+
+//Определение функции PXE API для вызова
+#define __pxe_api_void_noargs(gid, fid)          { ((void (*)())((PXEAPI[gid][fid])))(); }
+#define __pxe_api_void_onearg(gid, fid, arg)     { ((void (*)(int))((PXEAPI[gid][fid])))((int)arg); }
+#define __pxe_api_void(gid, fid, arg0, ...)      { ((void (*)(int, ...))((PXEAPI[gid][fid])))((int)arg0, __VA_ARGS__); }
+
+//Определение функции PXE API для вызова с возвратным значением
+#define __pxe_api_ret_noargs(gid, fid, ret)      { return ((ret (*)())((PXEAPI[gid][fid])))(); }
+#define __pxe_api_ret_onearg(gid, fid, ret, arg) { return ((ret (*)(int))((PXEAPI[gid][fid])))((int)arg); }
+#define __pxe_api_ret(gid, fid, ret, arg0, ...)  { return ((ret (*)(int, ...))((PXEAPI[gid][fid])))((int)arg0, __VA_ARGS__); }
+
+#define PXE_LOWORD(w) ( w >>  0) & 0xFFFF
+#define PXE_HIWORD(w) ( w >> 16) & 0xFFFF
+
+#endif // __PXEAPI_MACRO_H__
+}}}
+
+= Разделы =
+  * Окна
+  * Графика
+
+== Окна ==
+
+Данный список функций управляет окнами в приложении. Определён в файле _pxeapi`_`windows.h_.
+
+<hr/>
+*GID: 0x012, FID: 0x006*
+
+{{{
+int Windows_Create(int window_id, int (*evt_handler)(int cmd, int subcmd, int status));
+}}}
+
+Создание окна с идентификатором *window_id* (есть любое число на ваш выбор) и обработчиком входящих событий *evt_handler*. 
+Обычно надо вызывать при событии создания приложения.
+
+<hr/>
+*GID: 0x012, FID: 0x007*
+
+{{{
+int Windows_Init(int window_id);
+}}}
+
+Посылка события инициализации для окна *window_id*.
+
+<hr/>
+*GID: 0x012, FID: 0x005*
+
+{{{
+int Windows_DestroyAll();
+}}}
+
+Уничтожение всех окон приложения. Обычно надо вызывать при событии уничтожения приложения.
+
+<hr/>
+*GID: 0x012, FID: 0x003*
+
+{{{
+int Windows_TransEvent(int cmd, int subcmd, int status);
+}}}
+
+Перенаправление событий приложения в окно. Эту функцию необходимо ставить в обработчик приложения. 
+
+<hr/>
+*GID: 0x012, FID: 0x000*
+
+{{{
+int Windows_SendEvent(int window_id, int cmd, int subcmd, int status);
+}}}
+
+Посылка события в окно приложения с идентификатором *window_id*.
+Дело в том, что функция `Windows_TransEvent` служит только для стандартных событий, для других необходимо пользоваться этой процедурой, например, при событии акселерометра. 
+
+<hr/>
+*GID: 0x012, FID: 0x009*
+
+{{{
+int Windows_Run(int window_id);
+}}}
+
+Запуск созданного окна с идентификатором *window_id*.
+
+<hr/>
+ 
+== Графика ==
+
+Графическое API содержит в себе функции смены ориентации, получения параметров и буфера экрана, методы отрисовки текста, примитивов и битовых карт.
