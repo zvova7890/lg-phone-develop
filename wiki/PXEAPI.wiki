@@ -63,7 +63,7 @@ int Windows_Create(int window_id, int (*evt_handler)(int cmd, int subcmd, int st
 Создание окна с идентификатором *window_id* (есть любое число на ваш выбор) и обработчиком входящих событий *evt_handler*. 
 Вызывается при событии создания приложения.
 
----- 
+----  
 
 *GID: 0x012, FID: 0x007*
 
