@@ -56,7 +56,6 @@ _pxeapi`_`macro.h_
 
 = Разделы =
   * Окна
-    * [wind-windows_create Windows_Create]
   * Графика
 
 == Окна ==
@@ -123,6 +122,8 @@ int Windows_Run(int window_id);
 Запуск созданного окна с идентификатором *window_id*.
 
 <hr/>
+
+[Windows_Create 44]
  
 == Графика ==
 
