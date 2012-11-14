@@ -33,8 +33,8 @@ extern void *__elf_base;
 void __elf_clear();
 void __elf_printf(const char *format, ...);
 
-void __elf_init(char *elf_fname);
-int  __elf_start(char *elf_fname, void *elf_base, int argc, char argv[], int other);
+void __elf_init(const char *elf_fname);
+int  __elf_start(const char *elf, int argc, char *argv[]);
 
 int elf_run(int event_id, int wparam, int lparam);
 

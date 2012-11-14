@@ -45,7 +45,7 @@ void __elf_printf(const char *format, ...)
    }  
 }
 
-void __elf_init(char *elf_fname)
+void __elf_init(const char *elf_fname)
 {
  int lenf, leno;
  char __elf_log[]="%s.log";
@@ -64,7 +64,7 @@ void __elf_init(char *elf_fname)
 
  
 
-int __elf_start(char *elf_fname, void *elf_base, int argc, char argv[], int other)
+int __elf_start(const char *elf, int argc, char *argv[])
 {
 #ifndef ELF_APP_ONECOPY
  char __elf_08X[]="%08X.pxo";
@@ -73,12 +73,12 @@ int __elf_start(char *elf_fname, void *elf_base, int argc, char argv[], int othe
 #endif
   
  //Первичная инициализация
- __elf_init(elf_fname);
+ __elf_init(elf);
 
  //Заполняем информацию для PXE - донора
  extern int elf_run(int, int, int);
  __elf_app_ei.evt_handler = elf_run;
- __elf_app_ei.base = elf_base;
+ __elf_app_ei.base = __elf_start_address;
    
  //Загружаем PXE донор
  int __elf_app_handle = TaskMngr_AppRun(PXO_DONOR_PATH, (int)&__elf_app_ei);
@@ -97,8 +97,8 @@ int __elf_start(char *elf_fname, void *elf_base, int argc, char argv[], int othe
    //Регистрируем приложение в Диспетчере задач
    TaskMngr_AppRegister(__elf_app_handle);
  
-   __elf_printf("Elf App Start \"%s\" - AppHandle = 0x%08X\r\n", elf_fname, __elf_app_handle);
-  } else __elf_printf("Elf App Start \"%s\" - error\r\n", elf_fname);
+   __elf_printf("Elf App Start \"%s\" - AppHandle = 0x%08X\r\n", elf, __elf_app_handle);
+  } else __elf_printf("Elf App Start \"%s\" - error\r\n", elf);
 
  return 0;
 }

@@ -6,6 +6,12 @@
   <configuration>
     <name>SG3</name>
     <outputs>
+<<<<<<< .mine
+      <file>$PROJ_DIR$\..\inc\pxeapi_macro.h</file>
+      <file>$TOOLKIT_DIR$\lib\dl5tpainl8n.r79</file>
+      <file>$PROJ_DIR$\..\inc\fs.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\unicode.pbi</file>
+=======
       <file>$PROJ_DIR$\..\inc\swi.h</file>
       <file>$TOOLKIT_DIR$\inc\stdlib.h</file>
       <file>$PROJ_DIR$\..\inc\log.h</file>
@@ -42,25 +48,83 @@
       <file>$PROJ_DIR$\..\inc\pxeapi_graphics.h</file>
       <file>$PROJ_DIR$\..\inc\corelib.h</file>
       <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\unicode.lst</file>
-      <file>$PROJ_DIR$\..\inc\pxeapi_macro.h</file>
+>>>>>>> .r107
+      <file>$PROJ_DIR$\BUILD\ELF\apps.elf</file>
       <file>$PROJ_DIR$\..\inc\pxeapi_forms.h</file>
+<<<<<<< .mine
+      <file>$PROJ_DIR$\..\inc\nucleus.h</file>
+=======
       <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\elf.pbi</file>
       <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\main.r79</file>
       <file>$PROJ_DIR$\..\inc\const.h</file>
       <file>$TOOLKIT_DIR$\inc\DLib_Threads.h</file>
+>>>>>>> .r107
       <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\unicode.s79</file>
+<<<<<<< .mine
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\unicode.lst</file>
+      <file>$PROJ_DIR$\..\inc\mem.h</file>
+      <file>$PROJ_DIR$\..\inc\pxeapi_misc.h</file>
+      <file>$PROJ_DIR$\..\inc\pxeapi.h</file>
+      <file>$PROJ_DIR$\..\inc\taskapi.h</file>
+=======
       <file>$TOOLKIT_DIR$\inc\stdarg.h</file>
       <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\apps.map</file>
       <file>$TOOLKIT_DIR$\inc\string.h</file>
       <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\main.s79</file>
+>>>>>>> .r107
       <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\elf.r79</file>
+<<<<<<< .mine
+      <file>$PROJ_DIR$\elf\elf.h</file>
+      <file>$PROJ_DIR$\..\inc\log.h</file>
+      <file>$PROJ_DIR$\..\inc\ejapi.h</file>
+      <file>$PROJ_DIR$\..\inc\amem.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\elf.pbi</file>
+=======
       <file>$PROJ_DIR$\elf\unicode.h</file>
       <file>$TOOLKIT_DIR$\lib\dl5tpainl8n.r79</file>
+>>>>>>> .r107
+      <file>$TOOLKIT_DIR$\lib\dl5tpainl8n.h</file>
+      <file>$TOOLKIT_DIR$\inc\DLib_Threads.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\apps.pbd</file>
       <file>$PROJ_DIR$\elf\elf.c</file>
       <file>$PROJ_DIR$\elf\unicode.c</file>
       <file>$PROJ_DIR$\main.c</file>
+<<<<<<< .mine
+      <file>$PROJ_DIR$\..\inc\corelib.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\main.r79</file>
+      <file>$PROJ_DIR$\..\inc\pxeapi_accelsensor.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\unicode.r79</file>
+      <file>$TOOLKIT_DIR$\inc\stdarg.h</file>
+      <file>$TOOLKIT_DIR$\inc\Dlib_Product.h</file>
+      <file>$PROJ_DIR$\..\inc\swi.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\main.s79</file>
+      <file>$PROJ_DIR$\..\inc\pxeapi_graphics.h</file>
+      <file>$PROJ_DIR$\..\inc\pxeapi_kpdctrl.h</file>
+      <file>$PROJ_DIR$\..\inc\elf.h</file>
+      <file>$PROJ_DIR$\elf\elf.xcl</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\elf.lst</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\main.pbi</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\apps.map</file>
+      <file>$TOOLKIT_DIR$\inc\yvals.h</file>
+      <file>$PROJ_DIR$\..\inc\pxeapi_timers.h</file>
+      <file>$TOOLKIT_DIR$\inc\string.h</file>
+      <file>$TOOLKIT_DIR$\inc\xencoding_limits.h</file>
+      <file>$PROJ_DIR$\elf\unicode.h</file>
+      <file>$PROJ_DIR$\..\inc\const.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\elf.s79</file>
+      <file>$TOOLKIT_DIR$\inc\stdio.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\main.lst</file>
+      <file>$TOOLKIT_DIR$\inc\ysizet.h</file>
+      <file>$TOOLKIT_DIR$\inc\DLib_Defaults.h</file>
+      <file>$PROJ_DIR$\..\inc\pxeapi_windows.h</file>
+      <file>$TOOLKIT_DIR$\inc\stdlib.h</file>
+=======
+>>>>>>> .r107
     </outputs>
     <file>
+<<<<<<< .mine
+      <name>$PROJ_DIR$\BUILD\ELF\apps.elf</name>
+=======
       <name>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\apps.pbd</name>
       <inputs>
         <tool>
@@ -71,25 +135,39 @@
     </file>
     <file>
       <name>[ROOT_NODE]</name>
+>>>>>>> .r107
       <outputs>
         <tool>
           <name>XLINK</name>
+<<<<<<< .mine
+          <file> 39</file>
+=======
           <file> 20 44</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\BUILD\ELF\apps.elf</name>
-      <outputs>
-        <tool>
-          <name>XLINK</name>
-          <file> 44</file>
+>>>>>>> .r107
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>XLINK</name>
+<<<<<<< .mine
+          <file> 36 13 26 28 1</file>
+=======
+          <file> 44</file>
+>>>>>>> .r107
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\apps.pbd</name>
+      <inputs>
+        <tool>
+<<<<<<< .mine
+          <name>BILINK</name>
+          <file> 18 38 3</file>
+=======
+          <name>XLINK</name>
           <file> 13 47 39 12 49</file>
+>>>>>>> .r107
         </tool>
       </inputs>
     </file>
@@ -98,21 +176,37 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
+<<<<<<< .mine
+          <file> 13 46 37</file>
+=======
           <file> 47 29 6</file>
+>>>>>>> .r107
         </tool>
         <tool>
           <name>BICOMP</name>
+<<<<<<< .mine
+          <file> 18</file>
+=======
           <file> 38</file>
+>>>>>>> .r107
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
+<<<<<<< .mine
+          <file> 47 40 50 19 30 43 20 49 52 42 29 14 25 31 35 16 2 9 17 15 45 6 11 0 51 5 41 27 34 33 10 12 44</file>
+=======
           <file> 18 21 26 27 19 24 41 28 1 45 43 31 34 0 17 3 22 14 32 2 40 30 4 36 11 37 25 10 16 33 15 7 48</file>
+>>>>>>> .r107
         </tool>
         <tool>
           <name>BICOMP</name>
+<<<<<<< .mine
+          <file> 47 40 50 30 43 20 49 52 42 29 14 25 31 35 16 2 9 17 15 45 6 11 0 51 5 41 27 34 33 10 12 44</file>
+=======
           <file> 18 21 26 19 24 41 28 1 45 43 31 34 0 17 3 22 14 32 2 40 30 4 36 11 37 25 10 16 33 15 7 48</file>
+>>>>>>> .r107
         </tool>
       </inputs>
     </file>
@@ -121,11 +215,19 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
+<<<<<<< .mine
+          <file> 28 7 8</file>
+=======
           <file> 12 42 35</file>
+>>>>>>> .r107
         </tool>
         <tool>
           <name>BICOMP</name>
+<<<<<<< .mine
+          <file> 3</file>
+=======
           <file> 23</file>
+>>>>>>> .r107
         </tool>
       </outputs>
     </file>
@@ -134,27 +236,49 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
+<<<<<<< .mine
+          <file> 26 32 48</file>
+=======
           <file> 39 46 9</file>
+>>>>>>> .r107
         </tool>
         <tool>
           <name>BICOMP</name>
+<<<<<<< .mine
+          <file> 38</file>
+=======
           <file> 8</file>
+>>>>>>> .r107
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
+<<<<<<< .mine
+          <file> 47 40 50 19 30 43 20 49 52 42 29 14 25 31 35 16 2 9 17 15 45 6 11 0 51 5 41 27 34 33 10 12 44</file>
+=======
           <file> 18 21 26 27 19 24 41 28 1 45 43 31 34 0 17 3 22 14 32 2 40 30 4 36 11 37 25 10 16 33 15 7 48</file>
+>>>>>>> .r107
         </tool>
         <tool>
           <name>BICOMP</name>
+<<<<<<< .mine
+          <file> 47 40 50 30 43 20 49 52 42 29 14 25 31 35 16 2 9 17 15 45 6 11 0 51 5 41 27 34 33 10 12 44</file>
+=======
           <file> 18 21 26 19 24 41 28 1 45 43 31 34 0 17 3 22 14 32 2 40 30 4 36 11 37 25 10 16 33 15 7 48</file>
+>>>>>>> .r107
         </tool>
       </inputs>
     </file>
-    <forcedrebuild>
-      <name>[REBUILD_ALL]</name>
-    </forcedrebuild>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 4 39</file>
+        </tool>
+      </outputs>
+    </file>
   </configuration>
 </project>
 
