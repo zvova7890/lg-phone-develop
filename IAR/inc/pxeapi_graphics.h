@@ -22,6 +22,7 @@
 #define DrawFillRect              Graphics_DrawFillRect
 #define DrawThickRect             Graphics_DrawThickRect
 #define DrawRoundRect             Graphics_DrawRoundRect
+#define DrawFillRoundRect         Graphics_DrawFillRoundRect
 #define DrawBitmap                Graphics_DrawBitmap
 #define DrawString                Graphics_DrawString
 #define DrawStringSetColor        Graphics_DrawStringSetColor
@@ -80,6 +81,12 @@ __pxe_api_ret(0x1C/4, 0x80/4, int, x1, y1, x2, y2, color)
 //Отрисовка полого прямоугольника со скругленными краями
 __pxeapi int Graphics_DrawRoundRect(short x1, short y1, short x2, short y2, int x_rnd, int y_rnd, unsigned int color)
 __pxe_api_ret(0x1C/4, 0x84/4, int, x1, y1, x2, y2, x_rnd, y_rnd, color)
+
+//Отрисовка заполненного прямоугольника со скругленными краями
+__pxeapi int Graphics_DrawFillRoundRect(short x1, short y1, short x2, short y2, int x_rnd, int y_rnd, unsigned int color)
+__pxe_api_ret(0x1C/4, 0x8C/4, int, x1, y1, x2, y2, x_rnd, y_rnd, color)
+
+
 
 //Отрисовка битмапа (картинки) без (полу-)прозрачности
 __pxeapi int Graphics_DrawBitmap(int x, int y, int w, int h, int depth, void *bitmap)
