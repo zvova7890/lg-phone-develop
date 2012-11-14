@@ -86,8 +86,6 @@ __pxe_api_ret(0x1C/4, 0x84/4, int, x1, y1, x2, y2, x_rnd, y_rnd, color)
 __pxeapi int Graphics_DrawFillRoundRect(short x1, short y1, short x2, short y2, int x_rnd, int y_rnd, unsigned int color)
 __pxe_api_ret(0x1C/4, 0x8C/4, int, x1, y1, x2, y2, x_rnd, y_rnd, color)
 
-
-
 //Отрисовка битмапа (картинки) без (полу-)прозрачности
 __pxeapi int Graphics_DrawBitmap(int x, int y, int w, int h, int depth, void *bitmap)
 __pxe_api_ret(0x1C/4, 0xC8/4, int, x, y, w, h, depth, bitmap)
