@@ -177,7 +177,7 @@ int Graphics_ChangeGDI(int state);
 
 Эта функция для смены ориентации рисовальных функций, а именно переворот экрана, т.е. если *state* есть *GDI_STATE_NORMAL*, то отрисовка производится обычно, если *GDI_STATE_LANDSCAPE*, то переворот.
 --------
-===Graphics_Repaint===
+===!Graphics_Repaint===
 *GID: 0x007, FID: 0x003*
 
 {{{
