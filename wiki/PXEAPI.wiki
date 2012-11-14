@@ -55,7 +55,7 @@ _pxeapi`_`macro.h_
 }}}
 
 = Разделы =
-  * [PXEAPI#Окна]
+  * [PXEAPI#PXE_API]
   * [PXEAPI#Графика]
 
 = Окна =
