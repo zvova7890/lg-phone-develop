@@ -125,8 +125,9 @@ int __ejapi_addapi(char *path)
    strcpy(ejp, path);
  else
    sprintf(ejp, ejapi_perss, __ejapi_folder, path);
-     
- if (!__elf_load(ejp, 0, 0, 0, &ebase, &ehandler))
+ 
+ char *argv[2] = {ejp, 0};
+ if (!__elf_load(ejp, 1, argv, &ebase, &ehandler))
   {
    if (!ebase) return EJAPI_ERROR; 
    if (!ehandler) return EJAPI_ERROR; 

@@ -1,0 +1,8 @@
+#!/bin/sh
+
+
+atfs -t /dev/ttyACM0 -lcore.elf -p/usr/Zbin/core/core.elf
+
+
+kdialog --msgbox "OK"
+

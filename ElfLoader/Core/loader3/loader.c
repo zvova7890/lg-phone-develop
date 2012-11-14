@@ -265,23 +265,26 @@ unsigned int objectAddress(Elf32_Exec *ex, Elf32_Sym *sym, const char *name, uns
     *ncheck = 0;
     unsigned int func = 0;
     
-    printf("local: %d st_value: %X st_shndx: %X\n", *name? name : "(none)", 
-							    bind_type == STB_LOCAL, sym->st_value, sym->st_shndx);
+    printf("local: %d st_value: %X st_shndx: %X\n", bind_type == STB_LOCAL, sym->st_value, sym->st_shndx);
     
     switch(bind_type)
     {
     case STB_LOCAL:
-	printf("STB_LOCAL\n");
-	
-	if(ex->type == EXEC_LIB && sym->st_shndx != SHN_UNDEF) {
-	    func = (unsigned int)ex->body + sym->st_value;
-	}
-	break;
-	
     case STB_GLOBAL:
 	printf("STB_GLOBAL\n");
-	
-	func = try_search_in_base(ex, name, hash, bind_type);
+
+        switch(sym->st_shndx)
+        {
+          case SHN_ABS:
+            printf("Absolute st_value: %X\n", sym->st_value);
+            func = sym->st_value;
+            break;
+            
+          default:
+            func = try_search_in_base(ex, name, hash, bind_type);
+            break;
+        }
+        
 	break;
 
     case STB_WEAK:

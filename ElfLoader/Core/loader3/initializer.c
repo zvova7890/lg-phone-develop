@@ -22,9 +22,11 @@ void *malloc(size_t size) {
   return mem_malloc(size);
 }
 
+
 void free(void *ptr) {
   mem_free(ptr);
 }
+
 
 void *realloc(void *ptr, size_t size) {
   return mem_realloc(ptr, size);
@@ -37,9 +39,6 @@ void *calloc(size_t n, size_t s){
   memset(adr, 0, n*s);
   return adr;
 }
-
-
-
 
 
 /*
@@ -59,15 +58,15 @@ void echo(const char *fmt, ...)
 */
 
 
-int __elf_load(char *filename, void *param1, void *param2, void *param3, unsigned int *start, unsigned int *ret)
+int __elf_load(const char *elfname, int argc, char *argv[], unsigned int *start, unsigned int *ret)
 {
-  Elf32_Exec *ex = elfopen(filename);
+  Elf32_Exec *ex = elfopen(elfname);
   if(!ex){
     l_msg(1, (int)"Elf corrupt or missing");
     return -1;
   }
   
-  int (*entry)(const char *, void *, void*, void*) = (int (*)(const char *, void *, void*, void*))elf_entry(ex);
+  int (*entry)(int, char **) = (int (*)(int, char **))elf_entry(ex);
   if(!entry){
    l_msg(1, (int)"Entry point not found");
    elfclose(ex);
@@ -87,7 +86,7 @@ int __elf_load(char *filename, void *param1, void *param2, void *param3, unsigne
   extern __arm void ExecuteIMB(void);
   ExecuteIMB();
 
-  int r = entry(filename, ex->body, param1, param2);
+  int r = entry(argc, argv);
   if (start) *start = (unsigned int)ex->body;
   if (ret) *ret = (unsigned int)r;
 
@@ -96,8 +95,7 @@ int __elf_load(char *filename, void *param1, void *param2, void *param3, unsigne
     ex->body = 0;
     elfclose(ex);
   }
-  
-  
+
   return 0;
 }
 

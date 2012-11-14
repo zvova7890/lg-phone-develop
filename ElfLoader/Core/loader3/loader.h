@@ -48,10 +48,9 @@
 //typedef unsigned int size_t;
 
 void *malloc(size_t size);
-void  free(void *ptr);
+void free(void *ptr);
 void *realloc(void *ptr, size_t size);
 void *calloc(size_t n, size_t s);
-
 
 #endif
 
@@ -220,7 +219,7 @@ void executeFinishesArray(Elf32_Exec *ex);
 void PushParent(Elf32_Exec *ex, Elf32_Exec *parent);
 
 void __elf_init();
-int __elf_load(char *filename, void *param1, void *param2, void *param3, unsigned int *start, unsigned int *ret);
+int __elf_load(const char *elfname, int argc, char *argv[], unsigned int *start, unsigned int *ret);
 void __elf_unload(void *base);
 
 #endif
