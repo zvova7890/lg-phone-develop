@@ -185,7 +185,7 @@ int FreezeTimerControl(int param, int state);
 *FREEZETIMER_ACTION_DISABLE* - приложение не остановится при неактивности пользователя. <br>
 *FREEZETIMER_ACTION_ENABLE* - приложение будет останавливаться при неактивности пользователя.
 --------
-===!GetAPIByName===
+===GetAPIByName===
 *GID: 0x00C, FID: 0x002*
 
 {{{
