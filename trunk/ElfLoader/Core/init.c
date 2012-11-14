@@ -187,7 +187,8 @@ void init()
          int err = 0;
          char d[256];
          sprintf(d, s_s_s, folder_patches, patches_de.name);
-         if(!(err = __elf_load(d, 0, 0, 0, 0, 0))) 
+         char *argv[2] = {d, 0};
+         if(!(err = __elf_load(d, 1, argv, 0, 0))) 
           {
            __core_lprintf("-> ok\r\n", err);
            tpatch++;
@@ -228,7 +229,9 @@ void init()
          int err = 0;
          char d[256];
          sprintf(d, s_s_s, folder_daemons, daem_de.name);
-         if(!(err = __elf_load(d, 0, 0, 0, 0, 0))) 
+         
+         char *argv[2] = {d, 0};
+         if(!(err = __elf_load(d, 1, argv, 0, 0)))
           {
            __core_lprintf("-> ok\r\n", err);
            tdaem++;

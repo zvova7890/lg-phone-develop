@@ -7,6 +7,8 @@
 
 #include <string.h>
 #include "loader.h"
+#include "../exekiller.h"
+
 
 #ifdef __thumb_mode
 extern __arm void *memcpy_a (void *dest, const void *src, size_t size);
@@ -91,7 +93,7 @@ __arch int elfclose(Elf32_Exec* ex)
   /* Инициализаторы и финализаторы мы пускаем в эльфе */
   //if(ex->complete)
     //executeFinishesArray(ex);
-  
+
   // Закрываем либы
   while(ex->libs)
   {
@@ -103,7 +105,6 @@ __arch int elfclose(Elf32_Exec* ex)
   }
 
   if(ex->hashtab) free(ex->hashtab);
-  if(ex->body) free(ex->body);
   if(ex->temp_env) free(ex->temp_env);
   
   for(Libs_Queue *l = ex->parents.ex, *li; l; ) {
@@ -111,8 +112,10 @@ __arch int elfclose(Elf32_Exec* ex)
       l = l->next;
       free(li);
   }
-  
+
   free(ex);
+  
+  if(ex->body) __exekiller_destroy(ex->body);
   return E_NO_ERROR;
 }
 
