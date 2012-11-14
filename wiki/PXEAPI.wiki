@@ -191,11 +191,21 @@ void Graphics_Repaint();
 *GID: 0x007, FID: 0x006*
 
 {{{
-void *Graphics_GetScreenBuffer()
+void *Graphics_GetScreenBuffer();
 }}}
 Альтернативные имена: *!GetScreenBuffer*
 
 Получение указателя на скринбуфер приложения. Полезно для снятия скриншота или прямого взаимодействия с экраном, не прибегая к специальным методам API.
+--------
+===!Graphics_GetScreenWidth===
+*GID: 0x007, FID: 0x006*
+
+{{{
+unsigned short Graphics_GetScreenWidth();
+}}}
+Альтернативные имена: *!GetScreenWidth*
+
+Получение ширины экрана в зависимости от текущей оринентации экрана.
 --------
 
 == Разное ==
