@@ -203,7 +203,7 @@ void *Graphics_GetScreenBuffer();
 {{{
 unsigned short Graphics_GetScreenWidth();
 }}}
-Альтернативные имена: *!GetScreenWidth*
+Альтернативные имена: !*GetScreenWidth*
 
 Получение ширины экрана в зависимости от текущей оринентации экрана.
 --------
