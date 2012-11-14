@@ -149,6 +149,16 @@ int Timers_CreateEvent(int timer_id, int expirate_period, int type);
  type            = TIMER_TYPE_LOOP;
 }}}
 --------
+==!Timers_DestroyEvent==
+*GID: 0x005, FID: 0x002*
+
+{{{
+int Timers_DestroyEvent(int timer_id);
+}}}
+
+Удаление событие таймера с идентификатором *timer_id*. Удаление первого таймера (который создаётся автоматически с идентификатором 1) невозмжно.
+
+--------
 
 == Графика ==
 
