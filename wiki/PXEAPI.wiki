@@ -62,7 +62,7 @@ _pxeapi`_`macro.h_
 
 Данный список функций управляет окнами в приложении. Определён в файле _pxeapi`_`windows.h_.
 
-<hr/>
+--------
 
 ==!Windows_Create==
 
@@ -75,7 +75,10 @@ int Windows_Create(int window_id, int (*evt_handler)(int cmd, int subcmd, int st
 Создание окна с идентификатором *window_id* (есть любое число на ваш выбор) и обработчиком входящих событий *evt_handler*. 
 Обычно надо вызывать при событии создания приложения.
 
-<hr/>
+--------
+
+==!Windows_Init==
+
 *GID: 0x012, FID: 0x007*
 
 {{{
