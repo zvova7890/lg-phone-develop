@@ -217,6 +217,16 @@ unsigned short Graphics_GetScreenHeight();
 
 Получение высоты экрана в зависимости от текущей его оринентации.
 --------
+===!Graphics_GetScreenDepth===
+*GID: 0x007, FID: 0x00A*
+
+{{{
+unsigned char Graphics_GetScreenDepth();
+}}}
+Альтернативные имена: *!GetScreenDepth*
+
+Получение глубины цвета (количество бит на пиксель) экрана (скринбуфера).
+--------
 
 == Разное ==
 
