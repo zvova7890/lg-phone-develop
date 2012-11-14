@@ -169,7 +169,7 @@ void Menu_OnExit()
  printf("Menu_OnExit\r\n");
  ElfAppsList_Free(list);
  
- Timers_KillEvent(-1);
+ Timers_DestroyEvent(-1);
  __pxe_api_imm_onearg(0x70/4, 0x04/4, 1);
  Forms_Destroy(mh);
 }
