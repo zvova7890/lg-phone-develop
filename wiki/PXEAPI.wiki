@@ -60,12 +60,12 @@ _pxeapi`_`macro.h_
   * Графика
   * Разное
 
-= Окна =
+== Окна ==
 
 Данный список функций управляет окнами в приложении. Определён в файле _pxeapi`_`windows.h_.
 
 --------
-==!Windows_Create==
+===!Windows_Create===
 *GID: 0x012, FID: 0x006*
 
 {{{
@@ -76,7 +76,7 @@ int Windows_Create(int window_id, int (*evt_handler)(int cmd, int subcmd, int st
 Обычно надо вызывать при событии создания приложения.
 
 --------
-==!Windows_Init==
+===!Windows_Init===
 *GID: 0x012, FID: 0x007*
 
 {{{
@@ -86,7 +86,7 @@ int Windows_Init(int window_id);
 Посылка события инициализации для окна *window_id*.
 
 --------
-==!Windows_DestroyAll==
+===!Windows_DestroyAll===
 *GID: 0x012, FID: 0x005*
 
 {{{
@@ -96,7 +96,7 @@ int Windows_DestroyAll();
 Уничтожение всех окон приложения. Обычно надо вызывать при событии уничтожения приложения.
 
 --------
-==!Windows_TransEvent==
+===!Windows_TransEvent===
 *GID: 0x012, FID: 0x003*
 
 {{{
@@ -106,7 +106,7 @@ int Windows_TransEvent(int cmd, int subcmd, int status);
 Перенаправление событий приложения в окно. Эту функцию необходимо ставить в обработчик приложения. 
 
 --------
-==!Windows_SendEvent==
+===!Windows_SendEvent===
 *GID: 0x012, FID: 0x000*
 
 {{{
@@ -133,7 +133,7 @@ int Windows_Run(int window_id);
 Данный список функций управляет событиями таймеров в приложении. Определён в файле _pxeapi`_`timers.h_. 
 
 --------
-==!Timers_CreateEvent==
+===!Timers_CreateEvent===
 *GID: 0x005, FID: 0x000*
 
 {{{
@@ -150,7 +150,7 @@ int Timers_CreateEvent(int timer_id, int expirate_period, int type);
  type            = TIMER_TYPE_LOOP;
 }}}
 --------
-==!Timers_DestroyEvent==
+===!Timers_DestroyEvent===
 *GID: 0x005, FID: 0x002*
 
 {{{
@@ -168,12 +168,12 @@ int Timers_DestroyEvent(int timer_id);
 
 --------
 
-= Разное =
+== Разное ==
 
 В данный список вошли те функции, которые не попали в другие по тем или иным причинам. Определёны в файле _pxeapi`_`misc.h_.
 
 --------
-==!FreezeTimerControl==
+===!FreezeTimerControl===
 *GID: 0x04F, FID: 0x005*
 
 {{{
