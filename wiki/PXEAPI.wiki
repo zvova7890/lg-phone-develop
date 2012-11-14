@@ -56,7 +56,7 @@ _pxeapi`_`macro.h_
 
 = Разделы =
   * Окна
-    * [PXEAPI #Windows_Create]
+    * [PXEAPI#Windows_Create]
   * Графика
 
 == Окна ==
