@@ -64,16 +64,16 @@ void __elf_init(const char *elf_fname)
 
  
 
-int __elf_start(const char *elf, int argc, char *argv[])
+int __elf_start(int argc, char *argv[])
 {
 #ifndef ELF_APP_ONECOPY
  char __elf_08X[]="%08X.pxo";
 #else
  char __elf_s[]="%s";
 #endif
-  
+ 
  //Первичная инициализация
- __elf_init(elf);
+ __elf_init(argv[0]);
 
  //Заполняем информацию для PXE - донора
  extern int elf_run(int, int, int);
@@ -97,8 +97,8 @@ int __elf_start(const char *elf, int argc, char *argv[])
    //Регистрируем приложение в Диспетчере задач
    TaskMngr_AppRegister(__elf_app_handle);
  
-   __elf_printf("Elf App Start \"%s\" - AppHandle = 0x%08X\r\n", elf, __elf_app_handle);
-  } else __elf_printf("Elf App Start \"%s\" - error\r\n", elf);
+   __elf_printf("Elf App Start \"%s\" - AppHandle = 0x%08X\r\n", argv[0], __elf_app_handle);
+  } else __elf_printf("Elf App Start \"%s\" - error\r\n", argv[0]);
 
  return 0;
 }
