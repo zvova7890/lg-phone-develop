@@ -150,7 +150,7 @@ void Menu_OnInit()
 void Menu_ElfAppRun(int item)
 {
  unsigned int start, ret, err;
- err  = elf_load(list[item].fname, 0, 0, 0, &start, &ret);
+ err  = elf_load(list[item].fname, 0, 0, &start, &ret);
  printf("ElfLoad \"%s\", Error = %d => 0x%08X, 0x%08X\r\n", list[item].fname, err, start, ret); 
 }
 

@@ -16,8 +16,8 @@
 #define GetScreenWidth            Graphics_GetScreenWidth
 #define GetScreenHeight           Graphics_GetScreenHeight
 #define GetScreenDepth            Graphics_GetScreenDepth
-#define DrawRect                  Graphics_DrawRect
 #define DrawLine                  Graphics_DrawLine
+#define DrawRect                  Graphics_DrawRect
 #define DrawThickRect             Graphics_DrawThickRect
 #define DrawFillRect              Graphics_DrawFillRect
 #define DrawThickRect             Graphics_DrawThickRect
