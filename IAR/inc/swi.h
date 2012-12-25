@@ -23,7 +23,7 @@ __swi __arm unsigned int swihook_getfunc(unsigned short swinum);
 __swi __arm int swihook_clearfunc(unsigned short swinum);
 
 #pragma swi_number=0xB
-__swi __arm int elf_load(char *filename, void *param1, void *param2, void *param3, unsigned int *start, unsigned int *ret);
+__swi __arm int elf_load(char *filename, int argc, char *argv[], unsigned int *start, unsigned int *ret);
 
 
 #endif // __SWI_H__
