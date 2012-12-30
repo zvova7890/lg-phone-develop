@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>1313175180</fileChecksum>
+  <configuration>
+    <name>KP501_V10H_00</name>
+    <outputs>
+      <file>$PROJ_DIR$\Other\KP501_V10H_00\Obj\init.pbi</file>
+      <file>$PROJ_DIR$\Other\KP501_V10H_00\Obj\fwlib.pbi</file>
+      <file>$PROJ_DIR$\elf.h</file>
+      <file>$PROJ_DIR$\init.h</file>
+      <file>$TOOLKIT_DIR$\inc\xencoding_limits.h</file>
+      <file>$TOOLKIT_DIR$\inc\DLib_Product.h</file>
+      <file>$PROJ_DIR$\Other\KP501_V10H_00\Obj\elf.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_V10H_00\List\coreloader.map</file>
+      <file>$TOOLKIT_DIR$\inc\string.h</file>
+      <file>$TOOLKIT_DIR$\inc\ysizet.h</file>
+      <file>$PROJ_DIR$\Other\KP501_V10H_00\Obj\coreloader.pbd</file>
+      <file>$TOOLKIT_DIR$\inc\DLib_Threads.h</file>
+      <file>$TOOLKIT_DIR$\lib\dl5tpainl8n.r79</file>
+      <file>$PROJ_DIR$\VKP\KP501_V10H_00\coreloader.elf</file>
+      <file>$PROJ_DIR$\VKP\KP501_V10H_00\XCL.xcl</file>
+      <file>$PROJ_DIR$\Other\KP501_V10H_00\Obj\init_hook.r79</file>
+      <file>$TOOLKIT_DIR$\inc\yvals.h</file>
+      <file>$PROJ_DIR$\fwlib.h</file>
+      <file>$PROJ_DIR$\Other\KP501_V10H_00\Obj\fwlib.r79</file>
+      <file>$TOOLKIT_DIR$\lib\dl5tpainl8n.h</file>
+      <file>$PROJ_DIR$\Other\KP501_V10H_00\Obj\elf.pbi</file>
+      <file>$PROJ_DIR$\Other\KP501_V10H_00\Obj\init.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_V10H_00\List\init_hook.lst</file>
+      <file>$PROJ_DIR$\elf.c</file>
+      <file>$PROJ_DIR$\fwlib.c</file>
+      <file>$PROJ_DIR$\init_hook.asm</file>
+      <file>$PROJ_DIR$\init.c</file>
+      <file>$TOOLKIT_DIR$\inc\DLib_Defaults.h</file>
+    </outputs>
+    <file>
+      <name>$PROJ_DIR$\Other\KP501_V10H_00\Obj\coreloader.pbd</name>
+      <inputs>
+        <tool>
+          <name>BILINK</name>
+          <file> 20 1 0</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\VKP\KP501_V10H_00\coreloader.elf</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 7</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 14 6 18 21 15 12</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 13 7</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\elf.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 6</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 20</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 8 16 27 19 5 4 11 9 17 2</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 8 16 27 5 4 11 9 17 2</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\fwlib.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 18</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 1</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 17</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 17</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\init_hook.asm</name>
+      <outputs>
+        <tool>
+          <name>AARM</name>
+          <file> 15 22</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\init.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 21</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 0</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 17 3 2</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 17 3 2</file>
+        </tool>
+      </inputs>
+    </file>
+    <forcedrebuild>
+      <name>[REBUILD_ALL]</name>
+    </forcedrebuild>
+  </configuration>
+</project>
+
+
