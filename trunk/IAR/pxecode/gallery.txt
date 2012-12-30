@@ -1,0 +1,23 @@
+int s = 0;
+int b = 0;
+
+   //Событие при создании приложения
+   case PXE_RUN_CREATE_EVENT:
+     s = SetUP_GetHandle();
+
+     __pxe_api_imm(0x48/4, 0x44/4, 15, s);
+     __pxe_api_imm(0x344/4, 0x1F4/4, s, 0);
+     __pxe_api_imm(0x344/4, 0x1E0/4, s, 18);
+     __pxe_api_imm(0x344/4, 0x1B4/4, s, 0x45);
+     
+     SetUP_SetTouchpadSensitivity(s, TOUCHPAD_SENSITIVITY_SET, 3);
+     
+   //Событие при создании приложения
+     SetUP_CloseHandle(s);
+   //Событие при активации приложения 
+     __pxe_api_imm_onearg(0x344/4, 0x17C/4, s);
+     SetUP_SetTouchpadSensitivity(s, TOUCHPAD_SENSITIVITY_SET, 3);
+
+   //Событие при сворачивании приложения 
+     __pxe_api_imm_onearg(0x344/4, 0x178/4, s);
+     SetUP_SetTouchpadSensitivity(s, TOUCHPAD_SENSITIVITY_DEFAULT, 0);

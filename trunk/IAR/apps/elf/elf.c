@@ -74,7 +74,7 @@ int __elf_start(int argc, char *argv[])
  
  //Первичная инициализация
  __elf_init(argv[0]);
-
+ 
  //Заполняем информацию для PXE - донора
  extern int elf_run(int, int, int);
  __elf_app_ei.evt_handler = elf_run;

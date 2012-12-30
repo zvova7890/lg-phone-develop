@@ -43,6 +43,8 @@ int z = 0, d = 0;
 unsigned char *b1 = 0, *b2 = 0; 
 int de1 = 0, de2 = 0; 
 
+int su = 0;
+
 void Draw()
 {
  char  ascii_text_buffer[256];
@@ -80,8 +82,7 @@ void Screen_OnInit()
 {
  printf("Screen_OnInit\r\n"); 
  
- 
- __pxe_api_imm_onearg(0x344/4, 0x178/4, 1);
+ //__pxe_api_imm_onearg(0x344/4, 0x178/4, 1);
  
  x1 = 50;
  x2 = 80;
@@ -282,6 +283,8 @@ int Window_EventHandler(int cmd, int subcmd, int status)
 
 
 /* ---------------------- Обработчик событий приложения --------------------- */
+     
+
 
 int elf_run(int event_id, int wparam, int lparam)
 {
@@ -292,6 +295,10 @@ int elf_run(int event_id, int wparam, int lparam)
    case PXE_RUN_CREATE_EVENT:
      //Устанавливаем имя приложения в Диспетчере задач
      TaskMngr_AppSetName(app_handle, 0, 0, 0);
+     //Получаем хендл настроек
+     su = SetUP_GetHandle();
+     //Устанавливаем чувствительность тачпада
+     SetUP_SetTouchpadSensitivity(su, TOUCHPAD_SENSITIVITY_SET, 3);
      //Создаём окно
      Windows_Create(WINDOW_ID_SCREEN, Window_EventHandler);
      //Запускаем инициализацию окна
@@ -302,6 +309,8 @@ int elf_run(int event_id, int wparam, int lparam)
    case PXE_RUN_DESTROY_EVENT:
      //Уничтожаем окно
      Windows_DestroyAll();
+     //Закрываем хендл настроек
+     SetUP_CloseHandle(su);
      printf("PXE_RUN_DESTROY_EVENT\r\n");
      return 1;
    //Событие при активации приложения 
@@ -309,9 +318,13 @@ int elf_run(int event_id, int wparam, int lparam)
      printf("PXE_RUN_RESUME_EVENT\r\n");
      //Отправим команду на перерисовку
      Windows_TransEvent(PXE_RUN_PAINT_EVENT, 0, 0);
+     //Устанавливаем чувствительность тачпада
+     SetUP_SetTouchpadSensitivity(su, TOUCHPAD_SENSITIVITY_SET, 3);
      return 1;
    //Событие при сворачивании приложения 
    case PXE_RUN_SUSPEND_EVENT:
+     //Устанавливаем чувствительность тачпада
+     SetUP_SetTouchpadSensitivity(su, TOUCHPAD_SENSITIVITY_DEFAULT, 0);
      printf("PXE_RUN_SUSPEND_EVENT\r\n");
      return 1;
    default:
