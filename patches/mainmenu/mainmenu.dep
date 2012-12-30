@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+
+<project>
+  <fileVersion>2</fileVersion>
+  <fileChecksum>1552439883</fileChecksum>
+  <configuration>
+    <name>SG3</name>
+    <outputs>
+      <file>$PROJ_DIR$\bin.xcl</file>
+      <file>$PROJ_DIR$\pipegame.asm</file>
+      <file>$PROJ_DIR$\Other\SG3\List\mainmenu_patch.map</file>
+      <file>$PROJ_DIR$\BIN\mainmenu_patch.elf</file>
+      <file>$TOOLKIT_DIR$\lib\dl5tpainl8n.r79</file>
+      <file>$PROJ_DIR$\Other\SG3\Obj\pipegame.r79</file>
+    </outputs>
+    <file>
+      <name>$PROJ_DIR$\pipegame.asm</name>
+      <outputs>
+        <tool>
+          <name>AARM</name>
+          <file> 5</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 3 2</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\BIN\mainmenu_patch.elf</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 2</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 0 5 4</file>
+        </tool>
+      </inputs>
+    </file>
+    <forcedrebuild>
+      <name>[REBUILD_ALL]</name>
+    </forcedrebuild>
+  </configuration>
+</project>
+
+

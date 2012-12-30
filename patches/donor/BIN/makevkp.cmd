@@ -1,0 +1,1 @@
+elf2vkp.exe donor_patch.elf -vkp donor_patch.vkp -ff donorU.pxo -pd donor_patch.txt
