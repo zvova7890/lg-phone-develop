@@ -1,0 +1,1 @@
+elf2vkp.exe mainmenu_patch.elf -vkp mainmenu_patch.vkp -ff MainMenuU.pxo -pd mainmenu_patch.txt
