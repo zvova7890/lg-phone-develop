@@ -21,6 +21,7 @@
 #include "amem.h"
 #include "log.h"
 #include "const.h"
+#include "lgos_timers.h"
 #include "nucleus.h"
 
 #endif // __CORELIB_H__
