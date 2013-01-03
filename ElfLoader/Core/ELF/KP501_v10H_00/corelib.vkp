@@ -75,6 +75,15 @@
 ;234:              ; 08D: int LoadSections(Elf32_Exec* ex);
 ;238:              ; 08D: int DoRelocation(Elf32_Exec* ex, Elf32_Dyn* dyn_sect, Elf32_Phdr* phdr);
 
+0480: 0x465548E5   ; 120: int LGOS_Timer_Create(LGOS_TIMER *timer, char *name);
+0484: 0x465D9FBD   ; 121: int LGOS_Timer_Delete(LGOS_TIMER *timer);
+0488: 0x46572555   ; 122: int LGOS_Timer_SetLoop(LGOS_TIMER *timer, int isloop);
+048C: 0x465549D1   ; 123: int LGOS_Timer_SetProc(LGOS_TIMER *timer, void (*routune)(int arg), int arg);
+0490: 0x46562075   ; 124: int LGOS_Timer_SetPeriod(LGOS_TIMER *timer, int init_period, int loop_period);
+0494: 0x46554819   ; 125: int LGOS_Timer_Start(LGOS_TIMER *timer);
+0498: 0x46554A6D   ; 126: int LGOS_Timer_Stop(LGOS_TIMER *timer);
+049C: 0x464ED6A1   ; 127: int LGOS_Timer_IsStarted(LGOS_TIMER *timer, unsigned int *is_started);
+
 0C00: 0x469F446C   ; 300: NU_Create_Task
 0C04: 0x469FD744   ; 301: NU_Delete_Task
 0C08: 0xFFFFFFFF   ; 302: NU_Reset_Task
