@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="fish" />
+		<Option pch_mode="2" />
+		<Option compiler="lg_gnu_arm_gcc_compiler" />
+		<Build>
+			<Target title="KP501v10">
+				<Option output="exe/fish.elf" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="exe" />
+				<Option object_output="objects/nsg" />
+				<Option type="1" />
+				<Option compiler="lg_gnu_arm_gcc_compiler" />
+				<Option use_console_runner="0" />
+				<Compiler>
+					<Add option="-DNEWSGOLD" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-marm" />
+			<Add option="-mthumb-interwork" />
+			<Add option="-O2" />
+			<Add option="-std=gnu99" />
+			<Add option="-Wno-unused-value" />
+			<Add option="-D__USE_LIBC__" />
+		</Compiler>
+		<Linker>
+			<Add option="-s" />
+			<Add option="--defsym __ex=0" />
+			<Add option="--gc-section" />
+			<Add library="crt" />
+			<Add library="scrt" />
+			<Add library="gcc" />
+			<Add library="c" />
+			<Add library="m" />
+			<Add library="png" />
+			<Add library="z" />
+		</Linker>
+		<ExtraCommands>
+			<Add after="exe/send" />
+		</ExtraCommands>
+		<Unit filename="main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="png.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="png.h" />
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
