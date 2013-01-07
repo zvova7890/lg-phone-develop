@@ -128,7 +128,7 @@ int elf_run(T_EVENT EventType, T_PARAM wParam, T_PARAM lParam)
       lprintf("APIVer: 0x%X\r\n", SysDev_GetInfo(SYSINFO_API_VERSION, &error));
      
       MsgHandler_RegisterProcessor(1, elf_msg_run_1);
-      MsgHandler_RegisterProcessor(2, elf_msg_run_1);
+      MsgHandler_RegisterProcessor(2, elf_msg_run_2);
       MsgHandler_SetActivePID(1);
       
       MsgHandler_Process();
