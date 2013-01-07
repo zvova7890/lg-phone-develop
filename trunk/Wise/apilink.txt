@@ -1,0 +1,110 @@
+Как добавить апи?
+
+Допустим надо добавить группу функций "SysDev", смотрим в оригинальных исходниках этот файл,
+
+app\Api\ApiLinkLib\ApiLink.h"
+
+там структура API и подключение главных заголовочных файлов
+
+в итоге видим:
+
+typedef struct
+{
+//-------------------------------------------------------------------------------------------------
+    //  BASICAPILIB APILINK	    
+	const TApiGrp_App*			pApp;
+	const TApiGrp_Debug*		pDebug;
+	const TApiGrp_Dll*			pDll;
+	const TApiGrp_EvHandler*	pEvHandler;
+	const TApiGrp_ProcMngr*		pProcMngr;
+	const TApiGrp_Timer*		pTimer;
+	const TApiGrp_TimerCore*	pTimerCore;
+	const TApiGrp_GrSys*		pGrSys;
+	const TApiGrp_GrFont*		pGrFont;
+	const TApiGrp_GrImage*		pGrImage;
+	const TApiGrp_GrText*		pGrText;
+	const TApiGrp_AppHeap*		pAppHeap;
+	const TApiGrp_SysHeap*		pSysHeap;
+	const TApiGrp_ShMem*		pShMem;
+ 	const TApiGrp_Drive*		pDrive;
+	const TApiGrp_FileSys*		pFileSys;
+	const TApiGrp_RecMngr*		pRecMngr;
+// 20101020 flora.shin@lge.com for DeFeaturing
+#if WISE_FEATURE_BASICOLDFEATURE == 1  // это есть
+	const TApiGrp_Serial*		pSerial;
+#endif
+	const TApiGrp_NvDB*			pNvDB;
+	const TApiGrp_MsgHandler*	pMsgHandler;
+// 20101020 flora.shin@lge.com for DeFeaturing
+#if WISE_FEATURE_BASICOLDFEATURE == 1   // это есть
+	const TApiGrp_MediaDev*		pMediaDev;
+#endif
+	const TApiGrp_SysUtil*		pSysUtil;
+	const TApiGrp_SysDev*		pSysDev;  // <------ вот тут искомая группа
+
+Но не факт, надо открыть IDA, посмотреть так ли это, как именно делать - это целая история, попробуй те что нибудь запустить оттуда, помотреть логи в которых будет имя хедера, или другие логи.
+
+Ну я нашёл, это номер 21, добавим её в структуру () у меня получилось так
+
+
+typedef struct
+{
+    //  BASICAPILIB APILINK	    
+	const TApiGrp_App*			pApp;
+        const void *                            __0x04;
+        const void *                            __0x08;
+        const TApiGrp_EvHandler*                pEvHandler;
+	const TApiGrp_ProcMngr*			pProcMngr;
+	const TApiGrp_Timer*		        pTimer;
+	const TApiGrp_TimerCore*	        pTimerCore;
+        const void *                            __0x1C;
+        const void *                            __0x20;
+        const void *                            __0x24;
+        const void *                            __0x28;
+        const void *                            __0x2C;
+        const void *                            __0x30;
+        const void *                            __0x34;
+        const void *                            __0x38;
+        const void *                            __0x3C;
+        const void *                            __0x40;
+        const void *                            __0x44;
+	const TApiGrp_MsgHandler*	        pMsgHandler;
+        const void *                            __0x4C;
+        const void *                            __0x50;
+	const TApiGrp_SysDev*		       pSysDev;  // <----- вставил в нужный номер
+        const void *                            __0x58;
+        const void *                            __0x5C;
+        const void *                            __0x60;
+        const void *                            __0x64;
+        const void *                            __0x68;
+        const void *                            __0x6C;
+        
+        //  BNS_FEATURE_PEANUT
+        
+        const void *                            __0x70;
+        const void *                            __0x74;
+        const void *                            __0x78;
+        const void *                            __0x7C;
+        const void *                            __0x80;
+        const void *                            __0x84;
+	//const TApiGrp_Dialog*		        pDialog;
+
+	void*					EndOfApiLink;
+} TApiLink;
+
+это грппа ф-ий представлено 2 файлам из папки BasicApiLib поэтому берём хедер (рядом с ApiLink.h) BasicApiLink.h и из такого же оригинального добавим
+
+extern const TApiGrp_SysDev		ApiGrpT_SysDev;
+
+Это структурка фий в группе
+
+Теперь откроем BasicApiLib.h добавим
+
+#include	INCLUDE_FILE(ApiLink\_SysDev.h)
+
+и в папку 
+
+app\Api\BasicApiLib\Include\ добавим SysDev.h и 
+app\Api\BasicApiLib\Include\ApiLink\  добавим _SysDev.h и 
+
+ну и чистим эти 2 файла от не нужного хлама и лишних ф-ий, тех которых нет в структуре и которых нет реально в телефоне
