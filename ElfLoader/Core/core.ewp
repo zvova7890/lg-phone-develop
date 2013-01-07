@@ -868,19 +868,16 @@
     <name>$PROJ_DIR$\ejapi_hook.asm</name>
   </file>
   <file>
-    <name>$PROJ_DIR$\exekiller.c</name>
+    <name>$PROJ_DIR$\gc.c</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\gc.h</name>
   </file>
   <file>
     <name>$PROJ_DIR$\imb.asm</name>
   </file>
   <file>
     <name>$PROJ_DIR$\init.c</name>
-  </file>
-  <file>
-    <name>$PROJ_DIR$\mirfs.c</name>
-  </file>
-  <file>
-    <name>$PROJ_DIR$\mirfs_hook.asm</name>
   </file>
   <file>
     <name>$PROJ_DIR$\pxeapi.c</name>
@@ -893,9 +890,6 @@
   </file>
   <file>
     <name>$PROJ_DIR$\swihook_body.asm</name>
-  </file>
-  <file>
-    <name>$PROJ_DIR$\unicode.c</name>
   </file>
 </project>
 

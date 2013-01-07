@@ -7,7 +7,7 @@
 
 #include <string.h>
 #include "loader.h"
-#include "../exekiller.h"
+#include "../gc.h"
 
 
 #ifdef __thumb_mode
@@ -115,7 +115,7 @@ __arch int elfclose(Elf32_Exec* ex)
 
   free(ex);
   
-  if(ex->body) __exekiller_destroy(ex->body);
+  if(ex->body) __gc_cleanup(ex->body, 2);
   return E_NO_ERROR;
 }
 
