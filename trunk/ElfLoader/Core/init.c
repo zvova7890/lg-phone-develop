@@ -11,8 +11,7 @@
 #include "ejapi.h"
 #include "pxeapi.h"
 #include "amem.h"
-#include "exekiller.h"
-#include "mirfs.h"
+#include "gc.h"
 #include "loader3/loader.h"
 
 
@@ -27,12 +26,10 @@ char s_s_s[]="%s/%s";
 char folder_ejapi[256];
 char folder_daemons[256];
 char folder_patches[256];
-char folder_mirfs[256];
 
-char f_ejapi[]   = "ejapi";
-char f_daemons[] = "daemons";
-char f_patches[] = "patches";
-char f_mirfs[]   = "mirfs";
+char f_ejapi[]="ejapi";
+char f_daemons[]="daemons";
+char f_patches[]="patches";
 
 #define PMB8877_KPD_MATRIX0 *( ( unsigned int *)( 0xF4D00018 ) ) 
 #define PMB8877_KPD_MATRIX1 *( ( unsigned int *)( 0xF4D0001C ) ) 
@@ -47,20 +44,18 @@ void init()
  
  __core_lprintf("Info:\r\n");
  
- __core_lprintf("version: %s\r\n",               __core_getversion());
- __core_lprintf("folder: %s\r\n",                __core_getfolder());
- __core_lprintf("elf: %s\r\n",                   __core_getelffile());
- __core_lprintf("lib: %s\r\n",                   __core_getlibfile());
- __core_lprintf("common folder: %s\r\n",         __core_getcomfolder());
- __core_lprintf("ejapi folder: %s%s/\r\n",       __core_getcomfolder(), f_ejapi);
- __core_lprintf("daemons folder: %s%s/\r\n",     __core_getcomfolder(), f_daemons);
- __core_lprintf("patches folder: %s%s/\r\n",     __core_getcomfolder(), f_patches);
- __core_lprintf("mirror fs folder: %s%s/\r\n",   __core_getcomfolder(), f_mirfs);
+ __core_lprintf("version: %s\r\n",           __core_getversion());
+ __core_lprintf("folder: %s\r\n",            __core_getfolder());
+ __core_lprintf("elf: %s\r\n",               __core_getelffile());
+ __core_lprintf("lib: %s\r\n",               __core_getlibfile());
+ __core_lprintf("common folder: %s\r\n",     __core_getcomfolder());
+ __core_lprintf("ejapi folder: %s%s/\r\n",   __core_getcomfolder(), f_ejapi);
+ __core_lprintf("daemons folder: %s%s/\r\n", __core_getcomfolder(), f_daemons);
+ __core_lprintf("patches folder: %s%s/\r\n", __core_getcomfolder(), f_patches);
  
- sprintf(folder_ejapi,   s_ss,    __core_getcomfolder(), f_ejapi);
+ sprintf(folder_ejapi, s_ss,      __core_getcomfolder(), f_ejapi);
  sprintf(folder_daemons, s_ss,    __core_getcomfolder(), f_daemons);
  sprintf(folder_patches, s_ss,    __core_getcomfolder(), f_patches);
- sprintf(folder_mirfs,   s_ss,    __core_getcomfolder(), f_mirfs);
  
  __core_lprintf("base: 0x%08X\r\n", __core_getbase());
  
@@ -151,12 +146,11 @@ void init()
  __core_lprintf(s_rn);
  __core_lprintf("Init ExeKiller ...\r\n");  
  
- if(!__exekiller_init())
+ if(__gc_init())
   {
    fwlib->free(swilib);
-   __core_lprintf("ExeKiller init error!\r\n");
+   __core_lprintf("Warning: gc init error! It`s may provide a memory leaks.\r\n");
    __core_lprintf(s_coreeend);
-   return;
   }
  
  __core_lprintf(s_rn);
@@ -167,10 +161,6 @@ void init()
  __swihook_setfunc(SWINUM_LCLEAR, (unsigned int)&__core_lclear);
  __swihook_setfunc(SWINUM_LPRINTF, (unsigned int)&__core_lprintf);
  __enable_interrupt();
- 
- __core_lprintf(s_rn);
- __core_lprintf("Init Mirror FileSystem ...\r\n"); 
- __mirfs_init(folder_mirfs);
  
  __core_lprintf(s_rn);
  __core_lprintf("Init Patches ...\r\n");  

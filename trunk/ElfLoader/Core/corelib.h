@@ -130,9 +130,6 @@ __swi __arm int fs_closedir(int handle);
 #pragma swi_number=0x1B
 __swi __arm int fs_getinfo(const char *fs_path, FS_INFO *info);
 
-#pragma swi_number=0x1C
-__swi __arm int fs_rename(const char *fs_path, const char *newname);
-
 #pragma swi_number=0x20
 __swi __arm void *mem_malloc(unsigned int size);
 
@@ -160,9 +157,23 @@ __swi __arm unsigned int mem_freesize();
 #pragma swi_number=0x28
 __swi __arm void *mem_getbase();
 
-#pragma swi_number=0x8060
-__swi __arm unsigned int *const_getscreenbuffer();
+#pragma swi_number=0x8030
+__swi __arm unsigned int *drw_screenbuffer32();
 
+#pragma swi_number=0x8031
+__swi __arm unsigned short *drw_screenbuffer16();
+
+#pragma swi_number=0x0060
+__swi __arm int accel_sensor_activate();
+
+#pragma swi_number=0x0061
+__swi __arm int accel_sensor_is_active();
+
+#pragma swi_number=0x0062
+__swi __arm int accel_sensor_position(short *x, short *y, short *z);
+
+#pragma swi_number=0x0063
+__swi __arm int accel_sensor_state(short x, short y, short z);
 
 #endif // __CORELIB_H__
 

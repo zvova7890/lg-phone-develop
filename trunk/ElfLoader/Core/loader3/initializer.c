@@ -60,12 +60,16 @@ void echo(const char *fmt, ...)
 
 int __elf_load(const char *elfname, int argc, char *argv[], unsigned int *start, unsigned int *ret)
 {
+  /* открываем эльф */
   Elf32_Exec *ex = elfopen(elfname);
-  if(!ex){
+  int r;
+  
+  if(!ex) {
     l_msg(1, (int)"Elf corrupt or missing");
     return -1;
   }
   
+  /* достаём ентрик */
   int (*entry)(int, char **) = (int (*)(int, char **))elf_entry(ex);
   if(!entry){
    l_msg(1, (int)"Entry point not found");
@@ -73,7 +77,7 @@ int __elf_load(const char *elfname, int argc, char *argv[], unsigned int *start,
    return -2;
   }
   
-    
+  /* различие эльф с импортом __ex и обычным(на подобе иаровского, который не поддерживает импорты) */
   if(!ex->__is_ex_imported && ex->libs)
   {
     l_msg(1, (int)"Incorrect elf");
@@ -83,15 +87,34 @@ int __elf_load(const char *elfname, int argc, char *argv[], unsigned int *start,
     ep_log(ex, dbg, csz);
   }
   
+  /* Требуха с кешем */
   extern __arm void ExecuteIMB(void);
   ExecuteIMB();
 
-  int r = entry(argc, argv);
+  /* проверим что нам подсунули в argv */
+  if(!argv) {
+    
+    /* пустой, значит сделаем стандартный */
+    char *_argv[2] = {(char *)elfname, 0};
+    r = entry(argc, _argv);
+    
+  } else {
+    
+    /* не пустой, но путь отсутствует, зделаем стандартный */
+    if(!argv[0]) {
+      argv[0] = (char *)elfname;
+    }
+    
+    entry(argc, argv);
+  }
+
   if (start) *start = (unsigned int)ex->body;
   if (ret) *ret = (unsigned int)r;
 
-  if(!ex->__is_ex_imported && !ex->libs)
-  {
+  /* эльф без импорта и либ, значит в услугах эльфпака он не нуждается, удалим его из базы... */
+  if(!ex->__is_ex_imported && !ex->libs) {
+    
+    /* ... при этом запрещая удаление тела эльфа */
     ex->body = 0;
     elfclose(ex);
   }
@@ -125,17 +148,18 @@ void __elf_init()
   __swihook_setfunc(0x80 + 4, (int)dlcache_clean);
   __swihook_setfunc(0x80 + 5, (int)SHARED_TOP);
   
-  __swihook_setfunc(0x80 + 6, (int)setenv);
-  __swihook_setfunc(0x80 + 7, (int)unsetenv);
-  __swihook_setfunc(0x80 + 8, (int)clearenv);
-  __swihook_setfunc(0x80 + 9, (int)environ);
+  __swihook_setfunc(0x80 + 6, (int)getenv);
+  __swihook_setfunc(0x80 + 7, (int)setenv);
+  __swihook_setfunc(0x80 + 8, (int)unsetenv);
+  __swihook_setfunc(0x80 + 9, (int)clearenv);
+  __swihook_setfunc(0x80 + 10, (int)environ);
   
   
-  __swihook_setfunc(0x80 + 10, (int)elfopen);
-  __swihook_setfunc(0x80 + 11, (int)elfclose);
-  __swihook_setfunc(0x80 + 12, (int)calc_binary_size);
-  __swihook_setfunc(0x80 + 13, (int)LoadSections);
-  __swihook_setfunc(0x80 + 14, (int)DoRelocation);
+  __swihook_setfunc(0x80 + 11, (int)elfopen);
+  __swihook_setfunc(0x80 + 12, (int)elfclose);
+  __swihook_setfunc(0x80 + 13, (int)calc_binary_size);
+  __swihook_setfunc(0x80 + 14, (int)LoadSections);
+  __swihook_setfunc(0x80 + 15, (int)DoRelocation);
   __enable_interrupt();
   
   
