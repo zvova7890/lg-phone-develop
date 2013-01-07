@@ -1,0 +1,11 @@
+-carm
+
+// Declare relocation areas for code, constants and data.
+-V(CODE)CODE_AREA,12
+-V(DATA)DATA_AREA,12
+
+// Place segments into the relocation areas
+-Z(CODE_AREA)CORESTART,DATA_ID,START,CODE,DATA_C,INITTAB,DATA_Z,DATA_N,CONFIG_C=0-FFFFFFFF
+-Z(DATA_AREA)DATA_I=0-FFFFFFFF
+
+-Z(CODE_AREA)REP_THUMB_BLX_ADDREESS=4672FD18-FFFFFFFF

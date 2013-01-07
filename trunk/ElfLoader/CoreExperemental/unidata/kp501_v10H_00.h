@@ -1,0 +1,23 @@
+//KP501 v10h_00
+
+#ifndef __PREINCLUDE_FILE__
+#define __PREINCLUDE_FILE__
+
+#define IAR_MALLOC_DISABLE
+
+
+#define EJAPI_HOOK_ADDRESS         0x465D18DC
+#define EJAPI_HOOK_SIZE            0x08
+
+#define MIRFS_THUMB_BLX_ADDRESS    0x4672FD18
+#define MIRFS_THUMB_BLX_OPCODE     0xEF08F7FF
+#define MIRFS_J32_ADDRESS          0x4672FB2C
+#define MIRFS_J32_SIZE             0x08
+#define MIRFS_CHECK_ADDRESS        0x46576360
+#define MIRFS_THUMB_MOVR01_OPCODE  0xBD102001
+
+#define PXEAPI_ADDRESS             0x46A9F5D4
+
+#endif // __PREINCLUDE_FILE__
+
+
