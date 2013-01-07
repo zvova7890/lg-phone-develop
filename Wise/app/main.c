@@ -120,9 +120,13 @@ BOOL elf_msg_run_2(T_MSG msg, T_PARAM wParam, T_PARAM lParam)
 /* Обработчик событий для приложения */
 int elf_run(T_EVENT EventType, T_PARAM wParam, T_PARAM lParam)
 {
+ BOOL error = 0; 
  switch (EventType)
   {
    case BNS_EVENT_START:
+     
+      lprintf("APIVer: 0x%X\r\n", SysDev_GetInfo(SYSINFO_API_VERSION, &error));
+     
       MsgHandler_RegisterProcessor(1, elf_msg_run_1);
       MsgHandler_RegisterProcessor(2, elf_msg_run_1);
       MsgHandler_SetActivePID(1);

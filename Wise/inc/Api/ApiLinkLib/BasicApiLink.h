@@ -33,5 +33,6 @@ extern const TApiGrp_TimerCore		ApiGrpH_TimerCore;
 
 extern const TApiGrp_MsgHandler		ApiGrpT_MsgHandler;
 
+extern const TApiGrp_SysDev		ApiGrpT_SysDev;
 
 #endif	//	_BNSOFT_APILINK_BASICAPILINK_H_

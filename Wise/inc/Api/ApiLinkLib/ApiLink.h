@@ -37,7 +37,7 @@ typedef struct
 	const TApiGrp_MsgHandler*	        pMsgHandler;
         const void *                            __0x4C;
         const void *                            __0x50;
-        const void *                            __0x54;
+	const TApiGrp_SysDev*		        pSysDev;
         const void *                            __0x58;
         const void *                            __0x5C;
         const void *                            __0x60;

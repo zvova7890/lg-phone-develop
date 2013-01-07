@@ -29,6 +29,8 @@
 
 #include	INCLUDE_FILE(ApiLink\_MsgHandler.h)
 
+#include	INCLUDE_FILE(ApiLink\_SysDev.h)
+
 #undef		INCLUDE_FILE
 #undef		_INCLUDE_FILE
 
