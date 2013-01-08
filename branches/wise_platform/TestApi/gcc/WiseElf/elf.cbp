@@ -25,7 +25,7 @@
 			<Add option="-std=gnu99" />
 			<Add option="-Wno-unused-value" />
 			<Add option="-D__USE_LIBC__" />
-			<Add directory="Api" />
+			<Add directory="include/Api" />
 		</Compiler>
 		<Linker>
 			<Add option="--defsym __ex=0" />
