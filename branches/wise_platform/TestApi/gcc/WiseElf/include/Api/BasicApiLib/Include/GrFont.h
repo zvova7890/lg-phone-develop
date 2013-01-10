@@ -4,12 +4,6 @@
 
 	Copyright(c) 1997-2003 BNSoft Corp.
 
-	그룹 : BASIC API
-	구분 : 그래픽
-	등급 : 공개/비공개																				{{BNS_INTERNALCODE()}}
-	버전 : 1.15
-	일자 : 2004.07.30
-	성명 : 박상호,길령환
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #ifndef		_BNSOFT_GRFONT_H_
@@ -19,7 +13,6 @@
 #include	"ConfigGR.h"
 
 //-------------------------------------------------------------------------------------------------
-//	시스템에서 사용하는 기본폰트이다.
 #define		GRFONT_DEFAULT		22
 typedef		unsigned int		E_FONT;
 
@@ -27,10 +20,9 @@ typedef		unsigned int		E_FONT;
 //	Font Type의 종류
 #define		GRFONT_NORMAL			0x00000000
 #define		GRFONT_ITALIC			0x10000000
-#define		GRFONT_BOLD				0x40000000
+#define		GRFONT_BOLD			0x40000000
 
 //-------------------------------------------------------------------------------------------------
-//	E_FONT 타입을 지정한다.
 enum
 {
 	FONTTYPE_BFF		= 0,

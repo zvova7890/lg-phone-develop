@@ -4,12 +4,6 @@
 
 	Copyright(c) 1997-2003 BNSoft Corp.
 
-	그룹 : BASIC API
-	구분 : 그래픽
-	등급 : 공개/비공개																				{{BNS_INTERNALCODE()}}
-	버전 : 1.32
-	일자 : 2005.05.23
-	성명 : 박상호,길령환,이택길
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #ifndef		_BNSOFT_GRSYS_H_
@@ -114,24 +108,23 @@ typedef enum
     GRSYS_VTPIXEL_MAX
 } GRSYS_VTPIXEL_FORMAT;
 
-//-------------------------------------------------------------------------------------------------
-//	기본 GDI의 ID. 이 값은 항상 주화면을 의미한다.
+
 #define		GDI_DEFAULT					0
 //-------------------------------------------------------------------------------------------------
 //-------------------------------------------------------------------------------------------------
-#define		GRSYS_SOLID					0xFFFFFFFF
-#define		GRSYS_DOT					0xAAAAAAAA
-#define		GRSYS_DOTDOT				0xCCCCCCCC
-#define		GRSYS_DASH					0xF0F0F0F0
+#define		GRSYS_SOLID				0xFFFFFFFF
+#define		GRSYS_DOT				0xAAAAAAAA
+#define		GRSYS_DOTDOT			        0xCCCCCCCC
+#define		GRSYS_DASH				0xF0F0F0F0
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
-#define		GRDEV_SOLID					GRSYS_SOLID
-#define		GRDEV_DOT					GRSYS_DOT
+#define		GRDEV_SOLID				GRSYS_SOLID
+#define		GRDEV_DOT				GRSYS_DOT
 #define		GRDEV_DOTDOT				GRSYS_DOTDOT
-#define		GRDEV_DASH					GRSYS_DASH
+#define		GRDEV_DASH				GRSYS_DASH
 //-------------------------------------------------------------------------------------------------
-#define		GRSYS_OPAQUE				0					//	텍스트를 출력할 때 배경을 배경색으로 칠한다.
-#define		GRSYS_TRANSPARENT			1					//	텍스트를 출력할 때 배경을 칠하지 않는다.
-#define		GRSYS_ALPHABLENDING			2					//	이미지를 출력할 때 투명도를 적용한다.
+#define		GRSYS_OPAQUE				0				
+#define		GRSYS_TRANSPARENT			1			
+#define		GRSYS_ALPHABLENDING			2				
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 #define		GRDEV_OPAQUE				GRSYS_OPAQUE
 #define		GRDEV_TRANSPARENT			GRSYS_TRANSPARENT
@@ -153,7 +146,7 @@ typedef enum
 	TEXTSTY_EFFECT,
 	TEXTSTY_PARTIALDRAW,
 	TEXTSTY_WORDBREAK,
-	TEXTSTY_BIDI											//	bi-directional writing support
+	TEXTSTY_BIDI					//	bi-directional writing support
 } E_TEXTSTY;
 
 typedef enum
@@ -168,11 +161,11 @@ typedef enum
 } E_STRPROC;
 
 //-------------------------------------------------------------------------------------------------
-#define		TEXT_NORMAL					0x00000000
+#define		TEXT_NORMAL				0x00000000
 #define		TEXT_INVERSE				0x80000000			//	텍스트를 반전시켜서 출력시킨다.
-#define		TEXT_BOLD					0x40000000			//	텍스트를 볼드체로 출력한다.
+#define		TEXT_BOLD				0x40000000			//	텍스트를 볼드체로 출력한다.
 #define		TEXT_UNDERLINE				0x20000000			//	텍스트를 출력한 후 밑줄을 긋는다.
-#define		TEXT_ITALIC					0x10000000			//	텍스트를 이텔릭체로 출력한다.
+#define		TEXT_ITALIC				0x10000000			//	텍스트를 이텔릭체로 출력한다.
 #define		TEXT_OUTLINE				0x08000000			//	외곽선 폰트로 출력한다.
 #define		TEXT_STRIKETHROUGH			0x04000000			//	텍스트에 취소선을 그린다(REditCtrl에만 적용).
 #define		TEXT_SYSINVERSE				0x00000008			//	텍스트를 반전시켜서 출력시킨다.
@@ -182,7 +175,7 @@ typedef enum
 //	GrSys Macro Functions
 #define		GrSys_SetPixel(X,Y,C)		GrSys_PutPixel(X,Y,C)
 #define		GrSys_ClearRect(L,T,R,B)	GrSys_FillRect(L,T,R,B,(T_COLOR)-1)
-#define		BNSRGB(R,G,B)				GrSys_RGB(R,G,B)
+#define		BNSRGB(R,G,B)			GrSys_RGB(R,G,B)
 
 //-------------------------------------------------------------------------------------------------	{{BNS_INTERNALCODE(+)}}
 //	GrSys Internal Member Functions
@@ -191,10 +184,7 @@ typedef enum
 	//	Definition of GDI Handle
 	typedef		T_HANDLE					H_GDI;
 
-#ifdef		BNS_MAIN_VERSION
-	//---------------------------------------------------------------------------------------------
-	extern void				GrSys_Init                  (void);
-	extern void				GrSys_Exit                  (void);
+
 	extern BOOL				GrSys_Create                (TGrDev* pGrDev);
 	extern H_GDI			GrSys_SetGDIHandle          (H_GDI hGDI);
 	extern H_GDI			GrSys_GetGDIHandle          (T_ID ID);
@@ -217,10 +207,9 @@ typedef enum
 	extern void				GrSys_DrawAlphaExtendedImage(T_POS X, T_POS Y, T_SIZE Width, T_SIZE Height, TImage* pImage, BYTE Level);
 	//---------------------------------------------------------------------------------------------
 	extern BOOL				GrSys_SetTipInfo			(TRect* Rect, T_CSTR pcszStr, T_COLOR BkColor, E_FONT enFont, T_COLOR FontColor, T_SIZE Margin, T_COLOR BorderColor);
-#endif	//	BNS_MAIN_VERSION																	//	{{BNS_INTERNALCODE(-)}}
+															//	{{BNS_INTERNALCODE(-)}}
 //-------------------------------------------------------------------------------------------------
 //	GrSys Member Functions
-#ifdef		BNS_MAIN_VERSION
 
 	//---------------------------------------------------------------------------------------------
 	//	Graphic Device Interface
@@ -260,60 +249,59 @@ typedef enum
 
 	//---------------------------------------------------------------------------------------------
 	//	Effect
-	extern void				GrSys_GrayRect              (T_POS Left, T_POS Top, T_POS Right, T_POS Bottom);
-	extern void				GrSys_WhiteRect             (T_POS Left, T_POS Top, T_POS Right, T_POS Bottom);
-	extern void				GrSys_InverseRect           (T_POS Left, T_POS Top, T_POS Right, T_POS Bottom);
-	extern void				GrSys_AlphaBlendRect        (T_POS Left, T_POS Top, T_POS Right, T_POS Bottom, T_COLOR Color, BYTE Level);
-	extern void				GrSys_AlphaBlendByImage     (T_POS X, T_POS Y, TImage* pImage, BYTE Level);
+	extern void			GrSys_GrayRect              (T_POS Left, T_POS Top, T_POS Right, T_POS Bottom);
+	extern void			GrSys_WhiteRect             (T_POS Left, T_POS Top, T_POS Right, T_POS Bottom);
+	extern void			GrSys_InverseRect           (T_POS Left, T_POS Top, T_POS Right, T_POS Bottom);
+	extern void			GrSys_AlphaBlendRect        (T_POS Left, T_POS Top, T_POS Right, T_POS Bottom, T_COLOR Color, BYTE Level);
+	extern void			GrSys_AlphaBlendByImage     (T_POS X, T_POS Y, TImage* pImage, BYTE Level);
 	//---------------------------------------------------------------------------------------------
 	//	Pixel
-	extern void				GrSys_PutPixel              (T_POS X, T_POS Y, T_COLOR Color);
+	extern void			GrSys_PutPixel              (T_POS X, T_POS Y, T_COLOR Color);
 	extern T_COLOR			GrSys_GetPixel              (T_POS X, T_POS Y);
 	//---------------------------------------------------------------------------------------------
 	//	Line
-	extern void				GrSys_DrawLine              (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_COLOR Color);
-	extern void				GrSys_DrawLineEx            (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_COLOR Color, T_SIZE Thickness, T_STROKE Stroke, int nStrokeBitNum);
-	extern void				GrSys_DrawHLine             (T_POS Y,  T_POS X1, T_POS X2, T_COLOR Color);
-	extern void				GrSys_DrawVLine             (T_POS X,  T_POS Y1, T_POS Y2, T_COLOR Color);
+	extern void			GrSys_DrawLine              (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_COLOR Color);
+	extern void			GrSys_DrawLineEx            (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_COLOR Color, T_SIZE Thickness, T_STROKE Stroke, int nStrokeBitNum);
+	extern void			GrSys_DrawHLine             (T_POS Y,  T_POS X1, T_POS X2, T_COLOR Color);
+	extern void			GrSys_DrawVLine             (T_POS X,  T_POS Y1, T_POS Y2, T_COLOR Color);
 	//---------------------------------------------------------------------------------------------
 	//	Rectangle
-	extern void				GrSys_DrawRect              (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_COLOR Color);
-	extern void				GrSys_DrawRectEx            (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_COLOR Color, T_SIZE Thickness, T_STROKE Stroke, int nStrokeBitNum);
-	extern void				GrSys_FillRect              (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_COLOR FillColor);
+	extern void			GrSys_DrawRect              (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_COLOR Color);
+	extern void			GrSys_DrawRectEx            (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_COLOR Color, T_SIZE Thickness, T_STROKE Stroke, int nStrokeBitNum);
+	extern void			GrSys_FillRect              (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_COLOR FillColor);
 	//- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -
 	//	Round Rectangle
-	extern void				GrSys_DrawRoundRect         (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_SIZE CornerWidth, T_SIZE CornerHeight, T_COLOR Color);
-	extern void				GrSys_DrawRoundRectEx       (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_SIZE CornerWidth, T_SIZE CornerHeight, T_COLOR Color, T_SIZE Thickness, T_STROKE Stroke, int nStrokeBitNum);
-	extern void				GrSys_FillRoundRect         (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_SIZE CornerWidth, T_SIZE CornerHeight, T_COLOR FillColor);
+	extern void			GrSys_DrawRoundRect         (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_SIZE CornerWidth, T_SIZE CornerHeight, T_COLOR Color);
+	extern void			GrSys_DrawRoundRectEx       (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_SIZE CornerWidth, T_SIZE CornerHeight, T_COLOR Color, T_SIZE Thickness, T_STROKE Stroke, int nStrokeBitNum);
+	extern void			GrSys_FillRoundRect         (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_SIZE CornerWidth, T_SIZE CornerHeight, T_COLOR FillColor);
 	//---------------------------------------------------------------------------------------------
 	//	Circle & Ellipse
-	extern void				GrSys_DrawCircle            (T_POS X, T_POS Y, T_SIZE Diameter, T_COLOR Color);
-	extern void				GrSys_DrawCircleEx          (T_POS X, T_POS Y, T_SIZE Diameter, T_COLOR Color, T_SIZE Thickness, T_STROKE Stroke, int nStrokeBitNum);
-	extern void				GrSys_FillCircle            (T_POS X, T_POS Y, T_SIZE Diameter, T_COLOR FillColor);
-
-	extern void				GrSys_DrawEllipse           (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_COLOR Color);
-	extern void				GrSys_DrawEllipseEx         (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_COLOR Color, T_SIZE Thickness, T_STROKE Stroke, int nStrokeBitNum);
-	extern void				GrSys_FillEllipse           (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_COLOR FillColor);
+	extern void			GrSys_DrawCircle            (T_POS X, T_POS Y, T_SIZE Diameter, T_COLOR Color);
+	extern void			GrSys_DrawCircleEx          (T_POS X, T_POS Y, T_SIZE Diameter, T_COLOR Color, T_SIZE Thickness, T_STROKE Stroke, int nStrokeBitNum);
+	extern void			GrSys_FillCircle            (T_POS X, T_POS Y, T_SIZE Diameter, T_COLOR FillColor);
+	extern void			GrSys_DrawEllipse           (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_COLOR Color);
+	extern void			GrSys_DrawEllipseEx         (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_COLOR Color, T_SIZE Thickness, T_STROKE Stroke, int nStrokeBitNum);
+	extern void			GrSys_FillEllipse           (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_COLOR FillColor);
 
 	//---------------------------------------------------------------------------------------------
 	//	Arc & Pie
-	extern void				GrSys_DrawArc               (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_POS StartAngle, int ArcAngle, T_COLOR Color);
-	extern void				GrSys_DrawArcEx             (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_POS StartAngle, int ArcAngle, T_COLOR Color, T_SIZE Thickness, T_STROKE Stroke, int nStrokeBitNum);
-	extern void				GrSys_DrawPie               (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_POS StartAngle, int ArcAngle, T_COLOR Color);
-	extern void				GrSys_DrawPieEx             (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_POS StartAngle, int ArcAngle, T_COLOR Color, T_SIZE Thickness, T_STROKE Stroke, int nStrokeBitNum);
-	extern void				GrSys_FillPie               (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_POS StartAngle, int ArcAngle, T_COLOR FillColor);
+	extern void			GrSys_DrawArc               (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_POS StartAngle, int ArcAngle, T_COLOR Color);
+	extern void			GrSys_DrawArcEx             (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_POS StartAngle, int ArcAngle, T_COLOR Color, T_SIZE Thickness, T_STROKE Stroke, int nStrokeBitNum);
+	extern void			GrSys_DrawPie               (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_POS StartAngle, int ArcAngle, T_COLOR Color);
+	extern void			GrSys_DrawPieEx             (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_POS StartAngle, int ArcAngle, T_COLOR Color, T_SIZE Thickness, T_STROKE Stroke, int nStrokeBitNum);
+	extern void			GrSys_FillPie               (T_POS X1, T_POS Y1, T_POS X2, T_POS Y2, T_POS StartAngle, int ArcAngle, T_COLOR FillColor);
 
 	//---------------------------------------------------------------------------------------------
 	//	Filling
-	extern void				GrSys_FloodFill             (T_POS X, T_POS Y, T_COLOR FillColor, T_COLOR BorderColor);
+	extern void			GrSys_FloodFill             (T_POS X, T_POS Y, T_COLOR FillColor, T_COLOR BorderColor);
 
 	//---------------------------------------------------------------------------------------------
 	//	Image
-	extern void				GrSys_PutImage              (T_POS X, T_POS Y, TImage* pImage);
-	extern void				GrSys_AlphaPutImage         (T_POS X, T_POS Y, TImage* pImage, BYTE Level);
-	extern void				GrSys_PutImageEx            (T_POS X, T_POS Y, T_SIZE ImageWidth, T_SIZE ImageHeight, T_SIZE ImageColorBit, BYTE* pImageData);
-	extern void				GrSys_SetDefPalette         (T_COLOR* pPalette);
-	extern void				GrSys_PutPaletteImage       (T_POS X, T_POS Y, T_SIZE ImageWidth, T_SIZE ImageHeight, T_COLOR* pPalette, BYTE* pImageData);
+	extern void			GrSys_PutImage              (T_POS X, T_POS Y, TImage* pImage);
+	extern void			GrSys_AlphaPutImage         (T_POS X, T_POS Y, TImage* pImage, BYTE Level);
+	extern void			GrSys_PutImageEx            (T_POS X, T_POS Y, T_SIZE ImageWidth, T_SIZE ImageHeight, T_SIZE ImageColorBit, BYTE* pImageData);
+	extern void			GrSys_SetDefPalette         (T_COLOR* pPalette);
+	extern void			GrSys_PutPaletteImage       (T_POS X, T_POS Y, T_SIZE ImageWidth, T_SIZE ImageHeight, T_COLOR* pPalette, BYTE* pImageData);
 	extern T_NUM			GrSys_GetImage              (T_POS Left, T_POS Top, T_POS Right, T_POS Bottom, TImage* pImage, T_SIZE ImageBufSize);
 	extern T_NUM			GrSys_GetImage32			(T_POS  Left, T_POS Top, T_POS  Right, T_POS  Bottom, TImage32* pImage, T_SIZE ImageBufSize);
 	extern T_SIZE			GrSys_GetImageWidth         (TImage* pImage);
@@ -326,26 +314,26 @@ typedef enum
 														 T_POS nDestX1, T_POS nDestY1, T_SIZE nDestWidth, T_SIZE nDestHeight,
 														 T_SIZE nImageWidth, T_SIZE nImageHeight, T_SIZE nImageColorBit, BYTE* pImageData, T_COLOR* pPalette);
 
-	//---------------------------------------------------------------------------------------------
-	//	Text
-	extern void				GrSys_DrawFont              (T_POS X, T_POS Y, T_SIZE FontWidth, T_SIZE FontHeight, BYTE* pFontData);
-	extern void				GrSys_DrawFontEx            (T_POS X, T_POS Y, TGlyphInfo* pInfo);
-	extern T_NUM			GrSys_WriteStr              (T_POS X, T_POS Y, T_CSTR pcszStr, E_FONT enFont);
-	extern T_NUM			GrSys_WriteStrFromLeft      (T_POS X, T_POS Y, T_CSTR pcszStr, E_FONT enFont);
-	extern T_NUM			GrSys_WriteStrFromRight     (T_POS X, T_POS Y, T_CSTR pcszStr, E_FONT enFont);
-	extern T_NUM			GrSys_WriteBiDiStr          (T_POS X1, T_POS X2, T_POS Y, T_CSTR pcszStr, E_FONT enFont);
+//---------------------------------------------------------------------------------------------
+//	Text
+extern void			GrSys_DrawFont              (T_POS X, T_POS Y, T_SIZE FontWidth, T_SIZE FontHeight, BYTE* pFontData);
+extern void			GrSys_DrawFontEx            (T_POS X, T_POS Y, TGlyphInfo* pInfo);
+extern T_NUM			GrSys_WriteStr              (T_POS X, T_POS Y, T_CSTR pcszStr, E_FONT enFont);
+extern T_NUM			GrSys_WriteStrFromLeft      (T_POS X, T_POS Y, T_CSTR pcszStr, E_FONT enFont);
+extern T_NUM			GrSys_WriteStrFromRight     (T_POS X, T_POS Y, T_CSTR pcszStr, E_FONT enFont);
+extern T_NUM			GrSys_WriteBiDiStr          (T_POS X1, T_POS X2, T_POS Y, T_CSTR pcszStr, E_FONT enFont);
 
-	extern T_SIZE			GrSys_TestWriteStr          (T_POS X, T_POS Y, T_CSTR pcszStr, E_FONT enFont);
-	extern T_SIZE			GrSys_TestWriteStrFromLeft  (T_POS X, T_POS Y, T_CSTR pcszStr, E_FONT enFont);
-	extern T_SIZE			GrSys_TestWriteStrFromRight (T_POS X, T_POS Y, T_CSTR pcszStr, E_FONT enFont);
-	extern T_NUM			GrSys_TestWriteStrByCharNum (T_POS X1, T_POS X2, T_CSTR pcszStr, E_FONT enFont);
-	extern T_SIZE			GrSys_CalcStrWidth          (T_CSTR pcszStr, E_FONT enFont);
-
-	//20110412 dooyoung.hwang@lge.com(torch)
-	extern BOOL				GrSys_GetDisplayStr			(T_CSTR pcszStr, T_STR pOutBuf, int nBufSize);	
+extern T_SIZE			GrSys_TestWriteStr          (T_POS X, T_POS Y, T_CSTR pcszStr, E_FONT enFont);
+extern T_SIZE			GrSys_TestWriteStrFromLeft  (T_POS X, T_POS Y, T_CSTR pcszStr, E_FONT enFont);
+extern T_SIZE			GrSys_TestWriteStrFromRight (T_POS X, T_POS Y, T_CSTR pcszStr, E_FONT enFont);
+extern T_NUM			GrSys_TestWriteStrByCharNum (T_POS X1, T_POS X2, T_CSTR pcszStr, E_FONT enFont);
+extern T_SIZE			GrSys_CalcStrWidth          (T_CSTR pcszStr, E_FONT enFont);
 
 
-	extern void				GrSys_PutCh                 (T_POS X, T_POS Y, WORD Code, E_FONT enFont);
+extern BOOL				GrSys_GetDisplayStr			(T_CSTR pcszStr, T_STR pOutBuf, int nBufSize);	
+
+
+extern void				GrSys_PutCh                 (T_POS X, T_POS Y, WORD Code, E_FONT enFont);
 
 	extern void				GrSys_SetTextInfo           (T_CSTR pcszStr, T_POS StartPos, T_POS EndPos, T_POS CursorPos);
 	extern void				GrSys_SetCursorDrawProc     (T_pfnCursorDraw pfnCursorDraw);
@@ -407,7 +395,6 @@ typedef enum
 #endif
 	//---------------------------------------------------------------------------------------------
 
-#endif	//	BNS_MAIN_VERSION
 //-------------------------------------------------------------------------------------------------
 #define		GRSYS_WIDTH					GrSys_GetWidth()
 #define		GRSYS_HEIGHT				GrSys_GetHeight()

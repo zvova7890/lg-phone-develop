@@ -14,7 +14,6 @@
 
 //-------------------------------------------------------------------------------------------------
 //	GrText Member Functions
-#ifdef		BNS_MAIN_VERSION
 
 	extern void				GrText_Reset                  (void);
 
@@ -38,7 +37,5 @@
 	extern void				GrText_SetBiDi                (BOOL bBiDi);
 	extern void				GrText_Draw                   (T_CSTR pcszStr);
 
-#endif	//	BNS_MAIN_VERSION
-//-------------------------------------------------------------------------------------------------
 
 #endif	//	_BNSOFT_GRIMAGE_H_

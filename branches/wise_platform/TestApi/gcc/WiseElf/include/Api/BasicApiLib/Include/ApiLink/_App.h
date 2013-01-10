@@ -19,7 +19,6 @@ typedef void			(*T_pfnApp_Resume)    (H_PROCESS hProc, T_PARAM wParam);
 typedef void			(*T_pfnApp_Suspend)   (T_PARAM wParam);
 typedef BOOL			(*T_pfnApp_GetInfo)   (T_CSTR pszFile, TAppInfo* pAppInfo);
 
-//-------------------------------------------------------------------------------------------------
 typedef struct
 {
 	T_pfnApp_Run						pfnRun;

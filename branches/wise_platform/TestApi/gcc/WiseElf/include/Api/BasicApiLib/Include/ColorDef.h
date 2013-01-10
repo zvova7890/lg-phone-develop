@@ -4,12 +4,6 @@
 
 	Copyright(c) 1997-2002 BNSoft Corp.
 
-	그룹 : BASIC API
-	구분 : 그래픽
-	등급 : 공개																						{{BNS_INTERNALCODE()}}
-	버전 : 1.03
-	일자 : 2002.10.31
-	성명 : 박상호
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #ifndef		_BNSOFT_COLORDEF_H_
@@ -18,14 +12,14 @@
 //-------------------------------------------------------------------------------------------------
 //	Color Definition
 #if defined(GDI_32BIT) && (defined(__ICCARM__) || defined(U8100))  // ktkim ??? for EMP Canvas
-#define		WHITE_COLOR					(T_COLOR)0xFFFFFFFF	//	BNSRGB(255,255,255)
-#define		BLACK_COLOR					(T_COLOR)0xFF000000	//	BNSRGB(  0,  0,  0)
+#define		WHITE_COLOR				(T_COLOR)0xFFFFFFFF	//	BNSRGB(255,255,255)
+#define		BLACK_COLOR				(T_COLOR)0xFF000000	//	BNSRGB(  0,  0,  0)
 #else
-#define		WHITE_COLOR					(T_COLOR)-1			//	BNSRGB(255,255,255)
-#define		BLACK_COLOR					(T_COLOR)0			//	BNSRGB(  0,  0,  0)
+#define		WHITE_COLOR				(T_COLOR)-1			//	BNSRGB(255,255,255)
+#define		BLACK_COLOR				(T_COLOR)0			//	BNSRGB(  0,  0,  0)
 #endif
 
-#define		GRAY_COLOR					(T_COLOR)0			//Y 임시 for U900
+#define		GRAY_COLOR				(T_COLOR)0			//Y 임시 for U900
 #define		ALPHABLEND_LEVEL			127					//Y 임시 for U900
 
 

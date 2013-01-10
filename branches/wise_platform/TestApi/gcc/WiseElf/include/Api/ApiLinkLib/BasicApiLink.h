@@ -39,11 +39,20 @@ extern const TApiGrp_GrImage*		ApiGrpT_pGrImage;
 
 extern const TApiGrp_GrText*		ApiGrpT_pGrText;
 
+extern const TApiGrp_AppHeap		ApiGrpT_AppHeap;
+
+extern const TApiGrp_FileSys		ApiGrpT_FileSys;
+extern const TApiGrp_FileSys		ApiGrpH_FileSys;
+extern const TApiGrp_FileSys		ApiGrpL_FileSys;
+
+extern const TApiGrp_Serial		ApiGrpT_Serial;
+extern const TApiGrp_Serial		ApiGrpL_Serial;
 
 extern const TApiGrp_MsgHandler		ApiGrpT_MsgHandler;
 
 extern const TApiGrp_SysUtil*		ApiGrpT_SysUtil;
 extern const TApiGrp_SysDev*		ApiGrpT_SysDev;
+
 
 
 extern const TApiGrp_UniLib		ApiGrpT_UniLib;

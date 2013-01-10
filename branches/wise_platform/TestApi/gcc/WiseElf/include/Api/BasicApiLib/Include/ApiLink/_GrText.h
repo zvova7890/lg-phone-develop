@@ -4,12 +4,6 @@
 
 	Copyright(c) 1997-2002 BNSoft Corp.
 
-	그룹 : BASIC API
-	구분 : APILINK
-	등급 : 공개																						{{BNS_INTERNALCODE()}}
-	버전 : 1.00
-	일자 : 2002.06.27
-	성명 : 박상호
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #ifndef		_BNSOFT__GRTEXT_H_
@@ -42,16 +36,16 @@ typedef void			(*T_pfnGrText_Draw)               (T_CSTR pStr);
 //-------------------------------------------------------------------------------------------------
 typedef struct
 {
-	T_pfnGrText_Reset					pfnReset;
+	T_pfnGrText_Reset				pfnReset;
 	T_pfnGrText_SetRange				pfnSetRange;
-	T_pfnGrText_SetFont					pfnSetFont;
+	T_pfnGrText_SetFont				pfnSetFont;
 	T_pfnGrText_SetColor				pfnSetColor;
 	T_pfnGrText_SetLineGap				pfnSetLineGap;
 	T_pfnGrText_SetCharGap				pfnSetCharGap;
 	T_pfnGrText_SetAlign				pfnSetAlign;
 	T_pfnGrText_SetWordBreak			pfnSetWordBreak;
 	T_pfnGrText_SetMultiLine			pfnSetMultiLine;
-	T_pfnGrText_SetBold					pfnSetBold;
+	T_pfnGrText_SetBold				pfnSetBold;
 	T_pfnGrText_SetUnderLine			pfnSetUnderLine;
 	T_pfnGrText_SetItalic				pfnSetItalic;
 	T_pfnGrText_SetOutLine				pfnSetOutLine;

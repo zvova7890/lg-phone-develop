@@ -27,12 +27,12 @@ typedef struct
         const TApiGrp_GrFont*			pGrFont;
         const TApiGrp_GrImage*			pGrImage;
         const TApiGrp_GrText*			pGrText;
-        const void *                            __0x2C;
+	const TApiGrp_AppHeap*		        pAppHeap;
         const void *                            __0x30;
         const void *                            __0x34;
-        const void *                            __0x38;
+	const TApiGrp_FileSys*		        pFileSys;
         const void *                            __0x3C;
-        const void *                            __0x40;
+	const TApiGrp_Serial*		        pSerial;
         const void *                            __0x44;
         const TApiGrp_MsgHandler*	        pMsgHandler;
         const void *                            __0x4C;

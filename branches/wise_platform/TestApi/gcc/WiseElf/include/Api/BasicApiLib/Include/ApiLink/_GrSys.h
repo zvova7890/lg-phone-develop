@@ -4,12 +4,6 @@
 
 	Copyright(c) 1997-2003 BNSoft Corp.
 
-	그룹 : BASIC API
-	구분 : APILINK
-	등급 : 공개																						{{BNS_INTERNALCODE()}}
-	버전 : 1.05
-	일자 : 2003.05.06
-	성명 : 박상호
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~*/
 
 #ifndef		_BNSOFT__GRSYS_H_
@@ -18,17 +12,15 @@
 #include	"../GrSys.h"
 
 //-------------------------------------------------------------------------------------------------
-typedef BOOL			(*T_pfnGrSys_Create)				(TGrDev* pGrDev);
+typedef BOOL			(*T_pfnGrSys_Create)		    (TGrDev* pGrDev);
 typedef	H_GDI			(*T_pfnGrSys_SetGDIHandle)          (H_GDI hGDI);
 typedef H_GDI			(*T_pfnGrSys_GetGDIHandle)          (T_ID ID);
 typedef T_ID			(*T_pfnGrSys_SelectGDI)             (T_ID ID);
-typedef	T_ID			(*T_pfnGrSys_GetGDIID)				(void);
+typedef	T_ID			(*T_pfnGrSys_GetGDIID)		    (void);
 typedef void			(*T_pfnGrSys_Refresh)               (void);
 typedef void			(*T_pfnGrSys_RefreshRect)           (T_POS Left, T_POS Top, T_POS Right, T_POS Bottom);
-//@#ifdef		POST_REFRESH_METHOD
 typedef void			(*T_pfnGrSys_Refresh_Direct)        (void);
 typedef void			(*T_pfnGrSys_RefreshRect_Direct)    (T_POS Left, T_POS Top, T_POS Right, T_POS Bottom);
-//@#endif
 typedef void			(*T_pfnGrSys_SetGrBuf)              (T_COLOR* pBuf);
 typedef T_COLOR*		(*T_pfnGrSys_GetGrBuf)              (void);
 typedef BOOL			(*T_pfnGrSys_GetInfo)               (T_ID ID, TGrDev* pGrDev);

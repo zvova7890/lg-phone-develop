@@ -34,6 +34,11 @@
 #include	"../BasicApiLib/Include/ApiLink/_GrImage.h"
 #include	"../BasicApiLib/Include/ApiLink/_GrText.h"
 
+#include	"../BasicApiLib/Include/ApiLink/_AppHeap.h"
+
+#include	"../BasicApiLib/Include/ApiLink/_FileSys.h"
+
+#include	"../BasicApiLib/Include/ApiLink/_Serial.h"
 
 #include	"../BasicApiLib/Include/ApiLink/_SysUtil.h"
 #include	"../BasicApiLib/Include/ApiLink/_SysDev.h"

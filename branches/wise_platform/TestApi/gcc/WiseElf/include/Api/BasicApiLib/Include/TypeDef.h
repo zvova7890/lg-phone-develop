@@ -32,6 +32,15 @@ typedef		unsigned short	WORD;	//	unsigned 16 bits
 typedef		unsigned long	QUAD;	//	unsigned 32 bits
 #endif
 
+#ifndef		TYPEDEF_INT64
+#define		TYPEDEF_INT64
+typedef		signed long long	INT64;	// signed 64 bits
+#endif
+
+#ifndef		TYPEDEF_UINT64
+#define		TYPEDEF_UINT64
+typedef		unsigned long long	UINT64;	// unsigned 64 bits
+#endif
 
 #ifndef		TYPEDEF_BOOL
 #define		TYPEDEF_BOOL
