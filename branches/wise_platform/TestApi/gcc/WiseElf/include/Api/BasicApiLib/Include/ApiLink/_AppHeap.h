@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__APPHEAP_H_
 #define		_BNSOFT__APPHEAP_H_
 
-#include	"..\AppHeap.h"
+#include	"../AppHeap.h"
 
 typedef H_MEMBLOCK		(*T_pfnAppHeap_Alloc)              (T_SIZE MemSize);
 typedef void			(*T_pfnAppHeap_Free)               (H_MEMBLOCK hMemBlock);
@@ -33,10 +33,10 @@ typedef struct
 	T_pfnAppHeap_Grow			pfnGrow;
 	T_pfnAppHeap_Realloc			pfnRealloc;
 	T_pfnAppHeap_Calloc			pfnCalloc;
-        
+
         int                                     __0x14;
         int                                     __0x18;
-        
+
 	T_pfnAppHeap_GetSize			pfnGetSize;
 	T_pfnAppHeap_GetTotalSize		pfnGetTotalSize;
 	T_pfnAppHeap_GetUsedSize		pfnGetUsedSize;

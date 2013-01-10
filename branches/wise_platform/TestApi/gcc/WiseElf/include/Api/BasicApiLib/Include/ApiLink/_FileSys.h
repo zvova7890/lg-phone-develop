@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__FILESYS_H_
 #define		_BNSOFT__FILESYS_H_
 
-#include	"..\FileSys.h"
+#include	"../FileSys.h"
 
 typedef E_GC_STATUS		(*T_pfnFileSys_GarbageCollection) (BOOL bAllDrive, BOOL bFullRegion);
 typedef BOOL			(*T_pfnFileSys_IsExist)           (T_CSTR pcszFileName);
@@ -48,7 +48,7 @@ typedef BOOL			(*T_pfnFileSys_Stat)              (T_CSTR pcszFileName, TFStat* F
 typedef BOOL			(*T_pfnFileSys_FStat)             (H_FILE hFile, TFStat* FStat);
 typedef T_ADDR			(*T_pfnFileSys_GetAddr)			  (H_FILE hFile);
 typedef QUAD			(*T_pfnFileSys_FindFreeSpace)	  (T_CSTR pcszPath, QUAD nSize, BOOL bLinear);
-	
+
 typedef TDirAttr*		(*T_pfnFileSys_GetDirAttr)        (T_CSTR pcszDirName);
 typedef T_DIRID			(*T_pfnFileSys_GetDirID)          (T_CSTR pcszDirName);
 typedef T_CSTR			(*T_pfnFileSys_GetDirName)        (T_DIRID DirID);
@@ -78,9 +78,9 @@ typedef T_NUM			(*T_pfnFileSys_GetDirCount)       (T_CSTR pcszDirName);
 typedef T_NUM			(*T_pfnFileSys_GetDriveCount)     (void);
 typedef T_NUM			(*T_pfnFileSys_GetFileCountEx)    (T_DIRID ParentDirID);
 typedef T_NUM			(*T_pfnFileSys_GetDirCountEx)     (T_DIRID ParentDirID);
-typedef	UINT64			(*T_pfnFileSys_GetFreeSpace)      (T_CSTR Mount); 
+typedef	UINT64			(*T_pfnFileSys_GetFreeSpace)      (T_CSTR Mount);
 
-typedef	UINT64			(*T_pfnFileSys_GetTotalSpace)      (T_CSTR Mount); 
+typedef	UINT64			(*T_pfnFileSys_GetTotalSpace)      (T_CSTR Mount);
 typedef T_SIZE			(*T_pfnFileSys_GetDriveSpace)     (T_DRVID DrvID, E_DRVSPACE enDrvSpaceType);
 typedef BOOL			(*T_pfnFileSys_SetFileLevel)      (T_CSTR pcszFileName, E_FILELEVEL enFileLevel);
 typedef E_FILELEVEL		(*T_pfnFileSys_GetFileLevel)      (T_CSTR pcszFileName);
@@ -94,7 +94,7 @@ typedef BOOL			(*T_pfnFileSys_GetCurrentDir)     (T_STR Buffer, T_SIZE Size);
 typedef BOOL			(*T_pfnFileSys_Rename)			  (T_CSTR old_pcszFileName, T_CSTR new_pcszFileName);
 typedef QUAD			(*T_pfnFileSys_GetDirNum)		  (T_CSTR pcszDirName);
 typedef QUAD			(*T_pfnFileSys_GetFileNum)		  (T_CSTR pcszDirName);
-	
+
 typedef struct
 {
 	T_pfnFileSys_GarbageCollection		pfnGarbageCollection; /* NULL */
@@ -216,8 +216,8 @@ typedef struct
 #define	FileSys_SearchDir(p1)			__ApiLink1(FileSys,SearchDir,p1)
 #define	FileSys_Stat(p1,p2)			__ApiLink2(FileSys,Stat,p1,p2)
 #define	FileSys_FStat(p1,p2)			__ApiLink2(FileSys,FStat,p1,p2)
-#define	FileSys_GetAddr(p1)			__ApiLink1(FileSys,GetAddr,p1)	
-#define	FileSys_FindFreeSpace(p1, p2, p3)	__ApiLink3(FileSys,FindFreeSpace,p1,p2,p3)	
+#define	FileSys_GetAddr(p1)			__ApiLink1(FileSys,GetAddr,p1)
+#define	FileSys_FindFreeSpace(p1, p2, p3)	__ApiLink3(FileSys,FindFreeSpace,p1,p2,p3)
 #define	FileSys_GetDirAttr(p1)			__ApiLink1(FileSys,GetDirAttr,p1)
 #define	FileSys_GetDirID(p1)			__ApiLink1(FileSys,GetDirID,p1)
 #define	FileSys_GetDirName(p1)			__ApiLink1(FileSys,GetDirName,p1)
