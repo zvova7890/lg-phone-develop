@@ -30,10 +30,23 @@ extern const TApiGrp_Timer		ApiGrpH_Timer;
 extern const TApiGrp_TimerCore		ApiGrpT_TimerCore;
 extern const TApiGrp_TimerCore		ApiGrpH_TimerCore;
 
+extern const TApiGrp_GrSys		ApiGrpT_GrSys;
+
+extern const TApiGrp_GrFont		ApiGrpT_GrFont;
+extern const TApiGrp_GrFont		ApiGrpH_GrFont;
+
+extern const TApiGrp_GrImage*		ApiGrpT_pGrImage;
+
+extern const TApiGrp_GrText*		ApiGrpT_pGrText;
+
 
 extern const TApiGrp_MsgHandler		ApiGrpT_MsgHandler;
 
-extern const TApiGrp_SysDev		ApiGrpT_SysDev;
-extern const TApiGrp_GrSys		ApiGrpT_GrSys;
+extern const TApiGrp_SysUtil*		ApiGrpT_SysUtil;
+extern const TApiGrp_SysDev*		ApiGrpT_SysDev;
+
+
+extern const TApiGrp_UniLib		ApiGrpT_UniLib;
+
 
 #endif	//	_BNSOFT_APILINK_BASICAPILINK_H_

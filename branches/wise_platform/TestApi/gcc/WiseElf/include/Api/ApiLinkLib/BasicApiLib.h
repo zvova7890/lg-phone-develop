@@ -29,12 +29,16 @@
 
 #include	"../BasicApiLib/Include/ApiLink/_MsgHandler.h"
 
-#include	"../BasicApiLib/Include/ApiLink/_SysDev.h"
-
 #include	"../BasicApiLib/Include/ApiLink/_GrSys.h"
 #include	"../BasicApiLib/Include/ApiLink/_GrFont.h"
 #include	"../BasicApiLib/Include/ApiLink/_GrImage.h"
 #include	"../BasicApiLib/Include/ApiLink/_GrText.h"
+
+
+#include	"../BasicApiLib/Include/ApiLink/_SysUtil.h"
+#include	"../BasicApiLib/Include/ApiLink/_SysDev.h"
+
+#include	"../BasicApiLib/Include/ApiLink/_UnicodeLib.h"
 
 #undef		INCLUDE_FILE
 #undef		_INCLUDE_FILE

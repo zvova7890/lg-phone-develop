@@ -20,7 +20,7 @@ typedef struct
         const void *                            __0x04;
         const void *                            __0x08;
         const TApiGrp_EvHandler*		pEvHandler;
-        const TApiGrp_ProcMngr*		pProcMngr;
+        const TApiGrp_ProcMngr*		        pProcMngr;
         const TApiGrp_Timer*			pTimer;
         const TApiGrp_TimerCore*		pTimerCore;
         const TApiGrp_GrSys*			pGrSys;
@@ -36,13 +36,13 @@ typedef struct
         const void *                            __0x44;
         const TApiGrp_MsgHandler*	        pMsgHandler;
         const void *                            __0x4C;
-        const void *                            __0x50;
+	const TApiGrp_SysUtil*		        pSysUtil;
         const TApiGrp_SysDev*		        pSysDev;
         const void *                            __0x58;
         const void *                            __0x5C;
         const void *                            __0x60;
         const void *                            __0x64;
-        const void *                            __0x68;
+	const TApiGrp_UniLib*		        pUniLib;
         const void *                            __0x6C;
 
         //  BNS_FEATURE_PEANUT
