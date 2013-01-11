@@ -92,11 +92,11 @@ int __elf_load(const char *elfname, int argc, char *argv[], unsigned int *start,
   ExecuteIMB();
 
   /* проверим что нам подсунули в argv */
-  if(!argv) {
+  if(!argv || argc < 1) {
     
     /* пустой, значит сделаем стандартный */
     char *_argv[2] = {(char *)elfname, 0};
-    r = entry(argc, _argv);
+    r = entry(1, _argv);
     
   } else {
     
