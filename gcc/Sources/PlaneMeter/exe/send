@@ -1,0 +1,6 @@
+#!/bin/sh
+
+
+atfs -t /dev/ttyACM0 -lexe/PlaneMeter.elf -p/usr/Zbin/apps/fish/fish.elf
+
+
