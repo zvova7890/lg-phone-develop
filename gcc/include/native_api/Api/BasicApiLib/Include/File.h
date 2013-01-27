@@ -147,7 +147,7 @@ typedef struct
 	WORD				SysDirNum;				
 
 	TSectorInfo			SectorInfo;
-	TClusterInfo		ClusterInfo;
+	TClusterInfo		        ClusterInfo;
 
 	void*				pHeadFEObj;
 	void*				pHeadDAObj;

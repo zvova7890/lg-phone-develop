@@ -80,19 +80,19 @@
 #ifndef _PARAMS
 #define _PARAMS(paramlist)		paramlist
 #endif
-#else	
+#else
 #define	_PTR		char *
 #define	_AND		;
 #define	_NOARGS
-#define	_CONST
-#define	_VOLATILE
-#define	_SIGNED
+#define	_CONST      const
+#define	_VOLATILE   volatile
+#define	_SIGNED     signed
 #define	_DOTS
 #define _VOID void
-#define	_EXFUN(name, proto)		name()
-#define	_EXFUN_NOTHROW(name, proto)	name()
+#define	_EXFUN(name, proto)		name proto
+#define	_EXFUN_NOTHROW(name, proto)	name proto
 #define	_DEFUN(name, arglist, args)	name arglist args;
-#define	_DEFUN_VOID(name)		name()
+#define	_DEFUN_VOID(name)		name proto
 #define _CAST_VOID
 #define _LONG_DOUBLE double
 #define _LONG_LONG_TYPE long
@@ -125,7 +125,7 @@
 /* We're using GCC, but without the new C99-compatible behaviour.  */
 #define _ELIDABLE_INLINE extern __inline__ _ATTRIBUTE ((__always_inline__))
 #else
-/* We're using GCC in C99 mode, or an unknown compiler which 
+/* We're using GCC in C99 mode, or an unknown compiler which
   we just have to hope obeys the C99 semantics of inline.  */
 #define _ELIDABLE_INLINE __inline__
 #endif

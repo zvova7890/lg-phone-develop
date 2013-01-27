@@ -109,8 +109,8 @@ typedef enum
 	BNS_AF_K,
 
 	//	QWERTY key
-	WISE_K_NONE						= 0x00000000,
-	WISE_K_NUM0						= 0x00000001,
+	WISE_K_NONE					= 0x00000000,
+	WISE_K_NUM0					= 0x00000001,
 	WISE_K_NUM1 					= 0x00000002,
 	WISE_K_NUM2 					= 0x00000003,
 	WISE_K_NUM3 					= 0x00000004,
@@ -147,32 +147,32 @@ typedef enum
 	WISE_K_SIDE11					= 0x0000002A,
 	WISE_K_SIDE12					= 0x0000002B,
 	//-------------------------------------------------
-	WISE_K_HOT1						= 0x00000030,
-	WISE_K_HOT2						= 0x00000031,
-	WISE_K_HOT3						= 0x00000032,
-	WISE_K_HOT4						= 0x00000033,
-	WISE_K_HOT5						= 0x00000034,
-	WISE_K_HOT6						= 0x00000035,
-	WISE_K_HOT7						= 0x00000036,
-	WISE_K_HOT8						= 0x00000037,
-	WISE_K_HOT9						= 0x00000038,
+	WISE_K_HOT1					= 0x00000030,
+	WISE_K_HOT2					= 0x00000031,
+	WISE_K_HOT3					= 0x00000032,
+	WISE_K_HOT4					= 0x00000033,
+	WISE_K_HOT5					= 0x00000034,
+	WISE_K_HOT6					= 0x00000035,
+	WISE_K_HOT7					= 0x00000036,
+	WISE_K_HOT8					= 0x00000037,
+	WISE_K_HOT9					= 0x00000038,
 	WISE_K_HOT10					= 0x00000039,
 	WISE_K_HOT11					= 0x0000003A,
 	WISE_K_HOT12					= 0x0000003B,
 
 	//-------------------------------------------------
-	WISE_K_PLAY						= 0x00000040,		
-	WISE_K_STOP						= 0x00000041,
+	WISE_K_PLAY					= 0x00000040,		
+	WISE_K_STOP					= 0x00000041,
 	WISE_K_PAUSE					= 0x00000042,
-	WISE_K_REC						= 0x00000043,
-	WISE_K_FW						= 0x00000044,	//	fast forward
-	WISE_K_FF						= 0x00000045,		
-	WISE_K_RW						= 0x00000046,	//	reward
-	WISE_K_FR						= 0x00000047,	//	fast reward			
+	WISE_K_REC					= 0x00000043,
+	WISE_K_FW					= 0x00000044,	//	fast forward
+	WISE_K_FF					= 0x00000045,		
+	WISE_K_RW					= 0x00000046,	//	reward
+	WISE_K_FR					= 0x00000047,	//	fast reward			
 
 	//-------------------------------------------------
-	WISE_K_ESC						= 0x00001000,
-	WISE_K_0						= 0x00001001,
+	WISE_K_ESC					= 0x00001000,
+	WISE_K_0					= 0x00001001,
 	WISE_K_1                        = 0x00001002,
 	WISE_K_2                        = 0x00001003,
 	WISE_K_3                        = 0x00001004,

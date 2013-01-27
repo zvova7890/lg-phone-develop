@@ -181,35 +181,30 @@ typedef enum
 //	GrSys Internal Member Functions
 
 	//---------------------------------------------------------------------------------------------
-	//	Definition of GDI Handle
+//	Definition of GDI Handle
 	typedef		T_HANDLE					H_GDI;
 
 
-	extern BOOL				GrSys_Create                (TGrDev* pGrDev);
-	extern H_GDI			GrSys_SetGDIHandle          (H_GDI hGDI);
-	extern H_GDI			GrSys_GetGDIHandle          (T_ID ID);
-	extern void				GrSys_Reset                 (void);
-	extern BOOL				GrSys_TestWordBreak         (T_POS X1, T_POS X2, T_CSTR pcszStr, E_FONT enFont);
-	extern void				GrSys_EnableRefresh         (void);
-	extern void				GrSys_DisableRefresh        (void);
-	extern BOOL				GrSys_GetRefreshRequest		(void) ;
-	extern void				GrSys_SetRefreshRequest		(BOOL bRequest) ;
-	extern void				GrSys_PutAlphaBlendPixel    (T_POS X, T_POS  Y, T_COLOR Color, BYTE Level);
-	extern void				GrSys_DrawVLayerImage		(T_POS X, T_POS Y, T_SIZE Width, T_SIZE Height, TImage* pHImage, TImage* pBImage, TImage* pTImage);
-	extern void				GrSys_DrawHLayerImage		(T_POS X, T_POS Y, T_SIZE Width, T_SIZE Height, TImage* pLImage, TImage* pBImage, TImage* pRImage);
-	extern void				GrSys_DrawExtendedImage		(T_POS X, T_POS Y, T_SIZE Width, T_SIZE Height, TImage* pImage);
-	extern void				GrSys_PutChEx				(T_POS X, T_POS Y, WORD Code, E_FONT enFont);
-	extern void				GrSys_DrawVectorFont		(T_POS X, T_POS Y, T_SIZE FontWidth, T_SIZE FontHeight, BYTE* pFontData);
-	//---------------------------------------------------------------------------------------------
-	// Layer Image¿« Alphablending √ﬂ∞° [Temp code, 2007.07.24/ by heyviolet]
-	extern void				GrSys_DrawAlphaVLayerImage	(T_POS X, T_POS Y, T_SIZE Width, T_SIZE Height, TImage* pHImage, TImage* pBImage, TImage* pTImage, BYTE Level);
-	extern void				GrSys_DrawAlphaHLayerImage	(T_POS X, T_POS Y, T_SIZE Width, T_SIZE Height, TImage* pLImage, TImage* pBImage, TImage* pRImage, BYTE Level);
-	extern void				GrSys_DrawAlphaExtendedImage(T_POS X, T_POS Y, T_SIZE Width, T_SIZE Height, TImage* pImage, BYTE Level);
-	//---------------------------------------------------------------------------------------------
-	extern BOOL				GrSys_SetTipInfo			(TRect* Rect, T_CSTR pcszStr, T_COLOR BkColor, E_FONT enFont, T_COLOR FontColor, T_SIZE Margin, T_COLOR BorderColor);
-															//	{{BNS_INTERNALCODE(-)}}
-//-------------------------------------------------------------------------------------------------
-//	GrSys Member Functions
+extern BOOL	GrSys_Create                (TGrDev* pGrDev);
+extern H_GDI	GrSys_SetGDIHandle          (H_GDI hGDI);
+extern H_GDI	GrSys_GetGDIHandle          (T_ID ID);
+extern void	GrSys_Reset                 (void);
+extern BOOL	GrSys_TestWordBreak         (T_POS X1, T_POS X2, T_CSTR pcszStr, E_FONT enFont);
+extern void	GrSys_EnableRefresh         (void);
+extern void	GrSys_DisableRefresh        (void);
+extern BOOL	GrSys_GetRefreshRequest	    (void) ;
+extern void	GrSys_SetRefreshRequest	    (BOOL bRequest) ;
+extern void	GrSys_PutAlphaBlendPixel    (T_POS X, T_POS  Y, T_COLOR Color, BYTE Level);
+extern void	GrSys_DrawVLayerImage	    (T_POS X, T_POS Y, T_SIZE Width, T_SIZE Height, TImage* pHImage, TImage* pBImage, TImage* pTImage);
+extern void	GrSys_DrawHLayerImage	    (T_POS X, T_POS Y, T_SIZE Width, T_SIZE Height, TImage* pLImage, TImage* pBImage, TImage* pRImage);
+extern void	GrSys_DrawExtendedImage	    (T_POS X, T_POS Y, T_SIZE Width, T_SIZE Height, TImage* pImage);
+extern void	GrSys_PutChEx		    (T_POS X, T_POS Y, WORD Code, E_FONT enFont);
+extern void	GrSys_DrawVectorFont	    (T_POS X, T_POS Y, T_SIZE FontWidth, T_SIZE FontHeight, BYTE* pFontData);
+extern void	GrSys_DrawAlphaVLayerImage  (T_POS X, T_POS Y, T_SIZE Width, T_SIZE Height, TImage* pHImage, TImage* pBImage, TImage* pTImage, BYTE Level);
+extern void	GrSys_DrawAlphaHLayerImage  (T_POS X, T_POS Y, T_SIZE Width, T_SIZE Height, TImage* pLImage, TImage* pBImage, TImage* pRImage, BYTE Level);
+extern void	GrSys_DrawAlphaExtendedImage(T_POS X, T_POS Y, T_SIZE Width, T_SIZE Height, TImage* pImage, BYTE Level);
+extern BOOL	GrSys_SetTipInfo	     (TRect* Rect, T_CSTR pcszStr, T_COLOR BkColor, E_FONT enFont, T_COLOR FontColor, T_SIZE Margin, T_COLOR BorderColor);
+
 
 	//---------------------------------------------------------------------------------------------
 	//	Graphic Device Interface

@@ -85,7 +85,7 @@ typedef T_SIZE			(*T_pfnFileSys_GetDriveSpace)     (T_DRVID DrvID, E_DRVSPACE en
 typedef BOOL			(*T_pfnFileSys_SetFileLevel)      (T_CSTR pcszFileName, E_FILELEVEL enFileLevel);
 typedef E_FILELEVEL		(*T_pfnFileSys_GetFileLevel)      (T_CSTR pcszFileName);
 typedef BOOL			(*T_pfnFileSys_SetDirLevel)       (T_CSTR pcszDirName, int nDirLevel);
-typedef int				(*T_pfnFileSys_GetDirLevel)       (T_CSTR pcszDirName);
+typedef int			(*T_pfnFileSys_GetDirLevel)       (T_CSTR pcszDirName);
 typedef void			(*T_pfnFileSys_SaveFlashMem)      (T_CSTR pcszFileName);
 typedef QUAD			(*T_pfnFileSys_GetCreateTime)     (T_CSTR FilePath, BYTE* pHour, BYTE* pMinute, BYTE* pSecond);
 typedef QUAD			(*T_pfnFileSys_GetCreateDate)     (T_CSTR FilePath, int* pYear, int* pMonth, int* pDay);
