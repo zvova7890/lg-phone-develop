@@ -1,6 +1,0 @@
-#!/bin/sh
-
-
-atfs -t /dev/ttyACM0 -lexe/fish.elf -p/usr/Zbin/apps/fish/
-
-
