@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__SYSUTIL_H_
 #define		_BNSOFT__SYSUTIL_H_
 
-#include	"..\SysUtil.h"
+#include	"../SysUtil.h"
 
 //-------------------------------------------------------------------------------------------------
 typedef void			(*T_pfnSysUtil_SetSeed)           (int nSeed);
@@ -32,15 +32,15 @@ typedef int			(*T_pfnSysUtil_DebugTraceAppLow)		(M_CHAR* format, ...);
 typedef int			(*T_pfnSysUtil_DebugTraceAppEx)		(unsigned long AppCode, int nLevel, int nLineNo, const char* pszFileName, M_CHAR* foramt, ...);
 typedef void*			(*T_pfnSysUtil_OemMalloc)          (T_NUM nSize);
 typedef void			(*T_pfnSysUtil_OemFree)            (void* pPtr);
-typedef void*			(*T_pfnSysUtil_OemReAlloc)        (void * pBuff, T_NUM nSize);	
+typedef void*			(*T_pfnSysUtil_OemReAlloc)        (void * pBuff, T_NUM nSize);
 
 typedef QUAD			(*T_pfnSysUtil_OemGetFreeSize)	 (QUAD * pdwTotal, QUAD * pdwMax);
 
 typedef void*			(*T_pfnSysUtil_GetBrwHeap)      (void);
-typedef QUAD			(*T_pfnSysUtil_GetBrwHeapSize)      (void); 
-typedef	E_CLIPBOARD		(*T_pfnSysUtil_GetClipboardFormat)	(void);				
-typedef	void*			(*T_pfnSysUtil_GetClipboardData)	(E_CLIPBOARD Format);			
-typedef	BOOL			(*T_pfnSysUtil_SetClipboardData)	(E_CLIPBOARD Format, void* pData);	
+typedef QUAD			(*T_pfnSysUtil_GetBrwHeapSize)      (void);
+typedef	E_CLIPBOARD		(*T_pfnSysUtil_GetClipboardFormat)	(void);
+typedef	void*			(*T_pfnSysUtil_GetClipboardData)	(E_CLIPBOARD Format);
+typedef	BOOL			(*T_pfnSysUtil_SetClipboardData)	(E_CLIPBOARD Format, void* pData);
 
 
 
@@ -60,11 +60,11 @@ typedef struct
 	T_pfnSysUtil_GetLastError		pfnGetLastError;
 	T_pfnSysUtil_SetAppDebugEnable		pfnSetAppDebugEnable;
 	T_pfnSysUtil_GetAppDebugEnable		pfnGetAppDebugEnable;
-        
+
         int                                     __0x34;
-        
+
 	T_pfnSysUtil_Fatal			pfnFatal;
-        
+
 	T_pfnSysUtil_DebugTraceAppHigh		pfnDebugTraceAppHigh;
 	T_pfnSysUtil_DebugTraceAppMid		pfnDebugTraceAppMid;
 	T_pfnSysUtil_DebugTraceAppLow		pfnDebugTraceAppLow;
@@ -72,8 +72,8 @@ typedef struct
 	T_pfnSysUtil_OemMalloc			pfnOemMalloc;
 	T_pfnSysUtil_OemFree			pfnOemFree;
 	T_pfnSysUtil_OemReAlloc			pfnOemReAlloc;
-	T_pfnSysUtil_OemGetFreeSize		pfnOemGetFreeSize;	
-        
+	T_pfnSysUtil_OemGetFreeSize		pfnOemGetFreeSize;
+
         int                                     __0x5C;
         int                                     __0x60;
         int                                     __0x64;
@@ -84,11 +84,11 @@ typedef struct
         int                                     __0x78;
 
 	T_pfnSysUtil_GetBrwHeap			pfnGetBrwHeap;
-	T_pfnSysUtil_GetBrwHeapSize		pfnGetBrwHeapSize; 
-	T_pfnSysUtil_GetClipboardFormat		pfnGetClipboardFormat;		
-	T_pfnSysUtil_GetClipboardData		pfnGetClipboardData;	
-	T_pfnSysUtil_SetClipboardData		pfnSetClipboardData;	
-	
+	T_pfnSysUtil_GetBrwHeapSize		pfnGetBrwHeapSize;
+	T_pfnSysUtil_GetClipboardFormat		pfnGetClipboardFormat;
+	T_pfnSysUtil_GetClipboardData		pfnGetClipboardData;
+	T_pfnSysUtil_SetClipboardData		pfnSetClipboardData;
+
 } TApiGrp_SysUtil;
 
 
@@ -120,12 +120,12 @@ typedef struct
 
 #define		SysUtil_OemGetFreeSize(p1, p2)		__ApiLink2(SysUtil,OemGetFreeSize,p1,p2)
 
-#define		SysUtil_GetBrwHeap()			__ApiLink0(SysUtil,GetBrwHeap)		
-#define		SysUtil_GetBrwHeapSize()		__ApiLink0(SysUtil,GetBrwHeapSize)	
-#define		SysUtil_GetClipboardFormat()		__ApiLink0(SysUtil,GetClipboardFormat)	
-#define		SysUtil_GetClipboardData(p1)		__ApiLink1(SysUtil,GetClipboardData,p1)		
-#define		SysUtil_SetClipboardData(p1,p2)		__ApiLink2(SysUtil,SetClipboardData,p1,p2)	
-	
+#define		SysUtil_GetBrwHeap()			__ApiLink0(SysUtil,GetBrwHeap)
+#define		SysUtil_GetBrwHeapSize()		__ApiLink0(SysUtil,GetBrwHeapSize)
+#define		SysUtil_GetClipboardFormat()		__ApiLink0(SysUtil,GetClipboardFormat)
+#define		SysUtil_GetClipboardData(p1)		__ApiLink1(SysUtil,GetClipboardData,p1)
+#define		SysUtil_SetClipboardData(p1,p2)		__ApiLink2(SysUtil,SetClipboardData,p1,p2)
+
 
 
 #endif	//	_BNSOFT__SYSUTIL_H_

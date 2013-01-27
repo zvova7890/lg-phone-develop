@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__PEANUT_ICONCTRL_H_
 #define		_BNSOFT__PEANUT_ICONCTRL_H_
 
-#include	"..\IconCtrl.h"
+#include	"../IconCtrl.h"
 
 typedef H_CTRL			(*T_pfnIconCtrl_Create)          (void* pOwner, T_POS X, T_POS Y, TImage* pImage);
 typedef BOOL			(*T_pfnIconCtrl_Destroy)         (H_CTRL hIC);

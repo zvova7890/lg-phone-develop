@@ -10,7 +10,7 @@
 #define		_BNSOFT_PEANUT_IMGCTRL_H_
 
 #include	"BaseCtrl.h"
-#include	"MacroFunc\ImgCtrlM.h"
+#include	"MacroFunc/ImgCtrlM.h"
 
 #define		IMGSTY_CIRCULAR			0x80000000
 #define		IMGSTY_DEF			(IMGSTY_CIRCULAR)

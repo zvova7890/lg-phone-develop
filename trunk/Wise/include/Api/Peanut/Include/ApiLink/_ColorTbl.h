@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__PEANUT_COLORTBL_H_
 #define		_BNSOFT__PEANUT_COLORTBL_H_
 
-#include	"..\ColorTbl.h"
+#include	"../ColorTbl.h"
 
 typedef TColorTbl*	(*T_pfnColorTbl_Create)   (int TblType);
 typedef BOOL		(*T_pfnColorTbl_Destroy)  (TColorTbl* pColorTbl);

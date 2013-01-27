@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__PEANUT_BASECTRL_H_
 #define		_BNSOFT__PEANUT_BASECTRL_H_
 
-#include	"..\BaseCtrl.h"
+#include	"../BaseCtrl.h"
 
 typedef H_CTRL			(*T_pfnBaseCtrl_Create)           (void* pOwner, E_CTRLTYPE enType, QUAD Style, T_POS X, T_POS Y, T_SIZE W, T_SIZE H);
 typedef BOOL			(*T_pfnBaseCtrl_Destroy)          (H_CTRL hBC);

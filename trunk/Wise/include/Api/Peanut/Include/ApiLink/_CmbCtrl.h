@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__PEANUT_CMBCTRL_H_
 #define		_BNSOFT__PEANUT_CMBCTRL_H_
 
-#include	"..\CmbCtrl.h"
+#include	"../CmbCtrl.h"
 
 typedef H_CTRL			(*T_pfnCmbCtrl_Create)           (void* pOwner, T_POS X, T_POS Y, T_SIZE W, T_SIZE H);
 typedef BOOL			(*T_pfnCmbCtrl_Destroy)          (H_CTRL hCC);

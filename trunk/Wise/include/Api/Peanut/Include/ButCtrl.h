@@ -10,23 +10,23 @@
 #define		_BNSOFT_PEANUT_BUTCTRL_H_
 
 #include	"BaseCtrl.h"
-#include	"MacroFunc\ButCtrlM.h"
+#include	"MacroFunc/ButCtrlM.h"
 
 
-#define		BUTSTY_ALPHAIMG		0x80000000				
-#define		BUTSTY_ONOFFDRAG	0x40000000				
-#define		BUTSTY_ONOFFDRAGPRESS	0x20000000				
-#define		BUTSTY_DRAGPRESS	0x10000000				
+#define		BUTSTY_ALPHAIMG		0x80000000
+#define		BUTSTY_ONOFFDRAG	0x40000000
+#define		BUTSTY_ONOFFDRAGPRESS	0x20000000
+#define		BUTSTY_DRAGPRESS	0x10000000
 #define		BUTSTY_DEF		(0)
 #define		BUTSTY_NOVFONTCOLOR	0x02000000
 
 
-#define		BUTNOTI_ERASEBKGND			NOTIMASK_ERASEBKGND	
-#define		BUTNOTI_POSTDRAW			NOTIMASK_POSTDRAW	
-#define		BUTNOTI_PREKEY				NOTIMASK_PREKEY		
-#define		BUTNOTI_POSTKEY				NOTIMASK_POSTKEY	
-#define		BUTNOTI_CLICKED				0x08000000			
-#define		BUTNOTI_ONOFF				0x04000000		
+#define		BUTNOTI_ERASEBKGND			NOTIMASK_ERASEBKGND
+#define		BUTNOTI_POSTDRAW			NOTIMASK_POSTDRAW
+#define		BUTNOTI_PREKEY				NOTIMASK_PREKEY
+#define		BUTNOTI_POSTKEY				NOTIMASK_POSTKEY
+#define		BUTNOTI_CLICKED				0x08000000
+#define		BUTNOTI_ONOFF				0x04000000
 
 
 typedef enum
@@ -54,7 +54,7 @@ typedef enum
 {
 	BUTCTRL_EVENT_NONE					= 0,
 	BUTCTRL_ONOFFBAR_SLIDING,
-	BUTCTRL_ONOFFBAR_DOWN,	
+	BUTCTRL_ONOFFBAR_DOWN,
 } E_ONOFFBAR_EVENT;
 
 
@@ -63,17 +63,17 @@ typedef struct
 {
 	TBaseCtrl		Base;
 	T_CSTR			pcszText;
-	TImage*			pImage;			
+	TImage*			pImage;
 	TImage*			pPressedImage;
 	TImage*			pOnOffBgImage;
-	TImage*			pOnDragImage;	
-	TImage*			pOffDragImage;	
-	TImage*			pOnDragPressedImage;	
+	TImage*			pOnDragImage;
+	TImage*			pOffDragImage;
+	TImage*			pOnDragPressedImage;
 	TImage*			pOffDragPressedImage;
-	T_POS			OnOffBarPos;		
+	T_POS			OnOffBarPos;
 	E_ONOFFBAR_EVENT	OnOffBarEvent;
 	KEY			SelKey;
-	T_CSTR			pcszTip;		
+	T_CSTR			pcszTip;
 	E_BUTDRAGSTATE		DragState;
 	T_POS			DragBarX;
 } TButCtrl;

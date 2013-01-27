@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__PEANUT_TEXTCTRL_H_
 #define		_BNSOFT__PEANUT_TEXTCTRL_H_
 
-#include	"..\TextCtrl.h"
+#include	"../TextCtrl.h"
 
 //-------------------------------------------------------------------------------------------------
 typedef H_CTRL			(*T_pfnTextCtrl_Create)   (void* pOwner, T_POS X, T_POS Y, T_SIZE W, T_SIZE H, T_CSTR pcszText);

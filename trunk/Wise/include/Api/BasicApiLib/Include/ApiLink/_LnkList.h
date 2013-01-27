@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__LNKLIST_H_
 #define		_BNSOFT__LNKLIST_H_
 
-#include	"..\LnkList.h"
+#include	"../LnkList.h"
 
 typedef BOOL				(*T_pfnLnkList_Create)       (TLnkList* pLnkList, T_SIZE ObjSize, BOOL bDblLnkList);
 typedef BOOL				(*T_pfnLnkList_Destroy)      (TLnkList* pLnkList);
@@ -51,22 +51,22 @@ typedef struct
 } TApiGrp_LnkList;
 
 
-#define		LnkList_Create(p1,p2,p3)            __ApiLink3(LnkList,LnkList_Create,p1,p2,p3)      
-#define		LnkList_Destroy(p1)                 __ApiLink1(LnkList,LnkList_Destroy,p1)           
-#define		LnkList_SetObjPool(p1,p2,p3)        __ApiLink3(LnkList,LnkList_SetObjPool,p1,p2,p3)  
-#define		LnkList_InitObjPool(p1)             __ApiLink1(LnkList,LnkList_InitObjPool,p1)       
-#define		LnkList_AllocObj(p1)                __ApiLink1(LnkList,LnkList_AllocObj,p1)          
-#define		LnkList_FreeObj(p1)                 __ApiLink1(LnkList,LnkList_FreeObj,p1)           
-#define		LnkList_AddHead(p1,p2)              __ApiLink2(LnkList,LnkList_AddHead,p1,p2)        
-#define		LnkList_AddTail(p1,p2)              __ApiLink2(LnkList,LnkList_AddTail,p1,p2)        
+#define		LnkList_Create(p1,p2,p3)            __ApiLink3(LnkList,LnkList_Create,p1,p2,p3)
+#define		LnkList_Destroy(p1)                 __ApiLink1(LnkList,LnkList_Destroy,p1)
+#define		LnkList_SetObjPool(p1,p2,p3)        __ApiLink3(LnkList,LnkList_SetObjPool,p1,p2,p3)
+#define		LnkList_InitObjPool(p1)             __ApiLink1(LnkList,LnkList_InitObjPool,p1)
+#define		LnkList_AllocObj(p1)                __ApiLink1(LnkList,LnkList_AllocObj,p1)
+#define		LnkList_FreeObj(p1)                 __ApiLink1(LnkList,LnkList_FreeObj,p1)
+#define		LnkList_AddHead(p1,p2)              __ApiLink2(LnkList,LnkList_AddHead,p1,p2)
+#define		LnkList_AddTail(p1,p2)              __ApiLink2(LnkList,LnkList_AddTail,p1,p2)
 #define		LnkList_InsertBefore(p1,p2,p3)      __ApiLink3(LnkList,LnkList_InsertBefore,p1,p2,p3)
-#define		LnkList_InsertAfter(p1,p2,p3)       __ApiLink3(LnkList,LnkList_InsertAfter,p1,p2,p3) 
-#define		LnkList_RemoveHead(p1)              __ApiLink1(LnkList,LnkList_RemoveHead,p1)        
-#define		LnkList_RemoveTail(p1)              __ApiLink1(LnkList,LnkList_RemoveTail,p1)        
-#define		LnkList_Remove(p1,p2)               __ApiLink2(LnkList,LnkList_Remove,p1,p2)         
-#define		LnkList_RemoveAll(p1)               __ApiLink1(LnkList,LnkList_RemoveAll,p1)         
-#define		LnkList_Find(p1,p2)                 __ApiLink2(LnkList,LnkList_Find,p1,p2)           
-#define		LnkList_GetNum(p1)                  __ApiLink1(LnkList,LnkList_GetNum,p1)           
-#define		LnkList_GetObj(p1,p2)               __ApiLink2(LnkList,LnkList_GetObj,p1,p2)           
-	
+#define		LnkList_InsertAfter(p1,p2,p3)       __ApiLink3(LnkList,LnkList_InsertAfter,p1,p2,p3)
+#define		LnkList_RemoveHead(p1)              __ApiLink1(LnkList,LnkList_RemoveHead,p1)
+#define		LnkList_RemoveTail(p1)              __ApiLink1(LnkList,LnkList_RemoveTail,p1)
+#define		LnkList_Remove(p1,p2)               __ApiLink2(LnkList,LnkList_Remove,p1,p2)
+#define		LnkList_RemoveAll(p1)               __ApiLink1(LnkList,LnkList_RemoveAll,p1)
+#define		LnkList_Find(p1,p2)                 __ApiLink2(LnkList,LnkList_Find,p1,p2)
+#define		LnkList_GetNum(p1)                  __ApiLink1(LnkList,LnkList_GetNum,p1)
+#define		LnkList_GetObj(p1,p2)               __ApiLink2(LnkList,LnkList_GetObj,p1,p2)
+
 #endif	//	_BNSOFT__LNKLIST_H_

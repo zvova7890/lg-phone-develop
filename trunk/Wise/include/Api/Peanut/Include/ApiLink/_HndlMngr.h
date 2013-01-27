@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__PEANUT_HNDLMNGR_H_
 #define		_BNSOFT__PEANUT_HNDLMNGR_H_
 
-#include	"..\HndlMngr.h"
+#include	"../HndlMngr.h"
 
 typedef T_HANDLE		(*T_pfnHndlMngr_CreateHandle)   (T_PTR pObj);
 typedef BOOL			(*T_pfnHndlMngr_DestroyHandle)  (T_HANDLE Handle);

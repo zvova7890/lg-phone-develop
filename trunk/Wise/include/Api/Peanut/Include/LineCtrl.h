@@ -10,7 +10,7 @@
 #define		_BNSOFT_PEANUT_LINECTRL_H_
 
 #include	"BaseCtrl.h"
-#include	"MacroFunc\LineCtrlM.h"
+#include	"MacroFunc/LineCtrlM.h"
 
 #define		LINESTY_DEF			(0)
 

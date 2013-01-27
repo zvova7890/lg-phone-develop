@@ -10,7 +10,7 @@
 #define		_BNSOFT_PEANUT_TABCTRL_H_
 
 #include	"FrmCtrl.h"
-#include	"MacroFunc\TabCtrlM.h"
+#include	"MacroFunc/TabCtrlM.h"
 
 #define		TABSTY_BORDER		FRMSTY_BORDER		//	0x80000000
 #define		TABSTY_TITLE		FRMSTY_TITLE		//	0x40000000

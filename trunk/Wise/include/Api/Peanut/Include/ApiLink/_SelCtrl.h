@@ -15,7 +15,7 @@
 #ifndef		_BNSOFT__PEANUT_SELCTRL_H_
 #define		_BNSOFT__PEANUT_SELCTRL_H_
 
-#include	"..\SelCtrl.h"
+#include	"../SelCtrl.h"
 
 //-------------------------------------------------------------------------------------------------
 typedef H_CTRL			(*T_pfnSelCtrl_Create)         (void* pOwner, T_POS X, T_POS Y, T_SIZE W, T_SIZE H);

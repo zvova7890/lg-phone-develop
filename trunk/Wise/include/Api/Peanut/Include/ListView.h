@@ -10,9 +10,9 @@
 #define		_BNSOFT_PEANUT_LISTVIEW_H_
 
 #include	"FrmCtrl.h"
-#include	"..\..\BasicApiLib\Include\LnkList.h"
+#include	"../../BasicApiLib/Include/LnkList.h"
 //#include	"IconList.h"
-#include	"MacroFunc\ListViewM.h"
+#include	"MacroFunc/ListViewM.h"
 
 #define		LISTVIEWSTY_BORDER		FRMSTY_BORDER			//	0x80000000
 #define		LISTVIEWSTY_TITLE		FRMSTY_TITLE			//	0x40000000
@@ -24,11 +24,11 @@
 #define		LISTVIEWSTY_TITLETICKER		FRMSTY_TITLETICKER		//	0x02000000
 #define		LISTVIEWSTY_FLICKSCROLL 	FRMSTY_FLICKSCROLL		//	0x01000000
 #define		LISTVIEWSTY_CHILDCTRL_NOFLICK	FRMSTY_CHILDCTRL_NOFLICK
-#define		LISTVIEWSTY_CIRCULAR		0x00008000			
-#define		LISTVIEWSTY_MULTISELECT		0x00004000		
-#define		LISTVIEWSTY_ITEMTICKER		0x00002000		
-#define		LISTVIEWSTY_NUMBERICON		0x00001000	
-#define		LISTVIEWSTY_TWOTOUCH		0x00000800	
+#define		LISTVIEWSTY_CIRCULAR		0x00008000
+#define		LISTVIEWSTY_MULTISELECT		0x00004000
+#define		LISTVIEWSTY_ITEMTICKER		0x00002000
+#define		LISTVIEWSTY_NUMBERICON		0x00001000
+#define		LISTVIEWSTY_TWOTOUCH		0x00000800
 #define		LISTVIEWSTY_VARIABLEITEMHEIGHT	0x00000800
 #define		LISTVIEWSTY_UNDERLINE		0x00000400
 #define		LISTVIEWSTY_EDITABLESTRING	0x00000200
@@ -42,7 +42,7 @@
 #define		LISTVIEWNOTI_POSTDRAW			NOTIMASK_POSTDRAW     //	0x40000000
 #define		LISTVIEWNOTI_PREKEY			NOTIMASK_PREKEY	      //	0x20000000
 #define		LISTVIEWNOTI_POSTKEY			NOTIMASK_POSTKEY      //	0x10000000
-#define		LISTVIEWNOTI_TITLEDRAW			NOTIMASK_TITLEDRAW    //        0x01000000 
+#define		LISTVIEWNOTI_TITLEDRAW			NOTIMASK_TITLEDRAW    //        0x01000000
 #define		LISTVIEWNOTI_HASVSCROLL			NOTIMASK_HASVSCROLL   //	0x00000001
 #define		LISTVIEWNOTI_ITEMSELECTED		0x00008000				//
 #define		LISTVIEWNOTI_ITEMDRAW			0x00004000				//
@@ -80,7 +80,7 @@ typedef enum
 	LISTVIEWCOL_MULTISEL_TEXT,
 	LISTVIEWCOL_MULTISEL_BACKGROUND,
 	LISTVIEWCOL_SEPARATOR1,
-	LISTVIEWCOL_SEPARATOR2,	
+	LISTVIEWCOL_SEPARATOR2,
 	LISTVIEWCOL_NUM
 } E_LISTVCOL;
 
@@ -92,7 +92,7 @@ typedef enum
 	LISTVIEWMODE_NUM
 } E_LISTVMODE;
 
-#define		LISTVIEW_SCRLALIGN_TOP		1	
+#define		LISTVIEW_SCRLALIGN_TOP		1
 #define		MAX_LISTVIEWITEMCTRL_NUM	4
 
 typedef struct
@@ -109,12 +109,12 @@ typedef struct
 {
 	TLnkObj			LnkObj;
 	T_CSTR			pcszStr;
-	H_CTRL			hItemCtrlTbl[MAX_LISTVIEWITEMCTRL_NUM];	
+	H_CTRL			hItemCtrlTbl[MAX_LISTVIEWITEMCTRL_NUM];
 	T_SIZE			Height;
 	WORD			Status;
-	QUAD			SysData;				
-	QUAD			wData;				
-	QUAD			lData;	
+	QUAD			SysData;
+	QUAD			wData;
+	QUAD			lData;
 } TListViewItem;
 
 typedef struct
@@ -122,18 +122,18 @@ typedef struct
 	TFrmCtrl		Frame;
 	TLnkList		ItemList;
 	T_NUM			MaxItemNum;
-	T_NUM			ItemNum;						
+	T_NUM			ItemNum;
 	TListViewItem*		pSelItem;
 	int			LineGap;
-	int			GridLineGap;				
+	int			GridLineGap;
 	int			InvOffset;
 	T_SIZE			DefHeight;
 
 	T_SIZE			TotalHeight;
 	TPoint			Scroll;
-	int			ListDeltaX1;				
+	int			ListDeltaX1;
 	int			ListDeltaX2;
-	int			VItemHeight;				
+	int			VItemHeight;
 
 	int			TickerPos;
 	E_LISTVMODE		ViewMode;
@@ -148,7 +148,7 @@ typedef struct
 
 //-------------------------------------------------------------------------------------------------
 //	Call Back Functions
-typedef		int		(*T_pfnSortItem) (TListViewItem* pLItem, TListViewItem* pRItem); 
+typedef		int		(*T_pfnSortItem) (TListViewItem* pLItem, TListViewItem* pRItem);
 
 
 //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - -

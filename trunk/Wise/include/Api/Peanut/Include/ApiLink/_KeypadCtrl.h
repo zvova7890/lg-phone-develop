@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__PEANUT_KEYPADCTRL_H_
 #define		_BNSOFT__PEANUT_KEYPADCTRL_H_
 
-#include	"..\KeypadCtrl.h"
+#include	"../KeypadCtrl.h"
 
 typedef H_CTRL			(*T_pfnKeypadCtrl_Create)		(void* pOwner, T_POS X, T_POS Y, T_SIZE W, T_SIZE H);
 typedef BOOL			(*T_pfnKeypadCtrl_Destroy)		(H_CTRL hKC);
@@ -129,7 +129,7 @@ typedef struct
 #define		KeypadCtrl_SetItemRange(p1,p2,p3)		__ApiLink3(KeypadCtrl,SetItemRange,p1,p2,p3)
 #define		KeypadCtrl_SetItemKey(p1,p2,p3)			__ApiLink3(KeypadCtrl,SetItemKey,p1,p2,p3)
 #define		KeypadCtrl_SetItemData(p1,p2,p3)		__ApiLink3(KeypadCtrl,SetItemData,p1,p2,p3)
-#define		KeypadCtrl_SetItemIcon(p1,p2,p3)		__ApiLink3(KeypadCtrl,SetItemIcon,p1,p2,p3)	
+#define		KeypadCtrl_SetItemIcon(p1,p2,p3)		__ApiLink3(KeypadCtrl,SetItemIcon,p1,p2,p3)
 #define		KeypadCtrl_GetItemStr(p1,p2)			__ApiLink2(KeypadCtrl,GetItemStr,p1,p2)
 #define		KeypadCtrl_GetItemRange(p1,p2)			__ApiLink2(KeypadCtrl,GetItemRange,p1,p2)
 #define		KeypadCtrl_GetItemKey(p1,p2)			__ApiLink2(KeypadCtrl,GetItemKey,p1,p2)

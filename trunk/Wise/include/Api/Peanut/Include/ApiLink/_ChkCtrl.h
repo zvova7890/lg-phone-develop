@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__PEANUT_CHKCTRL_H_
 #define		_BNSOFT__PEANUT_CHKCTRL_H_
 
-#include	"..\ChkCtrl.h"
+#include	"../ChkCtrl.h"
 
 typedef H_CTRL			(*T_pfnChkCtrl_Create)       (void* pOwner, T_POS X, T_POS Y, T_SIZE W, T_SIZE H, T_CSTR pcszText);
 typedef BOOL			(*T_pfnChkCtrl_Destroy)      (H_CTRL hCC);

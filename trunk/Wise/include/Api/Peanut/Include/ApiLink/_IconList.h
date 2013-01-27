@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__PEANUT_ICONLIST_H_
 #define		_BNSOFT__PEANUT_ICONLIST_H_
 
-#include	"..\IconList.h"
+#include	"../IconList.h"
 
 typedef H_CTRL		(*T_pfnIconList_Create)         (void);
 typedef BOOL		(*T_pfnIconList_Destroy)        (H_CTRL hIL);

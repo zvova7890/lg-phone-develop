@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__PEANUT_RDOCTRL_H_
 #define		_BNSOFT__PEANUT_RDOCTRL_H_
 
-#include	"..\RdoCtrl.h"
+#include	"../RdoCtrl.h"
 
 typedef H_CTRL			(*T_pfnRdoCtrl_Create)      (void* pOwner, T_POS X, T_POS Y, T_SIZE W, T_SIZE H, T_CSTR pcszText, H_CTRL hGrpRC);
 typedef BOOL			(*T_pfnRdoCtrl_Destroy)     (H_CTRL hRC);

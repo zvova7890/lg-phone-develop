@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__PEANUT_LINECTRL_H_
 #define		_BNSOFT__PEANUT_LINECTRL_H_
 
-#include	"..\LineCtrl.h"
+#include	"../LineCtrl.h"
 
 typedef H_CTRL			(*T_pfnLineCtrl_Create)       (void* pOwner, T_POS X1, T_POS Y1, T_POS X2, T_POS Y2);
 typedef BOOL			(*T_pfnLineCtrl_Destroy)      (H_CTRL hLC);

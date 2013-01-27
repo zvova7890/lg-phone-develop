@@ -77,6 +77,11 @@ typedef struct
 } TApiLink;
 
 
+#ifdef __GNUC__
+__attribute__((unused))
+static TApiLink *g_pApiLink = (TApiLink *)0x400000;
+#endif
+
 // Task Api
 
 #include	"../Module/TaskApi.h"

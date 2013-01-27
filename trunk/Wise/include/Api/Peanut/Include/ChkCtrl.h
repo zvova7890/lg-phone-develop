@@ -10,7 +10,7 @@
 #define		_BNSOFT_PEANUT_CHKCTRL_H_
 
 #include	"BaseCtrl.h"
-#include	"MacroFunc\ChkCtrlM.h"
+#include	"MacroFunc/ChkCtrlM.h"
 
 
 #define		CHKSTY_RIGHTICON			0x80000000
@@ -49,7 +49,7 @@ typedef struct
 	T_SIZE				IconWidth;
 	KEY				SelKey;
 	int				AlignType;
-	int				LineGap;			
+	int				LineGap;
 } TChkCtrl;
 
 

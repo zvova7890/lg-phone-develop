@@ -10,7 +10,7 @@
 #define		_BNSOFT_PEANUT_POPUPCTRL_H_
 
 #include	"BaseCtrl.h"
-#include	"MacroFunc\PopupCtrlM.h"
+#include	"MacroFunc/PopupCtrlM.h"
 
 #define		POPSTY_PARENT			0x80000000
 #define		POPSTY_CHILD			0x40000000
@@ -28,7 +28,7 @@
 
 #define		POPNOTI_ERASEBKGND		NOTIMASK_ERASEBKGND
 #define		POPNOTI_POSTDRAW		NOTIMASK_POSTDRAW
-#define		POPNOTI_PREKEY			NOTIMASK_PREKEY	
+#define		POPNOTI_PREKEY			NOTIMASK_PREKEY
 #define		POPNOTI_POSTKEY			NOTIMASK_POSTKEY
 
 typedef struct _TPopupCtrl

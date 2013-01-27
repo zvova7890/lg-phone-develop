@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__PEANUT_ANIPAF_H_
 #define		_BNSOFT__PEANUT_ANIPAF_H_
 
-#include	"..\AniPaf.h"
+#include	"../AniPaf.h"
 
 typedef H_PAF			(*T_pfnAniPaf_Create)            (T_CSTR pcszFileName, QUAD Style, T_POS X, T_POS Y, int Duration);
 typedef BOOL			(*T_pfnAniPaf_Destroy)           (H_PAF hAP);

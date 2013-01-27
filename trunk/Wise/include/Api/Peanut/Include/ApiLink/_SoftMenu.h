@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__PEANUT_SOFTMENU_H_
 #define		_BNSOFT__PEANUT_SOFTMENU_H_
 
-#include	"..\SoftMenu.h"
+#include	"../SoftMenu.h"
 
 typedef T_POS			(*T_pfnSoftMenu_GetAboveY)			(void);
 typedef T_POS			(*T_pfnSoftMenu_GetTopY)			(void);
@@ -50,7 +50,7 @@ typedef struct
 #define		SoftMenu_Refresh()					__ApiLink0(SoftMenu,Refresh)
 #define		SoftMenu_Draw(p1,p2,p3)					__ApiLink3(SoftMenu,Draw,p1,p2,p3)
 #define		SoftMenu_DrawEx(p1,p2,p3,p4)				__ApiLink4(SoftMenu,DrawEx,p1,p2,p3,p4)
-#define		SoftMenu_SetTransparent(p1)				__ApiLink1(SoftMenu,SetTransparent,p1)	
+#define		SoftMenu_SetTransparent(p1)				__ApiLink1(SoftMenu,SetTransparent,p1)
 #define		SoftMenu_Pointing(p1,p2,p3)				__ApiLink3(SoftMenu,Pointing,p1,p2,p3)
 #define		SoftMenu_GetOemType()					__ApiLink0(SoftMenu,GetOemType)
 

@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__PEANUT_DLGCTRL_H_
 #define		_BNSOFT__PEANUT_DLGCTRL_H_
 
-#include	"..\Dialog.h"
+#include	"../Dialog.h"
 
 typedef BOOL			(*T_pfnDlgCtrl_ModifyStyle) (H_CTRL hDlg, T_ID ID, QUAD RemoveStyle, QUAD AddStyle);
 typedef BOOL			(*T_pfnDlgCtrl_SetRange)    (H_CTRL hDlg, T_ID ID, T_POS X1, T_POS Y1, T_POS X2, T_POS Y2);
