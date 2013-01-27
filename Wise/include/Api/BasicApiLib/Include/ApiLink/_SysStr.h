@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__SYSSTR_H_
 #define		_BNSOFT__SYSSTR_H_
 
-#include	"..\SysStr.h"
+#include	"../SysStr.h"
 
 typedef void			(*T_pfnSysStr_SetCharSet)   (E_CHARSET enCharSet);
 typedef E_CHARSET		(*T_pfnSysStr_GetCharSet)   (void);

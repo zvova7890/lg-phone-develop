@@ -9,14 +9,14 @@
 #ifndef		_BNSOFT_PEANUT_H_
 #define		_BNSOFT_PEANUT_H_
 
-#include	"../../\BasicApiLib/BasicApiLib.h"
+#include	"../../BasicApiLib/BasicApiLib.h"
 #include	"../../BasicApiLib/Include/LnkList.h"
 #include	"PeanutTypeDef.h"
 
 typedef enum
 {
 	RES_START		= -1,
-	
+
 	RES_GLOBAL,		// 0
 	RES_INDICATOR,		// 1
 	RES_SOFTMENU,		// 2
@@ -62,7 +62,7 @@ typedef struct
 	H_CTRL				hModalPopup;
 	int				IndShowStyle[2];	//	Indicator Show Style
 
-	// SoftMenu Strings 
+	// SoftMenu Strings
 	T_CSTR				LMenuStr;
 	T_CSTR				MMenuStr;
 	T_CSTR				RMenuStr;
@@ -83,7 +83,7 @@ extern BOOL		Peanut_SetConfigData	(int ID, E_RESTYPE Type, void* pData);
 extern void*		Peanut_GetConfigData	(int ID, E_RESTYPE Type);
 extern BOOL		Peanut_SetConfigValue	(int ID, E_RESTYPE Type, int Item, T_PARAM PARAM);
 extern QUAD		Peanut_GetConfigValue	(int ID, E_RESTYPE Type, int Item);
-	
+
 extern BOOL		Peanut_GetInterface	(QUAD* pInfo);
 extern BOOL		Peanut_SetTip		(TRect* Rect, T_POS X, T_POS Y, T_CSTR pcszStr);
 

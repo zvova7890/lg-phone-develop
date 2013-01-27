@@ -17,12 +17,12 @@
 
 #include	"BaseCtrl.h"
 #include	"FrmCtrl.h"
-#include	"MacroFunc\SelCtrlM.h"
+#include	"MacroFunc/SelCtrlM.h"
 
 //-------------------------------------------------------------------------------------------------
 //	SelCtrl Style의 종류 (TBaseCtrl::Style)
 #define		SELSTY_ARROW				0x00000080
-#define		SELSTY_DROPDOWN				0x00000040			//2007-03-21, by LYS : Drop Down List Popup(CU920,U990) 
+#define		SELSTY_DROPDOWN				0x00000040			//2007-03-21, by LYS : Drop Down List Popup(CU920,U990)
 
 #define		SELSTY_TICKER				0x00000020			//	04.04.21 전영혜 추가 : 문자열의 길이가 길면 자동으로 스크롤함
 #define		SELSTY_ELLIPSIS				0x00000010			//	04.04.21 전영혜 추가 : 문자열이 길 때 ... 을 출력함
@@ -75,7 +75,7 @@ typedef struct
 //	int					ArrowWidth;
 	int					TickerPos;	//	04.04.21 전영혜 추가
 //DOP추가-----------------------------------------------------------------------
-	QUAD				DOPData;	// RepeatTimer setting여부 구분 위해 사용 
+	QUAD				DOPData;	// RepeatTimer setting여부 구분 위해 사용
 //DOP완료----------------------------------------------------------------------
 } TSelCtrl;
 

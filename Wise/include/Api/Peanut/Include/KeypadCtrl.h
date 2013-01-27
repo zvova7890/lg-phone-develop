@@ -10,7 +10,7 @@
 #define		_BNSOFT_PEANUT_KEYPADCTRL_H_
 
 #include	"FrmCtrl.h"
-#include	"MacroFunc\KeypadCtrlM.h"
+#include	"MacroFunc/KeypadCtrlM.h"
 
 #define		KEYPADSTY_BORDER					FRMSTY_BORDER	// 0x80000000, draw border line
 #define		KEYPADSTY_DRAG						0x00008000	// enable focus change when item dragged
@@ -42,8 +42,8 @@ typedef enum
 	QWERTYMODE_SPECIFIC,					//	special character layout accordance with character set
 	QWERTYMODE_NUMERIC,					//	Number only mode
 	QWERTYMODE_ENGLISH,					//	English layout
-	QWERTYMODE_EMO,   
-	QWERTYMODE_URL,  
+	QWERTYMODE_EMO,
+	QWERTYMODE_URL,
 	QWERTYMODE_MAX
 } E_QWERTYMODE;
 
@@ -55,7 +55,7 @@ typedef enum
 	SYMBOLMODE_0,
 	SYMBOLMODE_1,
 	SYMBOLMODE_2,
-} E_SYMBOLMODE; 
+} E_SYMBOLMODE;
 
 
 #define		KEYPADNOTI_ERASEBKGND			NOTIMASK_ERASEBKGND			//	0x80000000
@@ -67,7 +67,7 @@ typedef enum
 #define		KEYPADNOTI_OVERLAP			0x00002000				//	when keypad item is overlaped other range
 #define		KEYPADNOTI_RANGECHANGED			0x00001000
 #define		KEYPADNOTI_OEMNOTIFY			0x00000800
-#define		KEYPADNOTI_KEYPRESS			0x00000400		
+#define		KEYPADNOTI_KEYPRESS			0x00000400
 #define		KEYPADNOTI_ARRANGEKEYPAD		0x00000200
 
 //	KeypadCtrl item status
@@ -90,7 +90,7 @@ typedef enum
 #define		KSTATUSTYPE_NAVIGATION			0x00000040
 #define		KSTATUSTYPE_BLOCK			0x00000080
 #define		KSTATUSTYPE_ALL				(KSTATUSTYPE_INPUTMETHOD | KSTATUSTYPE_EDITMODE | KSTATUSTYPE_DICTIONARY | KSTATUSTYPE_HANDWRITING | KSTATUSTYPE_VKCLOSE | KSTATUSTYPE_WRITELANGUAGE | KSTATUSTYPE_NAVIGATION)
- 
+
 //	KeypadCtrl color definition
 typedef enum
 {
@@ -137,7 +137,7 @@ typedef	struct
 {
 	BOOL			bCapsLock;
 	E_SYMBOLMODE		bShift;
-	E_SYMBOLMODE		nsym; 
+	E_SYMBOLMODE		nsym;
 	BOOL			bNavigation;
 	E_SYMBOLMODE		nemo;
 	E_SYMBOLMODE		burl;

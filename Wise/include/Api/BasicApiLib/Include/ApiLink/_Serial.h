@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__SERIAL_H_
 #define		_BNSOFT__SERIAL_H_
 
-#include	"..\Serial.h"
+#include	"../Serial.h"
 
 typedef H_SERIAL		(*T_pfnSerial_Open)    (E_COMPORT enComPort, int Baudrate);
 typedef H_SERIAL		(*T_pfnSerial_OpenEx)  (E_COMPORT enComPort, TSerialSetup* pSetup);

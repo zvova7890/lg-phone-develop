@@ -10,7 +10,7 @@
 #define		_BNSOFT_PEANUT_TEXTCTRL_H_
 
 #include	"BaseCtrl.h"
-#include	"MacroFunc\TextCtrlM.h"
+#include	"MacroFunc/TextCtrlM.h"
 
 #define		TEXTSTY_DEF			(0)
 
@@ -23,7 +23,7 @@
 #define		TEXTSTY_TICKER			0x00000200
 #define		TEXTSTY_ELLIPSIS		0x00000100
 #define		TEXTSTY_NOVFONTCOLOR		0x00080000
-#define		TEXTNOTI_POINTING	        0x08000000	
+#define		TEXTNOTI_POINTING	        0x08000000
 
 
 typedef enum
@@ -36,7 +36,7 @@ typedef struct
 {
 	TBaseCtrl		Base;
 	T_CSTR			pcszText;
-	T_POS			TickerPos;			
+	T_POS			TickerPos;
 	int			Align;
 } TTextCtrl;
 

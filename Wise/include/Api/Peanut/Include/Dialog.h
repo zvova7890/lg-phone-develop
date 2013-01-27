@@ -10,37 +10,37 @@
 #define		_BNSOFT_PEANUT_DIALOG_H_
 
 #include	"FrmCtrl.h"
-#include	"MacroFunc\DialogM.h"
+#include	"MacroFunc/DialogM.h"
 
 //	Dialog Style
-#define		DLGSTY_BORDER				FRMSTY_BORDER		//	0x80000000	
-#define		DLGSTY_TITLE				FRMSTY_TITLE		//	0x40000000	
-#define		DLGSTY_LEFTTITLE			FRMSTY_LEFTTITLE	//	0x20000000	
+#define		DLGSTY_BORDER				FRMSTY_BORDER		//	0x80000000
+#define		DLGSTY_TITLE				FRMSTY_TITLE		//	0x40000000
+#define		DLGSTY_LEFTTITLE			FRMSTY_LEFTTITLE	//	0x20000000
 #define		DLGSTY_LEFTTOPTITLE			FRMSTY_LEFTTOPTITLE	//      0x00800000
-#define		DLGSTY_HSCROLLBAR			FRMSTY_HSCROLLBAR	//	0x10000000	
-#define		DLGSTY_VSCROLLBAR			FRMSTY_VSCROLLBAR	//	0x08000000	
-#define		DLGSTY_ALWAYSSHOWSB			FRMSTY_ALWAYSSHOWSB	//	0x04000000	
+#define		DLGSTY_HSCROLLBAR			FRMSTY_HSCROLLBAR	//	0x10000000
+#define		DLGSTY_VSCROLLBAR			FRMSTY_VSCROLLBAR	//	0x08000000
+#define		DLGSTY_ALWAYSSHOWSB			FRMSTY_ALWAYSSHOWSB	//	0x04000000
 #define		DLGSTY_TITLETICKER			FRMSTY_TITLETICKER	//	0x02000000
 #define		DLGSTY_FLICKSCROLL			FRMSTY_FLICKSCROLL	//      0x01000000
-#define		DLGSTY_FLICKSCROLL_HORIZONTAL	        FRMSTY_FLICKSCROLL_HORIZONTAL	
+#define		DLGSTY_FLICKSCROLL_HORIZONTAL	        FRMSTY_FLICKSCROLL_HORIZONTAL
 
 
-#define		DLGSTY_SOFTMENU				FRMSTY_SOFTMENU	
-#define		DLGSTY_CIRCULAR				0x00004000	
+#define		DLGSTY_SOFTMENU				FRMSTY_SOFTMENU
+#define		DLGSTY_CIRCULAR				0x00004000
 
 #define		DLGSTY_DEF					(DLGSTY_TITLE /*| DLGSTY_SOFTMENU */| DLGSTY_CIRCULAR)
 
 
 #define		DLGNOTI_ERASEBKGND		NOTIMASK_ERASEBKGND	//	0x80000000
-#define		DLGNOTI_POSTDRAW		NOTIMASK_POSTDRAW	//	0x40000000	
-#define		DLGNOTI_PREKEY			NOTIMASK_PREKEY		//	0x20000000	
-#define		DLGNOTI_POSTKEY			NOTIMASK_POSTKEY	//	0x10000000	
+#define		DLGNOTI_POSTDRAW		NOTIMASK_POSTDRAW	//	0x40000000
+#define		DLGNOTI_PREKEY			NOTIMASK_PREKEY		//	0x20000000
+#define		DLGNOTI_POSTKEY			NOTIMASK_POSTKEY	//	0x10000000
 #define		DLGNOTI_HASVSCROLL		NOTIMASK_HASVSCROLL     //	0x00000001
 #define		DLGNOTI_FLICK			FRMNOTI_FLICK		//	0x00080000
-#define		DLGNOTI_TIMER			0x08000000		//	
-#define		DLGNOTI_TIMEOUT			0x04000000		//	
-#define		DLGNOTI_FOCUSCHANGED		0x02000000		//	
-#define		DLGNOTI_TITLEDRAW		NOTIMASK_TITLEDRAW	//  0x01000000  
+#define		DLGNOTI_TIMER			0x08000000		//
+#define		DLGNOTI_TIMEOUT			0x04000000		//
+#define		DLGNOTI_FOCUSCHANGED		0x02000000		//
+#define		DLGNOTI_TITLEDRAW		NOTIMASK_TITLEDRAW	//  0x01000000
 #define		DLGNOTI_SOFTMENUPOINTING	0x00020000              //  0x00800000  softmenu point down시에 noti발생
 #define		DLGNOTIFLICK_ACTIVECTRLOUT	0x00001000	        //
 
@@ -76,7 +76,7 @@ typedef struct
 typedef struct
 {
 	TFrmCtrl			Frame;
-	T_SIZE				Width;	
+	T_SIZE				Width;
 	T_SIZE				Height;
 	T_CSTR				pcszLSoftMenu;
 	T_CSTR				pcszMSoftMenu;
@@ -93,7 +93,7 @@ typedef struct
 	TLnkList			TitleCtrlList;
 	QUAD				IconIDTbl[5];					// softmenu IconID(image) array
 	QUAD				SMType;						// softmenu type - icon(OEM_SOFTSTY_ICON) or general
-	H_CTRL				hFloating;					// Active for KeypadCtrl 
+	H_CTRL				hFloating;					// Active for KeypadCtrl
 	QUAD				nNotiFromEdit;
 } TDialog;
 															//	{{BNS_INTERNALCODE(-)}}
@@ -155,7 +155,7 @@ extern BOOL			Dialog_DrawSoftMenu       (H_CTRL hDlg, BOOL bRefresh);
 extern BOOL			Dialog_DoModal            (H_CTRL hDlg, int LifeTime);
 extern BOOL			Dialog_StopModal          (void);
 extern BOOL			Dialog_EndModal           (void);
-	
+
 extern T_SIZE			Dialog_GetScrollMaxY      (H_CTRL hDlg);
 
 extern H_CTRL			Dialog_CreateTitleButCtrl (H_CTRL hDlg, T_ID ID, T_POS X, T_POS Y, T_SIZE W, T_SIZE H, T_CSTR pcszText);

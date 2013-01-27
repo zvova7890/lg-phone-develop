@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__RECMNGR_H_
 #define		_BNSOFT__RECMNGR_H_
 
-#include	"..\RecMngr.h"
+#include	"../RecMngr.h"
 
 typedef H_RECTABLE			(*T_pfnRecMngr_CreateTable)      (T_ID ID, T_CSTR pcszTblName, T_POS SortKeyPos, T_SIZE SortKeyLen, T_SIZE ReservedSize, BYTE* pData, T_SIZE DataSize);
 typedef H_RECTABLE			(*T_pfnRecMngr_FindTable)        (T_CSTR pcszTblName);

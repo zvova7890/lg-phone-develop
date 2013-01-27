@@ -10,7 +10,7 @@
 #define		_BNSOFT_PEANUT_ICONCTRL_H_
 
 #include	"BaseCtrl.h"
-#include	"MacroFunc\IconCtrlM.h"
+#include	"MacroFunc/IconCtrlM.h"
 
 #define		ICONSTY_CIRCULAR		0x80000000
 #define		ICONSTY_DEF			(ICONSTY_CIRCULAR)

@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__STRUTIL_H_
 #define		_BNSOFT__STRUTIL_H_
 
-#include	"..\StrUtil.h"
+#include	"../StrUtil.h"
 
 typedef int			(*T_pfnStrUtil_LowerCompare)  (T_CSTR pszStr1, T_CSTR pszStr2);
 typedef int			(*T_pfnStrUtil_LowerNCompare) (T_CSTR pszStr1, T_CSTR pszStr2, T_SIZE Count);

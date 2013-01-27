@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__PEANUT_DIALOG_H_
 #define		_BNSOFT__PEANUT_DIALOG_H_
 
-#include	"..\Dialog.h"
+#include	"../Dialog.h"
 
 typedef H_CTRL			(*T_pfnDialog_Create)             (void);
 typedef BOOL			(*T_pfnDialog_Destroy)            (H_CTRL hDlg);

@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__PEANUT_LISTCTRL_H_
 #define		_BNSOFT__PEANUT_LISTCTRL_H_
 
-#include	"..\ListCtrl.h"
+#include	"../ListCtrl.h"
 
 typedef H_CTRL			(*T_pfnListCtrl_Create)          (void* pOwner, T_POS X, T_POS Y, T_SIZE W, T_SIZE H);
 typedef BOOL			(*T_pfnListCtrl_Destroy)         (H_CTRL hLC);
@@ -53,7 +53,7 @@ typedef BOOL			(*T_pfnListCtrl_CheckItem)       (H_CTRL hLC, int Index, BOOL bCh
 typedef BOOL			(*T_pfnListCtrl_EnableItem)      (H_CTRL hLC, int Index, BOOL bEnable);
 typedef BOOL			(*T_pfnListCtrl_EnsureVisible)   (H_CTRL hLC, int Index);
 typedef T_SIZE			(*T_pfnListCtrl_CalcFullHeight)  (H_CTRL hLC);
-typedef BOOL			(*T_pfnListCtrl_SetHighlight)	 (H_CTRL hLC, int Index, T_CSTR pcszStr, T_COLOR Color, QUAD Data);	//@lima++ [2007-11-30오후 12:00:01], 
+typedef BOOL			(*T_pfnListCtrl_SetHighlight)	 (H_CTRL hLC, int Index, T_CSTR pcszStr, T_COLOR Color, QUAD Data);	//@lima++ [2007-11-30오후 12:00:01],
 typedef BOOL			(*T_pfnListCtrl_GetHighlightInfo)(H_CTRL hLC, int Index, TListHighLight* pInfo);
 typedef BOOL			(*T_pfnListCtrl_SetItemHeight)	 (H_CTRL hLC, int Index, T_SIZE Height);
 typedef T_SIZE			(*T_pfnListCtrl_GetItemHeight)	 (H_CTRL hLC, int Index);
@@ -160,6 +160,6 @@ typedef struct
 #define		ListCtrl_SetItemHeight(p1,p2,p3)		__ApiLink3(ListCtrl,SetItemHeight,p1,p2,p3)
 #define		ListCtrl_GetItemHeight(p1,p2)			__ApiLink2(ListCtrl,GetItemHeight,p1,p2)
 #define		ListCtrl_SetItemCtrl(p1,p2,p3,p4)		__ApiLink4(ListCtrl,SetItemCtrl,p1,p2,p3,p4)
-#define		ListCtrl_GetItemCtrl(p1,p2,p3)			__ApiLink3(ListCtrl,GetItemCtrl,p1,p2,p3) 
+#define		ListCtrl_GetItemCtrl(p1,p2,p3)			__ApiLink3(ListCtrl,GetItemCtrl,p1,p2,p3)
 
 #endif	//	_BNSOFT__PEANUT_LISTCTRL_H_

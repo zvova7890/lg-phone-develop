@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__PEANUT_INDICATOR_H_
 #define		_BNSOFT__PEANUT_INDICATOR_H_
 
-#include	"..\Indicator.h"
+#include	"../Indicator.h"
 
 typedef void			(*T_pfnIndicator_Reset)           (void);
 typedef T_POS			(*T_pfnIndicator_GetTopY)         (void);
@@ -65,7 +65,7 @@ typedef struct
 #define		Indicator_GetShowStyle()			__ApiLink0(Indicator,GetShowStyle)
 #define		Indicator_SetValue(p1,p2)			__ApiLink2(Indicator,SetValue,p1,p2)
 #define		Indicator_GetValue(p1)				__ApiLink1(Indicator,GetValue,p1)
-#define		Indicator_SetBlink(p1,p2)			__ApiLink2(Indicator,SetBlink,p1,p2)	
+#define		Indicator_SetBlink(p1,p2)			__ApiLink2(Indicator,SetBlink,p1,p2)
 #define		Indicator_GetBlink(p1)				__ApiLink1(Indicator,GetBlink,p1)
 #define		Indicator_SetTime(p1,p2)			__ApiLink2(Indicator,SetTime,p1,p2)
 #define		Indicator_GetTime(p1)				__ApiLink1(Indicator,GetTime,p1)
@@ -75,7 +75,7 @@ typedef struct
 #define		Indicator_Timer()				__ApiLink0(Indicator,Timer)
 #define		Indicator_SetTransparent(p1)			__ApiLink1(Indicator,SetTransparent,p1)
 #define		Indicator_SetUserDefine(p1,p2,p3)		__ApiLink3(Indicator,SetUserDefine,p1,p2,p3)
-#define		Indicator_GetRange()				__ApiLink0(Indicator,GetRange)	
+#define		Indicator_GetRange()				__ApiLink0(Indicator,GetRange)
 #define		Indicator_GetIndiPosItem(p1)			__ApiLink1(Indicator,GetIndiPosItem,p1)
 
 #endif	//	_BNSOFT__PEANUT_INDICATOR_H_

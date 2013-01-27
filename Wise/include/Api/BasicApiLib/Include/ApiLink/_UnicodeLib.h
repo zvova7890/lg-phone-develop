@@ -9,7 +9,7 @@
 #ifndef		_LGE__UNICODELIB_H_
 #define		_LGE__UNICODELIB_H_
 
-#include	"..\UnicodeLib.h"
+#include	"../UnicodeLib.h"
 
 typedef	U_CHAR*		(*T_pfnUniLib_Strcpy)			(U_CHAR* strDest, const U_CHAR* strSource);
 typedef	U_CHAR*		(*T_pfnUniLib_Strncpy)			(U_CHAR* strDest, const U_CHAR* strSource, T_SIZE count);
@@ -107,7 +107,7 @@ typedef struct
 #define		UniLib_Strncat(p1,p2,p3)		__ApiLink3(UniLib,Strncat,p1,p2,p3)
 #define		UniLib_Vsprintf(p1,p2,p3)		__ApiLink3(UniLib,Vsprintf,p1,p2,p3)
 #define		UniLib_Sprintf				__ApiLinkV(UniLib,Sprintf)
-#define		UniLib_Strstr(p1,p2)			__ApiLink2(UniLib,Strstr,p1,p2)				
+#define		UniLib_Strstr(p1,p2)			__ApiLink2(UniLib,Strstr,p1,p2)
 #define		UniLib_Strchr(p1,p2)			__ApiLink2(UniLib,Strchr,p1,p2)
 #define		UniLib_Strtok(p1,p2)			__ApiLink2(UniLib,Strtok,p1,p2)
 

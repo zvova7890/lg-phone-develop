@@ -10,7 +10,7 @@
 #define		_BNSOFT_PEANUT_CMBCTRL_H_
 
 #include	"BaseCtrl.h"
-#include	"MacroFunc\CmbCtrlM.h"
+#include	"MacroFunc/CmbCtrlM.h"
 
 #define		CMBSTY_PULLUP				0x00004000
 

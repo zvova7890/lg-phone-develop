@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__PEANUT_POPUPCTRL_H_
 #define		_BNSOFT__PEANUT_POPUPCTRL_H_
 
-#include	"..\PopupCtrl.h"
+#include	"../PopupCtrl.h"
 
 typedef H_CTRL			(*T_pfnPopupCtrl_Create)        (void* pOwner, QUAD Style, T_POS BaseX, T_POS BaseY);
 typedef BOOL			(*T_pfnPopupCtrl_Destroy)       (H_CTRL hPC);

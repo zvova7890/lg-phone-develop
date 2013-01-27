@@ -9,7 +9,7 @@
 #ifndef		_BNSOFT__PEANUT_IMGCTRL_H_
 #define		_BNSOFT__PEANUT_IMGCTRL_H_
 
-#include	"..\ImgCtrl.h"
+#include	"../ImgCtrl.h"
 
 typedef H_CTRL			(*T_pfnImgCtrl_Create)         (void* pOwner, T_POS X, T_POS Y, T_SIZE W, T_SIZE H, T_CSTR pcszFileName);
 typedef BOOL			(*T_pfnImgCtrl_Destroy)        (H_CTRL hIC);
