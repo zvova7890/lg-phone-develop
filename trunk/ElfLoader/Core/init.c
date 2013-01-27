@@ -208,9 +208,9 @@ void init()
     __swihook_setfunc(SWINUM_LPRINTF, (unsigned int)&__core_lprintf);
     __enable_interrupt();
 
-    __core_lprintf(s_rn);
-    __core_lprintf("Init Mirror FileSystem ...\r\n");
-    __mirfs_init(folder_mirfs);
+    //__core_lprintf(s_rn);
+    //__core_lprintf("Init Mirror FileSystem ...\r\n");
+    //__mirfs_init(folder_mirfs);
 
     __core_lprintf(s_rn);
     __core_lprintf("Init Patches ...\r\n");
