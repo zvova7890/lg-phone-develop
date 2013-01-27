@@ -122,17 +122,6 @@ typedef		T_HANDLE					H_RESOURCE;
 #define		ProcMngr_GetAppDir(hP)		(QUAD)         ProcMngr_GetInfo(hP, PROCINFO_APPDIR)
 
 
-// ProcMngr System Functions (SWI)
-
-#ifndef __GNUC__
-#pragma diag_suppress=Ta035
-
-#pragma swi_number=0xD
-__swi __arm void lclear();
-#endif
-
-// ProcMngr Member Functions
-
 extern H_PROCESS ProcMngr_FindHandle   (H_PROCESS hBase, E_PROCFIND enFind);
 extern BOOL	 ProcMngr_MoveHandle   (H_PROCESS hProc, H_PROCESS hAfter);
 
@@ -148,12 +137,15 @@ extern BOOL	 ProcMngr_SetTimer(H_PROCESS hProc, T_ID ID, QUAD Duration, BOOL bRe
 extern BOOL	 ProcMngr_KillTimer (T_ID ID);
 
 #ifdef __GNUC__
+#include <swihelper.h>
 
-__attribute__((swi(0x400)))
-H_PROCESS ProcMngr_CreateProcess(TProcessCI *pProcCI, BOOL bIndividual);
+__inl
+H_PROCESS ProcMngr_CreateProcess(TProcessCI *pProcCI, BOOL bIndividual)
+__def(0x400, H_PROCESS, pProcCI, bIndividual)
 
-__attribute__((swi(0x401)))
-BOOL ProcMngr_StartProcess(H_PROCESS hProc, T_PARAM wParam, int nPriority);
+__inl
+BOOL ProcMngr_StartProcess(H_PROCESS hProc, T_PARAM wParam, int nPriority)
+__def(0x401, BOOL, hProc, wParam, nPriority)
 
 #else
 

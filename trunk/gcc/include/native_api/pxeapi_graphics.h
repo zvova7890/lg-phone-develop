@@ -41,7 +41,7 @@
 #define GDI_STATE_NORMAL      0
 #define GDI_STATE_LANDSCAPE   1
 
-//Смена ориентации для рисовальных ф-ий (Переворот экрана)
+//Переворот экрана
 __pxeapi int Graphics_ChangeGDI(int state)
 __pxe_api_ret_onearg(0x1C/4, 0x04/4, int, state)
 
@@ -104,6 +104,14 @@ __pxe_api_void_onearg(0x1C/4, 0x13C/4, color)
 //Задаёт тип обволакивания текста, который потом будет отрисован
 __pxeapi void Graphics_DrawStringSetOutLine(int outline)
 __pxe_api_void_onearg(0x1C/4, 0x15C/4, outline)
+
+
+__pxeapi int Graphics_FillCircle(int x, int y, int diameter, unsigned int color)
+__pxe_api_ret(0x1C/4, 0x98/4, int, x, y, diameter, color)
+
+
+__pxeapi int Graphics_FillEllipse(int x1, int y1, int x2, int y2, unsigned int color)
+__pxe_api_ret(0x1C/4, 0xA4/4, int, x1, y1, x2, y2, color)
 
 //Получение значения цвета по трём каналам RGB
 __pxeapi unsigned int Graphics_MakeRGBColor(unsigned char r, unsigned char g, unsigned char b)

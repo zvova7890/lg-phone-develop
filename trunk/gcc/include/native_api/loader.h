@@ -66,7 +66,7 @@ typedef struct
   char* strtab;
   Libs_Queue* libs;
   int fp;
-  char complete, __is_ex_import;
+  char complete, __is_ex_imported;
 
   struct {
     Libs_Queue *ex;	//Elf32_Exec
@@ -76,7 +76,6 @@ typedef struct
   const char *fname;	// не постоянная переменная, после загрузки эльфа она обнулится
   char *temp_env;	// временное переменное окружение для эльфа
 } Elf32_Exec;
-
 
 typedef struct
 {
@@ -88,9 +87,14 @@ typedef struct
 
 
 
+
 #ifdef __cplusplus
 extern "C" {
 #endif
+
+__inl
+int execelf(const char *elfname, int argc, char *argv[], unsigned int *start, unsigned int *ret)
+__def( 0x0B, int, elfname, argc, argv, start, ret)
 
 void ElfDestroy();
 

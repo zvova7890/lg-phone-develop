@@ -35,14 +35,18 @@
 #include	"../BasicApiLib/Include/ApiLink/_GrText.h"
 
 #include	"../BasicApiLib/Include/ApiLink/_AppHeap.h"
+#include	"../BasicApiLib/Include/ApiLink/_ShMem.h"
 
 #include	"../BasicApiLib/Include/ApiLink/_FileSys.h"
+#include	"../BasicApiLib/Include/ApiLink/_RecMngr.h"
 
 #include	"../BasicApiLib/Include/ApiLink/_Serial.h"
 
 #include	"../BasicApiLib/Include/ApiLink/_SysUtil.h"
 #include	"../BasicApiLib/Include/ApiLink/_SysDev.h"
-
+#include	"../BasicApiLib/Include/ApiLink/_SysStr.h"
+#include	"../BasicApiLib/Include/ApiLink/_StrUtil.h"
+#include	"../BasicApiLib/Include/ApiLink/_LnkList.h"
 #include	"../BasicApiLib/Include/ApiLink/_UnicodeLib.h"
 
 #undef		INCLUDE_FILE

@@ -31,7 +31,7 @@ typedef struct _TBaseCtrl
 	E_CTRLTYPE			enType;
 	QUAD				OemType;
 	QUAD				Style;
-	QUAD				State;								//	상위2바이트만 사용. 하위2바이트는 자유롭게 이용할 수 있다.
+	QUAD				State;	
 	TRect				Range;
 	E_FONT				enFont;
 	TColorTbl*			pColorTbl;
@@ -46,7 +46,7 @@ typedef struct _TBaseCtrl
 	BOOL				bAssignedColTbl;
 
 	E_PERIODIC_UPDATE_STATE	PeriodicUpdateState;
-	TRect					PeriodicUpdateRange;
+	TRect				PeriodicUpdateRange;
 
 	QUAD				UserDefCtrlID;		// user define control ID
 	void*				pOemBaseCtrl;		// for Oem data
@@ -122,7 +122,7 @@ extern QUAD			BaseCtrl_GetDummyData     (H_CTRL hBC, T_INDEX Index);
 
 extern BOOL			BaseCtrl_SetPeriodicUpdateRange	(H_CTRL hBC, T_POS X1, T_POS Y1, T_POS X2, T_POS Y2);
 extern BOOL			BaseCtrl_GetPeriodicUpdateRange	(H_CTRL hBC, TRect* pUpdateRange);
-extern void			BaseCtrl_SetPeriodicUpdateState		(H_CTRL hBC, E_PERIODIC_UPDATE_STATE enState);
+extern void			BaseCtrl_SetPeriodicUpdateState	(H_CTRL hBC, E_PERIODIC_UPDATE_STATE enState);
 extern E_PERIODIC_UPDATE_STATE	BaseCtrl_GetPeriodicUpdateState	(H_CTRL hBC);
 extern BOOL			BaseCtrl_PeriodicUpdate	(H_CTRL hBC);
 

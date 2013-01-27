@@ -12,36 +12,34 @@
 
 
 #include	"BaseCtrl.h"
-/*
 #include	"ScrlBar.h"
-*/
 
 
-#include	"MacroFunc\FrmCtrlM.h"
+#include	"MacroFunc/FrmCtrlM.h"
 
 
-#define		FRMSTY_BORDER				0x80000000		
-#define		FRMSTY_TITLE				0x40000000		
-#define		FRMSTY_LEFTTITLE			0x20000000		
-#define		FRMSTY_VSCROLLBAR			0x10000000		
-#define		FRMSTY_HSCROLLBAR			0x08000000		
-#define		FRMSTY_ALWAYSSHOWSB			0x04000000		
-#define		FRMSTY_TITLETICKER			0x02000000		
-#define		FRMSTY_FLICKSCROLL			0x01000000		
-#define		FRMSTY_LEFTTOPTITLE			0x00800000		
-#define		FRMSTY_FLICKSCROLL_HORIZONTAL           0x00400000			
-#define		FRMSTY_SOFTMENU				0x00200000		
-#define		FRMSTY_CHILDCTRL_NOFLICK	        0x00100000			
-#define		FRMSTY_MOVEOUTPOINT			0x00080000		
+#define		FRMSTY_BORDER				0x80000000
+#define		FRMSTY_TITLE				0x40000000
+#define		FRMSTY_LEFTTITLE			0x20000000
+#define		FRMSTY_VSCROLLBAR			0x10000000
+#define		FRMSTY_HSCROLLBAR			0x08000000
+#define		FRMSTY_ALWAYSSHOWSB			0x04000000
+#define		FRMSTY_TITLETICKER			0x02000000
+#define		FRMSTY_FLICKSCROLL			0x01000000
+#define		FRMSTY_LEFTTOPTITLE			0x00800000
+#define		FRMSTY_FLICKSCROLL_HORIZONTAL           0x00400000
+#define		FRMSTY_SOFTMENU				0x00200000
+#define		FRMSTY_CHILDCTRL_NOFLICK	        0x00100000
+#define		FRMSTY_MOVEOUTPOINT			0x00080000
 
 #define		FRMSTY_DEF					(FRMSTY_BORDER|FRMSTY_FLICKSCROLL)
 
-#define		FRMNOTI_ERASEBKGND			NOTIMASK_ERASEBKGND	//	0x80000000	
-#define		FRMNOTI_POSTDRAW			NOTIMASK_POSTDRAW	//	0x40000000	
-#define		FRMNOTI_PREKEY				NOTIMASK_PREKEY		//	0x20000000	
-#define		FRMNOTI_POSTKEY				NOTIMASK_POSTKEY	//	0x10000000	
+#define		FRMNOTI_ERASEBKGND			NOTIMASK_ERASEBKGND	//	0x80000000
+#define		FRMNOTI_POSTDRAW			NOTIMASK_POSTDRAW	//	0x40000000
+#define		FRMNOTI_PREKEY				NOTIMASK_PREKEY		//	0x20000000
+#define		FRMNOTI_POSTKEY				NOTIMASK_POSTKEY	//	0x10000000
 #define		FRMNOTI_TITLEDRAW			NOTIMASK_TITLEDRAW	//	0x01000000
-#define		FRMNOTI_HASVSCROLL			NOTIMASK_HASVSCROLL     //	0x00000001	
+#define		FRMNOTI_HASVSCROLL			NOTIMASK_HASVSCROLL     //	0x00000001
 #define		FRMNOTI_FLICK				0x00080000		//	0x00080000
 
 typedef enum
@@ -72,17 +70,17 @@ typedef enum
 	FRAME_MOVING_STATE_DRAG,
 	FRAME_MOVING_STATE_FLICK,
 	FRAME_MOVING_STATE_FLICK_HORIZONTAL,
-	FRAME_MOVING_STATE_START_FROM_FLICK 
+	FRAME_MOVING_STATE_START_FROM_FLICK
 } E_FRAME_MOVING_STATE;
 
-typedef struct 
+typedef struct
 {
-	int			nBegin;		
+	int			nBegin;
 	int			nChange;
-	int			nCurTime;	
-	int			nDuration;	
-	
-	QUAD		LastDrawTimeMs;		
+	int			nCurTime;
+	int			nDuration;
+
+	QUAD		LastDrawTimeMs;
 	T_HANDLE	hTimer;		// Flick Draw duration Timer
 	H_PROCESS	hOwnerProcess;
 	T_pfnMsgRun	pfnOwnerMsgRun;
@@ -109,14 +107,14 @@ typedef struct
 	QUAD	Time[MAX_POINTING_LOG];
 } TFramePointingLog;
 
-typedef struct 
+typedef struct
 {
-	E_FRAME_MOVING_STATE 	State;			
-	BOOL			IsVerticalMovingEnabled; 
-	BOOL			IsHorizontalMovingEnabled; 
+	E_FRAME_MOVING_STATE 	State;
+	BOOL			IsVerticalMovingEnabled;
+	BOOL			IsHorizontalMovingEnabled;
 	TFramePointingLog	PointingLog;
 	TFrameLastDrawInfo	LastDrawInfo;
-	
+
 	TFrameMovingInfo	Info;
 	T_POS			ScrollDiff;
 	T_POS			InitPosX;
@@ -181,7 +179,7 @@ typedef struct
 	TScrlBar*			pVScrollBar;
 	TScrlBar*			pHScrollBar;
 	TFrameMoving		FrameMoving;	// For Frame Moving(Flicking Scroll)
-	
+
 } TFrmCtrl;
 
 #define		FRMCTRL_DELTA_LEFT		2
@@ -240,5 +238,5 @@ extern BOOL			FrmCtrl_AdjustClientRect (H_CTRL hFC);
 extern BOOL			FrmCtrl_AdjustScrollBar  (H_CTRL hFC);
 extern BOOL			FrmCtrl_PtInClientRect   (H_CTRL hFC, int X, int Y);
 
-        
+
 #endif	//	_BNSOFT_PEANUT_FRMCTRL_H_
