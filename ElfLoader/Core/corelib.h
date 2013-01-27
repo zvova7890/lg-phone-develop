@@ -14,9 +14,6 @@
 #define __int32 long
 
 
-#include "ejapi.h"
-
-
 #define FILE_OPEN_WRITE         0x01
 #define FILE_OPEN_READ          0x02
 #define FILE_OPEN_CREATE        0x04
@@ -64,6 +61,9 @@ __swi __arm unsigned int swihook_getfunc(unsigned short swinum);
 #pragma swi_number=0x3
 __swi __arm int swihook_clearfunc(unsigned short swinum);
 
+
+/* NOTE: DEPRECATED */
+/*
 #pragma swi_number=0x4
 __swi __arm int ejapi_addapi(char *path);
 
@@ -76,6 +76,7 @@ __swi __arm EJAPI_ITEM *ejapi_getbase();
 #pragma swi_number=0x7
 __swi __arm int ejapi_getbasesize();
 
+
 #pragma swi_number=0x8
 __swi __arm unsigned char  amem_setbyte(unsigned long address, unsigned char byte);
 
@@ -84,6 +85,7 @@ __swi __arm unsigned short amem_sethwrd(unsigned long address, unsigned short hw
 
 #pragma swi_number=0xA
 __swi __arm unsigned long  amem_setword(unsigned long address, unsigned long word);
+*/
 
 #pragma swi_number=0xB
 __swi __arm int elf_load(char *filename, void *param1, void *param2, void *param3, unsigned int *start, unsigned int *ret);

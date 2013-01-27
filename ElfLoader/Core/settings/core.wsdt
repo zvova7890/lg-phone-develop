@@ -12,7 +12,7 @@
           
           
           
-        <Column0>118</Column0><Column1>30</Column1><Column2>24</Column2><Column3>0</Column3></ColumnWidths>
+        <Column0>115</Column0><Column1>30</Column1><Column2>24</Column2><Column3>0</Column3></ColumnWidths>
       </Workspace>
       <Build>
         
@@ -20,11 +20,11 @@
         
         
       <ColumnWidth0>18</ColumnWidth0><ColumnWidth1>897</ColumnWidth1><ColumnWidth2>239</ColumnWidth2><ColumnWidth3>59</ColumnWidth3></Build>
-    </Static>
+    <Debug-Log/></Static>
     <Windows>
       
       
-    <Wnd2>
+    <Wnd0>
         <Tabs>
           <Tab>
             <Identity>TabID-10261-8105</Identity>
@@ -32,11 +32,11 @@
             <Factory>Workspace</Factory>
             <Session>
               
-            <NodeDict><ExpandedNode>core</ExpandedNode><ExpandedNode>core/loader3</ExpandedNode></NodeDict></Session>
+            <NodeDict><ExpandedNode>core</ExpandedNode></NodeDict></Session>
           </Tab>
         </Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd2><Wnd3>
+      <SelectedTab>0</SelectedTab></Wnd0><Wnd1>
         <Tabs>
           <Tab>
             <Identity>TabID-23163-8477</Identity>
@@ -44,22 +44,22 @@
             <Factory>Build</Factory>
             <Session/>
           </Tab>
-        </Tabs>
+        <Tab><Identity>TabID-23909-20792</Identity><TabName>Debug Log</TabName><Factory>Debug-Log</Factory><Session/></Tab></Tabs>
         
-      <SelectedTab>0</SelectedTab></Wnd3></Windows>
+      <SelectedTab>0</SelectedTab></Wnd1></Windows>
     <Editor>
       
       
       
       
-    <Pane><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\loader3\initializer.c</Filename><XPos>0</XPos><YPos>86</YPos><SelStart>2017</SelStart><SelEnd>2017</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\ejapi.c</Filename><XPos>0</XPos><YPos>135</YPos><SelStart>3942</SelStart><SelEnd>3954</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\gc.c</Filename><XPos>0</XPos><YPos>35</YPos><SelStart>1542</SelStart><SelEnd>1542</SelEnd></Tab><ActiveTab>2</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\init.c</Filename><XPos>0</XPos><YPos>159</YPos><SelStart>4131</SelStart><SelEnd>4131</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\loader3\loadelf.c</Filename><XPos>0</XPos><YPos>86</YPos><SelStart>2158</SelStart><SelEnd>2170</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\loader3\loader.c</Filename><XPos>0</XPos><YPos>840</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\corelib.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>210</SelStart><SelEnd>225</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\init.c</Filename><XPos>0</XPos><YPos>120</YPos><SelStart>1278</SelStart><SelEnd>1278</SelEnd></Tab><ActiveTab>1</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\pxeapi.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>1260</SelStart><SelEnd>1260</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\core.c</Filename><XPos>0</XPos><YPos>46</YPos><SelStart>840</SelStart><SelEnd>840</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\mirfs_hook.asm</Filename><XPos>0</XPos><YPos>7</YPos><SelStart>137</SelStart><SelEnd>137</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\mirfs.c</Filename><XPos>0</XPos><YPos>30</YPos><SelStart>610</SelStart><SelEnd>610</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\mirfs.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>69</SelStart><SelEnd>69</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\swihook.c</Filename><XPos>0</XPos><YPos>57</YPos><SelStart>2082</SelStart><SelEnd>2082</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\core.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>38</SelStart><SelEnd>38</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\fwlib.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>556</SelStart><SelEnd>556</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
     <Positions>
       
       
       
       
       
-    <Top><Row0><Sizes><Toolbar-0045aeb8><key>iaridepm.enu1</key></Toolbar-0045aeb8></Sizes></Row0></Top><Left><Row0><Sizes><Wnd2><Rect><Top>-2</Top><Left>-2</Left><Bottom>588</Bottom><Right>192</Right><x>-2</x><y>-2</y><xscreen>191</xscreen><yscreen>214</yscreen><sizeHorzCX>160910</sizeHorzCX><sizeHorzCY>253555</sizeHorzCY><sizeVertCX>163437</sizeVertCX><sizeVertCY>699052</sizeVertCY></Rect></Wnd2></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd3><Rect><Top>-2</Top><Left>-2</Left><Bottom>212</Bottom><Right>1189</Right><x>-2</x><y>-2</y><xscreen>1191</xscreen><yscreen>214</yscreen><sizeHorzCX>1003370</sizeHorzCX><sizeHorzCY>253555</sizeHorzCY><sizeVertCX>160910</sizeVertCX><sizeVertCY>253555</sizeVertCY></Rect></Wnd3></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+    <Top><Row0><Sizes><Toolbar-0045aeb0><key>iaridepm.enu1</key></Toolbar-0045aeb0></Sizes></Row0></Top><Left><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>588</Bottom><Right>189</Right><x>-2</x><y>-2</y><xscreen>203</xscreen><yscreen>214</yscreen><sizeHorzCX>161111</sizeHorzCX><sizeHorzCY>253555</sizeHorzCY><sizeVertCX>151587</sizeVertCX><sizeVertCY>699052</sizeVertCY></Rect></Wnd0></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>212</Bottom><Right>1262</Right><x>-2</x><y>-2</y><xscreen>1264</xscreen><yscreen>214</yscreen><sizeHorzCX>1003175</sizeHorzCX><sizeHorzCY>253555</sizeHorzCY><sizeVertCX>161111</sizeVertCX><sizeVertCY>253555</sizeVertCY></Rect></Wnd1></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
   </Desktop>
 </Workspace>
 

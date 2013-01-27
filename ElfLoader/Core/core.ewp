@@ -675,7 +675,7 @@
         <option>
           <name>ModuleLocalSym</name>
           <version>0</version>
-          <state>0</state>
+          <state>2</state>
         </option>
         <option>
           <name>CrcBitOrder</name>
@@ -856,16 +856,7 @@
     </file>
   </group>
   <file>
-    <name>$PROJ_DIR$\amem.c</name>
-  </file>
-  <file>
     <name>$PROJ_DIR$\core.c</name>
-  </file>
-  <file>
-    <name>$PROJ_DIR$\ejapi.c</name>
-  </file>
-  <file>
-    <name>$PROJ_DIR$\ejapi_hook.asm</name>
   </file>
   <file>
     <name>$PROJ_DIR$\gc.c</name>
@@ -878,6 +869,15 @@
   </file>
   <file>
     <name>$PROJ_DIR$\init.c</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\mirfs.c</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\mirfs.h</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\mirfs_hook.asm</name>
   </file>
   <file>
     <name>$PROJ_DIR$\pxeapi.c</name>

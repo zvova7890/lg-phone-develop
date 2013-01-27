@@ -5,7 +5,6 @@
 #include "fwlib.h"
 #include "string.h"
 
-NU_TASK gc_tsk;
 
 typedef struct _GCQueueItem
 {
@@ -23,6 +22,7 @@ typedef struct
 
 
 GCQueue gc_queue;
+NU_TASK gc_tsk;
 
 
 static void gc_thread(unsigned long a, void *b)
