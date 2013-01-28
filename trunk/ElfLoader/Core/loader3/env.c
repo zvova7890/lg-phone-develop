@@ -10,6 +10,12 @@ char **l_last_environ = 0;
 
 
 
+void env_init()
+{
+    l__environ = 0;
+    l_last_environ = 0;
+}
+
 __arm char *
 strchrnul (const char *s, int c_in)
 {

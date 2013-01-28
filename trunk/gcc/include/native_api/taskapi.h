@@ -1,5 +1,5 @@
-#ifndef __TASKAPI_H__
-#define __TASKAPI_H__
+#ifndef ___TASKAPI_H___
+#define ___TASKAPI_H___
 
 #include "pxeapi_macro.h"
 
@@ -67,5 +67,5 @@ __pxe_adr_ret_onearg(__task_api_array[0x38/4], int, handle)
 __pxeapi int TaskMngr_AppSetName(int handle, int name, int name1, int name2)
 __pxe_adr_ret(__task_api_array[0x40/4], int, handle, name, name1, name2)
 
-#endif // __TASKAPI_H__
+#endif // ___TASKAPI_H___
 
