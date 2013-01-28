@@ -2,18 +2,15 @@
 #include <string.h>
 #include <stdlib.h>
 
-#include <nucleus.h>
-#include <fs.h>
-#include <loader.h>
-#include <mem.h>
-#include <pxeapi_graphics.h>
+
+#include <Api/ApiLinkLib/ApiLink.h>
+
 #include <pxeapi.h>
+#include <loader.h>
+#include <nucleus.h>
 #include <taskapi.h>
-#include <wchar.h>
-#include <time.h>
 
 
-#include "png.h"
 
 
 
@@ -31,7 +28,6 @@ char stack[0x4000];
 #define WINDOW_ID_SCREEN 0x5001
 
 
-/* portable version */
 __attribute__((naked))
 static void delay_loop(unsigned long loops)
 {
@@ -125,25 +121,25 @@ int calculate_bogomips(unsigned long *clock_per_second, unsigned long *_loops, d
 
 void Draw()
 {
-    Graphics_DrawFillRect(0, 0, DISPLAY_WITDH, DISPLAY_HEIGHT, 0xFF000000);
+    GrSys_FillRect(0, 0, GRSYS_WIDTH, GRSYS_HEIGHT, 0xFF000000);
 
-    Graphics_DrawStringSetOutLine(1);
-    Graphics_DrawStringSetColor(0xFF00FF00);
+    GrSys_SetBkMode(1);
+    GrSys_SetTextColor(0xFF00FF00);
 
     wchar_t d[128];
 
     if(is_calculating == 1) {
-        swprintf(d, 128,  L"Идёт расчёт...");
+        UniLib_Sprintf(d, L"Идёт расчёт...");
     } else if(is_calculating == -1) {
-        swprintf(d, 128,  L"Ошибка при расчёте");
+        UniLib_Sprintf(d, L"Ошибка при расчёте");
     } else {
-        swprintf(d, 128,  L"BogoMIPS: %d", (int)bogomips);
+        UniLib_Sprintf(d, L"BogoMIPS: %f", bogomips);
     }
 
-    Graphics_DrawString(0, 100, d, 20);
+    GrSys_WriteStr(0, 100, d, 20);
 
 
-    Graphics_Repaint();
+    GrSys_Refresh();
 }
 
 
@@ -160,6 +156,7 @@ void t_entry(unsigned long argc, void *argv)
 //Действие при создании окна
 void Screen_OnInit()
 {
+    GrSys_SelectGDI(0);
     NU_Create_Task(&task, "lol", t_entry, 0, 0, stack, 0x4000, 0x80, 0x50, NU_PREEMPT, NU_START);
 
     //Draw();
@@ -179,10 +176,10 @@ void Screen_OnKeyDown(int key)
 {
     switch (key)
     {
-    case KEY_MULTI:
+    case BNS_MENU_K:
         TaskMngr_Show();
         break;
-    case KEY_END:
+    case BNS_END_K:
         TaskMngr_AppExit(0, 0, 0);
         break;
     }

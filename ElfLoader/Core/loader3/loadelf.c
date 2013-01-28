@@ -113,9 +113,9 @@ __arch int elfclose(Elf32_Exec* ex)
       free(li);
   }
 
-  free(ex);
-  
+
   if(ex->body) __gc_cleanup(ex->body, 2);
+  free(ex);  
   return E_NO_ERROR;
 }
 

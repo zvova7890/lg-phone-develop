@@ -33,6 +33,15 @@ Elf32_Lib** handles = 0;
 int handles_cnt = 0;
 
 
+
+void loadlib_init() 
+{
+    lib_top = 0;
+    handles = 0;
+    handles_cnt = 0;
+}
+
+
  /*
   * Существует ли файл
   */
