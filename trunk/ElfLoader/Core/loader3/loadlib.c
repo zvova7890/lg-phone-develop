@@ -42,6 +42,43 @@ void loadlib_init()
 }
 
 
+
+
+int is_parent_exist(Elf32_Exec *ex, Elf32_Exec *parent)
+{
+    Libs_Queue * libs = ex->parents.ex, *i;
+  
+    for( i = libs; i; i = i->next )
+    {
+	if(i->lib == parent)
+	    return 1;
+    }
+    
+    return 0;
+}
+
+
+void __ex_push_parent(Elf32_Exec *ex, Elf32_Exec *parent)
+{
+    if(!ex || !parent) return;
+    
+    Libs_Queue * libs = ex->parents.ex, *newex = malloc(sizeof(Libs_Queue));
+    
+    if(is_parent_exist(ex, parent)) return;
+
+    newex->next = 0;
+    newex->lib = parent;
+    
+    if(libs) {
+	libs->next = newex;
+    
+    } else {
+	ex->parents.ex = newex;
+    }
+}
+
+
+
  /*
   * Существует ли файл
   */
@@ -324,7 +361,7 @@ try_again:
     ex->v_addr = (unsigned int)-1;
     ex->fp = fp;
     ex->type = EXEC_LIB;
-    PushParent(ex, _ex);
+    __ex_push_parent(ex, _ex);
     
     ex->switab = /*FIXME*/ 0;
     ex->fname  = name;
@@ -445,12 +482,14 @@ __arch void sub_clients(Elf32_Lib* lib)
 __arch int CloseLib(Elf32_Lib* lib, int immediate)
 {
     if(!lib) return E_EMPTY;
-
+    
     if(lib->users_cnt < 1) // нету больше юзеров либы :(
     {
         if(!ep_config.realtime_libclean && !immediate) goto end;
         
         Elf32_Exec* ex = lib->ex;
+	executeFinishesArray(ex);
+	
 #ifndef _test_linux
 	if(ex->dyn[DT_FINI]) ((LIB_FUNC*)(ex->body + ex->dyn[DT_FINI] - ex->v_addr))();
 #endif
@@ -459,15 +498,29 @@ __arch int CloseLib(Elf32_Lib* lib, int immediate)
         {
 	    // Функция финализации
             Global_Queue* glob_queue = lib->glob_queue;
-
-            Global_Queue* tmp = glob_queue->next;
+            //Global_Queue* tmp = glob_queue->next;
             
-            if( glob_queue == lib_top && !lib_top->prev) lib_top = 0;
+            Global_Queue* next = glob_queue->next;
+            Global_Queue* prev = glob_queue->prev;
+            
+	    if(next) {
+		next->prev = prev;
+		if(prev)
+		    prev->next = next;
+	    } else {
+		lib_top = prev;
+		if(prev)
+		    prev->next = 0;
+	    }
+	    
+            
+            /*if( glob_queue == lib_top && !lib_top->prev) lib_top = 0;
             else
             if( glob_queue == lib_top ) lib_top = glob_queue->prev;
               
             if(tmp) tmp->prev = glob_queue->prev;
-            if(tmp = glob_queue->prev) tmp->next = glob_queue->next;
+            if(tmp = glob_queue->prev) tmp->next = glob_queue->next;*/
+            
             free(glob_queue);
         }
 
@@ -492,7 +545,7 @@ __arch int dlopen(const char *name)
   // Первый клиент! :)
   if(!handles_cnt)
   {
-    handles_cnt = 256;
+    handles_cnt = 32;
     handles = malloc(sizeof(Elf32_Lib*) * handles_cnt);
     
     if(!handles) return -1;
@@ -545,7 +598,6 @@ int dlclose(int handle)
     Elf32_Lib* lib = handles[handle];
     handles[handle] = 0;
     sub_clients(lib);
-    // То что здесь стоит возвращать это? handle все равно же потерли...
     return CloseLib(lib, 0);
   }
   
@@ -589,18 +641,18 @@ __arch void *SHARED_TOP()
 
 
  /*
-  * Очистка не нужных библиотек
+  * Очистка не используемых библиотек
   */
 __arch int dlcache_clean()
 {
   if(!lib_top) return -1;
   
   Elf32_Lib *bigger = 0;
-  Global_Queue *tmp = lib_top, *mem = lib_top, *prev = 0;
+  Global_Queue *tmp = lib_top, *prev = 0;
   int cleaned = 0;
   while(tmp)
   {
-    // найдем либу которая юзает само либы
+    // найдем либу которая юзает самое большое количество либ
     bigger = tmp->lib;
     prev = tmp->prev;
     
@@ -609,16 +661,13 @@ __arch int dlcache_clean()
       // закроем её, и она закроет весь хлам который сама юзает
       CloseLib(bigger, 1); // срочняком кроим их!
       ++cleaned;
+      
+      // если мы очистили либу, опять начинаем с топа, она могла закрыть dlopen-ом ещё одну либу
+      tmp = lib_top;
+      continue;
     }
     
-    // либ у нас поменьшало, мб топ изменился, чекаем
-    if(mem != lib_top )
-    {
-      tmp = lib_top;
-      mem = lib_top;
-    }
-    else // не неизменился, идем дальше тогда
-      tmp = prev;
+    tmp = prev;
   }
   
   return cleaned;

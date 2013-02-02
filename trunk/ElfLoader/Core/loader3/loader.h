@@ -11,6 +11,7 @@
 
 
 #include <string.h>
+#include <stdio.h>
 #include "../swihook.h"
 #include "../fwlib.h"
 #include "../corelib.h"
@@ -184,7 +185,7 @@ extern char tmp[258];
 void ep_log(Elf32_Exec *ex, const char *data, int size);
 
 #define lprintf(...) { int __dsz = snprintf(tmp, 256, __VA_ARGS__);\
-      ep_log(tmp, __dsz); }
+      ep_log(ex, tmp, __dsz); }
       
 
 int CheckElf(Elf32_Ehdr *ehdr);
@@ -215,8 +216,6 @@ __arch void sub_clients(Elf32_Lib* lib);
 /* init/fini arrays support */
 void executeInitializersArray(Elf32_Exec *ex);
 void executeFinishesArray(Elf32_Exec *ex);
-
-void PushParent(Elf32_Exec *ex, Elf32_Exec *parent);
 
 void __elf_init();
 int __elf_load(const char *elfname, int argc, char *argv[], unsigned int *start, unsigned int *ret);

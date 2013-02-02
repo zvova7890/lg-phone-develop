@@ -56,67 +56,6 @@ unsigned int ferr;
 
 
 
-int IsParentExist(Elf32_Exec *ex, Elf32_Exec *parent)
-{
-    Libs_Queue * libs = ex->parents.ex, *i;
-  
-    for( i = libs; i; i = i->next )
-    {
-	if(i->lib == parent)
-	    return 1;
-    }
-    
-    return 0;
-}
-
-
-void PopParent(Elf32_Exec *ex, Elf32_Exec *parent)
-{
-    if(!ex || !parent) return;
-    
-    Libs_Queue * libs = ex->parents.ex, *i, *prev = 0;
-
-    for( i = libs; i; i = i->next )
-    {
-	if(i->lib == parent)
-	{
-	    if(prev) {
-		prev->next = i->next;
-		free(i);
-		
-	    } else {
-		
-		ex->parents.ex = i->next;
-		free(i);
-	    }
-	}
-	
-	prev = i;
-    }
-}
-
-
-void PushParent(Elf32_Exec *ex, Elf32_Exec *parent)
-{
-    if(!ex || !parent) return;
-    
-    Libs_Queue * libs = ex->parents.ex, *newex = malloc(sizeof(Libs_Queue));
-    
-    if(IsParentExist(ex, parent)) return;
-
-    newex->next = 0;
-    newex->lib = parent;
-    
-    if(libs) {
-	libs->next = newex;
-    
-    } else {
-	ex->parents.ex = newex;
-    }
-}
-
-
-
 // Проверка валидности эльфа
 __arch int CheckElf(Elf32_Ehdr *ehdr)
 {
@@ -160,6 +99,10 @@ __arch char* LoadData(Elf32_Exec* ex, int offset, int size)
 #endif
     {
         char* data = malloc(size+1);
+	if(!data) {
+	    lprintf("LoadData: No memory available\n");
+	    return 0;
+	}
 #ifdef _test_linux
         if(fread(ex->fp, data, size) == size)
 #else
