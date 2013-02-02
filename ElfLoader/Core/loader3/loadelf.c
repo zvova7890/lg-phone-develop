@@ -53,8 +53,13 @@ __arch Elf32_Exec* elfopen(const char* filename)
 	{
           ++p;
 	  ex->temp_env = malloc(p - filename + 2);
-	  memcpy_a(ex->temp_env, filename, p - filename);
-	  ex->temp_env[p - filename] = 0;
+	  if(ex->temp_env) {
+	      memcpy_a(ex->temp_env, filename, p - filename);
+	      ex->temp_env[p - filename] = 0;
+	  } else {
+	      lprintf("temp_env: No memory available\n");
+	  }
+	  
 	} else
 	  ex->temp_env = 0;
 	  
@@ -69,6 +74,8 @@ __arch Elf32_Exec* elfopen(const char* filename)
         }
         else 
           elfclose(ex);
+      } else  {
+	  lprintf("Elf32_Exec: No memory available\n");
       }
     }
   }
