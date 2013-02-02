@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="libcrt" />
+		<Option pch_mode="2" />
+		<Option compiler="lg_gnu_arm_gcc_compiler" />
+		<Build>
+			<Target title="KP501v10">
+				<Option output="exe/libcrt.a" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="" />
+				<Option object_output="objects/nsg" />
+				<Option type="2" />
+				<Option compiler="lg_gnu_arm_gcc_compiler" />
+				<Compiler>
+					<Add option="-DNEWSGOLD" />
+				</Compiler>
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-marm" />
+			<Add option="-mthumb-interwork" />
+			<Add option="-O2" />
+			<Add option="-std=gnu99" />
+			<Add option="-Wno-unused-value" />
+			<Add option="-D__NO_LIBC" />
+		</Compiler>
+		<Linker>
+			<Add option="-s" />
+		</Linker>
+		<Unit filename="atexit.cpp" />
+		<Unit filename="start.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
