@@ -224,15 +224,23 @@ unsigned int objectAddress(Elf32_Exec *ex, Elf32_Sym *sym, const char *name, uns
             break;
             
           default:
-            func = try_search_in_base(ex, name, hash, bind_type);
+            if(sym->st_value) {
+		printf("Have st_value %d\n", sym->st_value);
+		func = ((unsigned int)ex->body)+sym->st_value;
+	    }
+	    else
+		func = try_search_in_base(ex, name, hash, bind_type);
             break;
         }
         
 	break;
 
     case STB_WEAK:
-	printf("STB_WEAK\n");
-	func = try_search_in_base(ex, name, hash, bind_type);
+	printf("STB_WEAK %x\n", ex->body+sym->st_value);
+	if(sym->st_value)
+	    func = ((unsigned int)ex->body)+sym->st_value;
+	else
+	    func = try_search_in_base(ex, name, hash, bind_type);
 
 	*ncheck = 1;
 	break;
@@ -262,13 +270,19 @@ __arch int DoRelocation(Elf32_Exec* ex, Elf32_Dyn* dyn_sect, Elf32_Phdr* phdr)
 	
     /* чтобы не повторять поиск, найденого в пердидущий поиск адреса,
        мы запоминаем хеш и имя, проверяем перед поиском, если свопадают -
-       то ничего не ищем, а сруз отдаём адрес
+       то ничего не ищем, а сразу отдаём адрес
     */
-#define check_prev_indexing(phash, pname, set_v, jmp_l) \
-	if(phash == prev_hash && !strcmp(pname, prev_name)) { \
+    
+    // SHN_ABS - is direct address, no need it to cache
+#define check_prev_indexing(sym, phash, pname, set_v, jmp_l) \
+	if(sym->st_shndx != SHN_ABS && prev_name && phash == prev_hash && !strcmp(pname, prev_name)) { \
 	   set_v = prev_func; \
+	   if(1) printf("Have indexed value: %s - %X\n", pname, prev_func); \
 	   goto jmp_l; \
-    }
+	} else { \
+	    prev_hash = phash; \
+	    prev_name = pname; \
+	}
     
 
     // Вытаскиваем теги
@@ -462,11 +476,12 @@ __hash_err:
                     
                     unsigned long hs = name_hash(name);
 
-                    check_prev_indexing(hs, name, func, skeep_err);
+                    check_prev_indexing(sym, hs, name, func, skeep_err);
                     
                     int ncheck = 0;
-                    func = objectAddress(ex, sym, name, (prev_hash = hs), reloc_type, bind_type, &ncheck);
-		    if(ncheck)
+                    func = objectAddress(ex, sym, name, hs, reloc_type, bind_type, &ncheck);
+                    prev_func = func;
+                    if(ncheck)
 			goto skeep_err;
 
                 }
@@ -521,10 +536,11 @@ skeep_err:
                 {
                     unsigned long hs = name_hash(name);
                     int ncheck = 0;
-                    check_prev_indexing(hs, name, func, skeep_err1);
-		    
-                    func = objectAddress(ex, sym, name, (prev_hash = hs), reloc_type, bind_type, &ncheck);
-		    if(ncheck)
+                    check_prev_indexing(sym, hs, name, func, skeep_err1);
+                    
+                    func = objectAddress(ex, sym, name, hs, reloc_type, bind_type, &ncheck);
+                    prev_func = func;
+                    if(ncheck)
 			goto skeep_err1;
 
 
@@ -629,9 +645,10 @@ skeep_err1:
     
 	    if(sym) {
               unsigned long hs = name_hash(name);
-              check_prev_indexing(hs, name, func, skeep_err2);
+              check_prev_indexing(sym, hs, name, func, skeep_err2);
 
-              func = objectAddress(ex, sym, name, (prev_hash = hs), reloc_type, bind_type, &ncheck);
+              func = objectAddress(ex, sym, name, hs, reloc_type, bind_type, &ncheck);
+              prev_func = func;
             }
 	    if(ncheck)
 		goto skeep_err2;

@@ -2,6 +2,8 @@
 LoggingEnabled=_ 0
 LogFile=_ ""
 Category=_ 0
+[BreakpointUsageDialog]
+Placement=_ 708 315 1148 593
 [Disassemble mode]
 mode=0
 [Breakpoints]

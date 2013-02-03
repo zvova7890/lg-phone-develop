@@ -2,44 +2,45 @@
 
 <project>
   <fileVersion>2</fileVersion>
-  <fileChecksum>1774327072</fileChecksum>
+  <fileChecksum>544223589</fileChecksum>
   <configuration>
     <name>KP501_v10H_00</name>
     <outputs>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loadelf.s79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\init.pbi</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\pxeapi.pbi</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\init.s79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\swihook.lst</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\log.s79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\loadelf.r79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loadlib.i</file>
-      <file>$PROJ_DIR$\loader3\elf.h</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\log.pbi</file>
       <file>$PROJ_DIR$\swihook.h</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\exekiller.pbi</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\pxeapi.i</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loader.s79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\swihook.i</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\initializer.i</file>
-      <file>$PROJ_DIR$\exekiller.h</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\initializer.r79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\ejapi.r79</file>
-      <file>$TOOLKIT_DIR$\lib\dl5tpainl8n.r79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\gc.i</file>
-      <file>$PROJ_DIR$\ejapi_hook.asm</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\loadelf.pbi</file>
       <file>$PROJ_DIR$\amem.c</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\swihook.s79</file>
-      <file>$TOOLKIT_DIR$\inc\DLib_Threads.h</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\core.r79</file>
-      <file>$TOOLKIT_DIR$\inc\ysizet.h</file>
-      <file>$PROJ_DIR$\ELF\KP501_v10H_00\core.elf</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\swihook_body.r79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loadlib.lst</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\remap.pbi</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loader.i</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\gc.pbi</file>
       <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\pxeapi.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\init.pbi</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\pxeapi.lst</file>
+      <file>$PROJ_DIR$\nucleus.h</file>
+      <file>$PROJ_DIR$\corelib.h</file>
+      <file>$TOOLKIT_DIR$\inc\stdio.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\mirfs.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\remap.s79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\swihook_body.r79</file>
+      <file>$PROJ_DIR$\ejapi_hook.asm</file>
+      <file>$TOOLKIT_DIR$\inc\yvals.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\log.s79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\initializer.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\stdlib.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\amem.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\amem.s79</file>
+      <file>$PROJ_DIR$\remap.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\log.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\mirfs_hook.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\loader.pbi</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loader.lst</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\env.s79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\exekiller.pbi</file>
+      <file>$PROJ_DIR$\fwlib.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\initializer.i</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\ejapi_hook.r79</file>
+      <file>$TOOLKIT_DIR$\lib\dl5tpainl8n.r79</file>
+      <file>$TOOLKIT_DIR$\inc\ysizet.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\mirfs.s79</file>
+      <file>$PROJ_DIR$\ELF\KP501_v10H_00\core.elf</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\core.pbi</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\mirfs.lst</file>
       <file>$PROJ_DIR$\loader3\env.h</file>
       <file>$PROJ_DIR$\loader3\env.c</file>
       <file>$PROJ_DIR$\loader3\initializer.c</file>
@@ -61,134 +62,138 @@
       <file>$PROJ_DIR$\swihook.c</file>
       <file>$PROJ_DIR$\remap.c</file>
       <file>$PROJ_DIR$\swihook_body.asm</file>
-      <file>$PROJ_DIR$\corelib.h</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\remap.r79</file>
-      <file>$PROJ_DIR$\pxeapi.h</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\swihook.r79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\initializer.lst</file>
-      <file>$PROJ_DIR$\unidata\kp501_v10H_00.h</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\log.lst</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\initializer.s79</file>
-      <file>$TOOLKIT_DIR$\inc\string.h</file>
-      <file>$PROJ_DIR$\nucleus.h</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\amem.lst</file>
-      <file>$TOOLKIT_DIR$\inc\Dlib_Product.h</file>
-      <file>$PROJ_DIR$\exekiller.c</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\pxeapi.s79</file>
-      <file>$PROJ_DIR$\remap.h</file>
-      <file>$TOOLKIT_DIR$\lib\dl5tpainl8n.h</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\loader.r79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\env.i</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\amem.r79</file>
-      <file>$PROJ_DIR$\core.h</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\env.lst</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\ejapi.s79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\ejapi.pbi</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\init.r79</file>
-      <file>$PROJ_DIR$\fwlib.h</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loadelf.i</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\mirfs_hook.r79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\remap.i</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\core.s79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\core.map</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\exekiller.lst</file>
-      <file>$TOOLKIT_DIR$\inc\xencoding_limits.h</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\core.pbi</file>
+      <file>$PROJ_DIR$\loader3\elf.h</file>
       <file>$PROJ_DIR$\Other\KP501_v10H_00\List\init.lst</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\gc.s79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\gc.pbi</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\loadlib.r79</file>
-      <file>$TOOLKIT_DIR$\inc\yvals.h</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\amem.pbi</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\exekiller.i</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\core.lst</file>
-      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\loadlib.pbi</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\exekiller.r79</file>
-      <file>$PROJ_DIR$\core.xcl</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\imb.r79</file>
+      <file>$TOOLKIT_DIR$\inc\xencoding_limits.h</file>
       <file>$PROJ_DIR$\Other\KP501_v10H_00\List\amem.i</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\swihook.pbi</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\mirfs.r79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\init.i</file>
+      <file>$PROJ_DIR$\amem.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\gc.i</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\initializer.lst</file>
+      <file>$PROJ_DIR$\exekiller.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\core.i</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\env.pbi</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\initializer.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\ejapi.lst</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\core.s79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loader.i</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\amem.lst</file>
+      <file>$PROJ_DIR$\core.xcl</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loadlib.i</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\exekiller.i</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\remap.i</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\loader.r79</file>
       <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\gc.r79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\mirfs.i</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\mirfs.lst</file>
+      <file>$TOOLKIT_DIR$\inc\intrinsics.h</file>
       <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loadelf.lst</file>
       <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\mirfs.pbi</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\mirfs.s79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\pxeapi.lst</file>
-      <file>$PROJ_DIR$\ejapi.h</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loadlib.s79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\ejapi_hook.r79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\ejapi.lst</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\env.pbi</file>
-      <file>$TOOLKIT_DIR$\inc\stdlib.h</file>
-      <file>$TOOLKIT_DIR$\inc\stdarg.h</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\log.r79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\remap.lst</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\remap.s79</file>
       <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\core.pbd</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\loader.pbi</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\ejapi.r79</file>
       <file>$PROJ_DIR$\ejapi.c</file>
+      <file>$PROJ_DIR$\core.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\init.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\initializer.s79</file>
       <file>$TOOLKIT_DIR$\inc\DLib_Defaults.h</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\amem.s79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\gc.lst</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\core.i</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\initializer.pbi</file>
-      <file>$TOOLKIT_DIR$\inc\stdio.h</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\env.s79</file>
-      <file>$PROJ_DIR$\amem.h</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\env.r79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\log.i</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\swihook.lst</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\pxeapi.pbi</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\core.lst</file>
       <file>$PROJ_DIR$\Other\KP501_v10H_00\List\exekiller.s79</file>
-      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loader.lst</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\swihook.i</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\mirfs.i</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\exekiller.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\remap.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\env.lst</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\init.s79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\env.i</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loadelf.i</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\pxeapi.i</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\swihook.s79</file>
+      <file>$PROJ_DIR$\unidata\kp501_v10H_00.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\log.i</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\core.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\ejapi.pbi</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\log.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\stdarg.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\remap.lst</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loadlib.s79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\env.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loadlib.lst</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\loadelf.pbi</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\loadelf.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\swihook.pbi</file>
+      <file>$PROJ_DIR$\ejapi.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\exekiller.lst</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\pxeapi.s79</file>
       <file>$PROJ_DIR$\Other\KP501_v10H_00\List\ejapi.i</file>
+      <file>$PROJ_DIR$\exekiller.c</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\loadlib.r79</file>
+      <file>$TOOLKIT_DIR$\inc\Dlib_Product.h</file>
+      <file>$TOOLKIT_DIR$\lib\dl5tpainl8n.h</file>
+      <file>$PROJ_DIR$\pxeapi.h</file>
+      <file>$TOOLKIT_DIR$\inc\DLib_Threads.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\init.i</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\amem.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\string.h</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\core.map</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\log.lst</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\swihook.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loader.s79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\ejapi.s79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\gc.lst</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\imb.r79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\loadlib.pbi</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\gc.s79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\List\loadelf.s79</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\remap.pbi</file>
+      <file>$PROJ_DIR$\cpu-features.h</file>
+      <file>$PROJ_DIR$\memcpy.S</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\memset.r79</file>
+      <file>$PROJ_DIR$\memset.S</file>
+      <file>$PROJ_DIR$\Other\KP501_v10H_00\Obj\memcpy.r79</file>
     </outputs>
-    <file>
-      <name>$PROJ_DIR$\ejapi_hook.asm</name>
-      <outputs>
-        <tool>
-          <name>AARM</name>
-          <file> 114</file>
-        </tool>
-      </outputs>
-    </file>
     <file>
       <name>$PROJ_DIR$\amem.c</name>
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 73 101 126 65</file>
+          <file> 17 59 18 70</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 93</file>
+          <file> 125</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 60 96 132 10</file>
+          <file> 101 77 60 0</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 96 132 10</file>
+          <file> 77 60 0</file>
         </tool>
       </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\ejapi_hook.asm</name>
+      <outputs>
+        <tool>
+          <name>AARM</name>
+          <file> 28</file>
+        </tool>
+      </outputs>
     </file>
     <file>
       <name>$PROJ_DIR$\ELF\KP501_v10H_00\core.elf</name>
       <outputs>
         <tool>
           <name>XLINK</name>
-          <file> 84</file>
+          <file> 127</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>XLINK</name>
-          <file> 99 26 133 105 100 78 17 6 71 91 119 103 81 33 56 58 29 19</file>
+          <file> 71 103 109 76 133 84 66 112 75 119 20 142 140 9 21 3 94 129 11 29</file>
         </tool>
       </inputs>
     </file>
@@ -197,21 +202,21 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 133 72 131 75</file>
+          <file> 109 97 24 95</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 116</file>
+          <file> 65</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 60 63 92 125 70 66 86 25 27 117 39 10 79 55 8 44 34</file>
+          <file> 101 126 13 86 121 120 58 123 30 16 40 8 0 26 7 56 45 35</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 63 92 125 66 86 25 27 117 39 10 79 55 8 44 34</file>
+          <file> 126 13 86 120 58 123 30 16 40 8 0 26 7 56 45 35</file>
         </tool>
       </inputs>
     </file>
@@ -220,21 +225,21 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 17 15 62 59</file>
+          <file> 66 27 85 62</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 129</file>
+          <file> 15</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 60 130 92 125 70 66 86 25 27 118 96 39 63 10 79 55 8 44 34</file>
+          <file> 101 8 13 86 121 120 58 123 30 106 77 40 126 0 26 7 56 45 35</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 130 92 125 66 86 25 27 118 96 39 63 10 79 55 8 44 34</file>
+          <file> 8 13 86 120 58 123 30 106 77 40 126 0 26 7 56 45 35</file>
         </tool>
       </inputs>
     </file>
@@ -243,7 +248,30 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 6 80 0 108</file>
+          <file> 112 98 136 78</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 111</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 101 126 13 86 121 120 58 123 30 40 8 0 26 7 56 45 46</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 126 13 86 120 58 123 30 40 8 0 26 7 56 45 46</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\loader3\loader.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 75 69 130 23</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -253,34 +281,11 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 60 63 92 125 70 66 86 25 27 39 10 79 55 8 44 45</file>
+          <file> 101 126 13 86 121 120 58 123 30 8 40 0 26 7 56 45 83</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 63 92 125 66 86 25 27 39 10 79 55 8 44 45</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\loader3\loader.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 71 32 13 136</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 123</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 60 63 92 125 70 66 86 25 27 130 39 10 79 55 8 44 74</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 63 92 125 66 86 25 27 130 39 10 79 55 8 44 74</file>
+          <file> 126 13 86 120 58 123 30 8 40 0 26 7 56 45 83</file>
         </tool>
       </inputs>
     </file>
@@ -289,21 +294,21 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 91 7 113 30</file>
+          <file> 119 72 108 110</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 97</file>
+          <file> 134</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 60 63 92 125 70 66 86 25 27 130 74 39 10 79 55 8 44 34</file>
+          <file> 101 126 13 86 121 120 58 123 30 8 83 40 0 26 7 56 45 35</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 63 92 125 66 86 25 27 130 74 39 10 79 55 8 44 34</file>
+          <file> 126 13 86 120 58 123 30 8 83 40 0 26 7 56 45 35</file>
         </tool>
       </inputs>
     </file>
@@ -312,21 +317,21 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 119 134 5 61</file>
+          <file> 20 102 14 128</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 9</file>
+          <file> 105</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 60 39 63 92 125 70 66 86 25 27 10 79 55 8 44 74</file>
+          <file> 101 40 126 13 86 121 120 58 123 30 8 0 26 7 56 45 83</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 39 63 92 125 66 86 25 27 10 79 55 8 44 74</file>
+          <file> 40 126 13 86 120 58 123 30 8 0 26 7 56 45 83</file>
         </tool>
       </inputs>
     </file>
@@ -335,108 +340,7 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 105 20 89 127</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 90</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 60 10 45 64 79 63 92 125 70 66 86 25 27</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 10 45 64 79 63 92 125 66 86 25 27</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\core.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 26 128 83 95</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 87</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 60 130 92 125 70 66 86 25 27 117 63 118 79 74</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 130 92 125 66 86 25 27 117 63 118 79 74</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\mirfs.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 103 106 110 107</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 109</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 60 63 92 125 70 66 86 25 27 130 96 55 74 49</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 63 92 125 66 86 25 27 130 96 55 74 49</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\imb.asm</name>
-      <outputs>
-        <tool>
-          <name>AARM</name>
-          <file> 100</file>
-        </tool>
-      </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\init.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 78 104 3 88</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 1</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 60 63 92 125 70 66 86 25 27 130 96 55 79 74 10 57 49 45 39 8 44</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 63 92 125 66 86 25 27 130 96 55 79 74 10 57 49 45 39 8 44</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\pxeapi.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 33 12 68 111</file>
+          <file> 76 61 135 132</file>
         </tool>
         <tool>
           <name>BICOMP</name>
@@ -446,11 +350,112 @@
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 60 96 57 74 69 10 63 92 125 70 66 86 25 27</file>
+          <file> 101 77 0 46 6 26 126 13 86 121 120 58 123 30</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 96 57 74 69 10 63 92 125 66 86 25 27</file>
+          <file> 77 0 46 6 26 126 13 86 120 58 123 30</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\core.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 103 64 68 89</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 33</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 101 8 13 86 121 120 58 123 30 16 126 106 26 83</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 8 13 86 120 58 123 30 16 126 106 26 83</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\mirfs.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 9 92 31 34</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 79</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 101 126 13 86 121 120 58 123 30 8 77 7 83 50</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 126 13 86 120 58 123 30 8 77 7 83 50</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\imb.asm</name>
+      <outputs>
+        <tool>
+          <name>AARM</name>
+          <file> 133</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\init.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 84 124 96 57</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 4</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 101 126 13 86 121 120 58 123 30 8 77 7 26 83 0 122 50 46 40 56 45</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 126 13 86 120 58 123 30 8 77 7 26 83 0 122 50 46 40 56 45</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\pxeapi.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 3 99 116 5</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 88</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 101 77 122 83 19 0 126 13 86 121 120 58 123 30</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 77 122 83 19 0 126 13 86 120 58 123 30</file>
         </tool>
       </inputs>
     </file>
@@ -459,7 +464,7 @@
       <outputs>
         <tool>
           <name>AARM</name>
-          <file> 81</file>
+          <file> 21</file>
         </tool>
       </outputs>
     </file>
@@ -468,21 +473,21 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 58 14 24 4</file>
+          <file> 129 91 100 87</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 102</file>
+          <file> 113</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 60 96 10 74 69 63 92 125 70 66 86 25 27</file>
+          <file> 101 77 0 83 19 126 13 86 121 120 58 123 30</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 96 10 74 69 63 92 125 66 86 25 27</file>
+          <file> 77 0 83 19 126 13 86 120 58 123 30</file>
         </tool>
       </inputs>
     </file>
@@ -491,21 +496,21 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 56 82 121 120</file>
+          <file> 94 74 10 107</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 31</file>
+          <file> 137</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 60 96 63 92 125 70 66 86 25 27 69 79</file>
+          <file> 101 77 126 13 86 121 120 58 123 30 19 26</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 96 63 92 125 66 86 25 27 69 79</file>
+          <file> 77 126 13 86 120 58 123 30 19 26</file>
         </tool>
       </inputs>
     </file>
@@ -514,7 +519,7 @@
       <outputs>
         <tool>
           <name>AARM</name>
-          <file> 29</file>
+          <file> 11</file>
         </tool>
       </outputs>
     </file>
@@ -523,39 +528,16 @@
       <outputs>
         <tool>
           <name>XLINK</name>
-          <file> 28 84</file>
+          <file> 32 127</file>
         </tool>
       </outputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\exekiller.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 98 94 135 85</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 11</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 60 10 16 64 79 63 92 125 70 66 86 25 27</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 10 16 64 79 63 92 125 66 86 25 27</file>
-        </tool>
-      </inputs>
     </file>
     <file>
       <name>$PROJ_DIR$\Other\KP501_v10H_00\Obj\core.pbd</name>
       <inputs>
         <tool>
           <name>BILINK</name>
-          <file> 87 116 90 1 129 22 123 97 9 109 2 31 102</file>
+          <file> 33 65 2 4 15 111 22 134 105 79 88 137 113</file>
         </tool>
       </inputs>
     </file>
@@ -564,23 +546,64 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 18 137 76 115</file>
+          <file> 81 117 131 67</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 77</file>
+          <file> 104</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 60 130 92 125 70 66 86 25 27 63 96 10 112 39 79 55 8 44 74</file>
+          <file> 101 8 13 86 121 120 58 123 30 126 77 0 114 40 26 7 56 45 83</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 130 92 125 66 86 25 27 63 96 10 112 39 79 55 8 44 74</file>
+          <file> 8 13 86 120 58 123 30 126 77 0 114 40 26 7 56 45 83</file>
         </tool>
       </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\exekiller.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 93 73 90 115</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 25</file>
+        </tool>
+      </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 101 0 63 6 26 126 13 86 121 120 58 123 30</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 0 63 6 26 126 13 86 120 58 123 30</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\memcpy.S</name>
+      <outputs>
+        <tool>
+          <name>AARM</name>
+          <file> 142</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\memset.S</name>
+      <outputs>
+        <tool>
+          <name>AARM</name>
+          <file> 140</file>
+        </tool>
+      </outputs>
     </file>
   </configuration>
 </project>

@@ -249,7 +249,7 @@ void init()
         fs_closedir(patches_f);
         __core_lprintf("patches elfs loaded: %d\r\n", tpatch);
     }
-    else __core_lprintf("patches folder error!\r\n");
+    else __core_lprintf("patches folder not found!\r\n");
 
     __core_lprintf(s_rn);
     __core_lprintf("Init Daemons ...\r\n");
@@ -289,7 +289,7 @@ void init()
         fs_closedir(daem_f);
         __core_lprintf("daemons elfs loaded: %d\r\n", tdaem);
     }
-    else __core_lprintf("daemons folder error!\r\n");
+    else __core_lprintf("daemons folder not found.\r\n");
     __core_lprintf(s_coresend);
     
     

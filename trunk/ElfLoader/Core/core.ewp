@@ -137,7 +137,7 @@
         <debug>0</debug>
         <option>
           <name>CCDefines</name>
-          <state></state>
+          <state>__ARM_ARCH_5__</state>
         </option>
         <option>
           <name>CCPreprocFile</name>
@@ -869,6 +869,12 @@
   </file>
   <file>
     <name>$PROJ_DIR$\init.c</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\memcpy.S</name>
+  </file>
+  <file>
+    <name>$PROJ_DIR$\memset.S</name>
   </file>
   <file>
     <name>$PROJ_DIR$\mirfs.c</name>

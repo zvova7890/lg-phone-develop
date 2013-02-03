@@ -1,7 +1,7 @@
 #ifndef __GC_H__
 #define __GC_H__
 
-#define GC_TASK_NAME       "ExeKill"
+#define GC_TASK_NAME       "GC"
 #define GC_TASK_STACK_SIZE 0x2000
 #define GC_TASK_PRIO       100
 

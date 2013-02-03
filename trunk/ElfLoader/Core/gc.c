@@ -1,4 +1,5 @@
 
+#include <intrinsics.h>
 #include "swihook.h"
 #include "gc.h"
 #include "nucleus.h"
@@ -76,7 +77,9 @@ int __gc_init()
 			   gc_tsk_stack, GC_TASK_STACK_SIZE, GC_TASK_PRIO, 
 			   0, NU_PREEMPT, NU_NO_START);
     
+    __disable_interrupt();
     __swihook_setfunc(SWINUM_GC, (unsigned int)&__gc_cleanup);
+    __enable_interrupt();
     
     memset(&gc_queue, 0, sizeof(gc_queue));
     return a;
