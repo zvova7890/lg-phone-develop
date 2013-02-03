@@ -1,84 +1,82 @@
-/* time.h -- An implementation of the standard Unix <sys/time.h> file.
-   Written by Geoffrey Noer <noer@cygnus.com>
-   Public domain; no rights reserved. */
+#ifndef _SYS_TIME_H
+#define _SYS_TIME_H	1
 
-#ifndef _SYS_TIME_H_
-#define _SYS_TIME_H_
-
-#include <_ansi.h>
+#include <sys/cdefs.h>
 #include <sys/types.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+__BEGIN_DECLS
 
-#ifndef _WINSOCK_H
-#define _TIMEVAL_DEFINED
+struct timespec {
+  time_t tv_sec;	/* seconds */
+  long tv_nsec;		/* nanoseconds */
+};
+
 struct timeval {
-  time_t      tv_sec;
-  suseconds_t tv_usec;
+  time_t tv_sec;	/* seconds */
+  suseconds_t tv_usec;	/* microseconds */
 };
 
 struct timezone {
-  int tz_minuteswest;
-  int tz_dsttime;
+  int tz_minuteswest;	/* minutes west of Greenwich */
+  int tz_dsttime;	/* type of dst correction */
 };
 
-#ifdef __CYGWIN__
-#include <cygwin/sys_time.h>
-#endif /* __CYGWIN__ */
+#include <sys/select.h>
 
-#endif /* _WINSOCK_H */
+#define	ITIMER_REAL	0
+#define	ITIMER_VIRTUAL	1
+#define	ITIMER_PROF	2
 
-#define ITIMER_REAL     0
-#define ITIMER_VIRTUAL  1
-#define ITIMER_PROF     2
-
-struct  itimerval {
-  struct  timeval it_interval;
-  struct  timeval it_value;
+struct itimerspec {
+  struct timespec it_interval;	/* timer period */
+  struct timespec it_value;	/* timer expiration */
 };
 
-/* BSD time macros used by RTEMS code */
-#if defined (__rtems__) || defined (__CYGWIN__)
+struct itimerval {
+  struct timeval it_interval;	/* timer interval */
+  struct timeval it_value;	/* current value */
+};
 
-/* Convenience macros for operations on timevals.
-   NOTE: `timercmp' does not work for >= or <=.  */
-#define	timerisset(tvp)		((tvp)->tv_sec || (tvp)->tv_usec)
-#define	timerclear(tvp)		((tvp)->tv_sec = (tvp)->tv_usec = 0)
-#define	timercmp(a, b, CMP) 						      \
-  (((a)->tv_sec == (b)->tv_sec) ? 					      \
-   ((a)->tv_usec CMP (b)->tv_usec) : 					      \
-   ((a)->tv_sec CMP (b)->tv_sec))
-#define	timeradd(a, b, result)						      \
-  do {									      \
-    (result)->tv_sec = (a)->tv_sec + (b)->tv_sec;			      \
-    (result)->tv_usec = (a)->tv_usec + (b)->tv_usec;			      \
-    if ((result)->tv_usec >= 1000000)					      \
-      {									      \
-	++(result)->tv_sec;						      \
-	(result)->tv_usec -= 1000000;					      \
-      }									      \
-  } while (0)
-#define	timersub(a, b, result)						      \
-  do {									      \
-    (result)->tv_sec = (a)->tv_sec - (b)->tv_sec;			      \
-    (result)->tv_usec = (a)->tv_usec - (b)->tv_usec;			      \
-    if ((result)->tv_usec < 0) {					      \
-      --(result)->tv_sec;						      \
-      (result)->tv_usec += 1000000;					      \
-    }									      \
-  } while (0)
-#endif /* defined (__rtems__) || defined (__CYGWIN__) */
-
-int _EXFUN(gettimeofday, (struct timeval *__p, void *__tz));
-int _EXFUN(settimeofday, (const struct timeval *, const struct timezone *));
-int _EXFUN(utimes, (const char *__path, const struct timeval *__tvp));
-int _EXFUN(getitimer, (int __which, struct itimerval *__value));
-int _EXFUN(setitimer, (int __which, const struct itimerval *__value,
-					struct itimerval *__ovalue));
-
-#ifdef __cplusplus
-}
+#if defined _GNU_SOURCE || defined _BSD_SOURCE
+typedef struct timezone *__timezone_ptr_t;
+#else
+typedef void *__timezone_ptr_t;
 #endif
-#endif /* _SYS_TIME_H_ */
+
+int getitimer(int which, struct itimerval *value) __THROW;
+int setitimer(int which, const struct itimerval *value, struct itimerval *ovalue) __THROW;
+
+int gettimeofday(struct timeval *tv, struct timezone *tz) __THROW;
+int settimeofday(const struct timeval *tv , const struct timezone *tz) __THROW;
+
+extern int adjtime (const struct timeval *delta, struct timeval *olddelta) __THROW;
+
+struct tm {
+  int tm_sec;			/* Seconds.	[0-60] (1 leap second) */
+  int tm_min;			/* Minutes.	[0-59] */
+  int tm_hour;			/* Hours.	[0-23] */
+  int tm_mday;			/* Day.		[1-31] */
+  int tm_mon;			/* Month.	[0-11] */
+  int tm_year;			/* Year - 1900. */
+  int tm_wday;			/* Day of week.	[0-6] */
+  int tm_yday;			/* Days in year.[0-365]	*/
+  int tm_isdst;			/* DST.		[-1/0/1]*/
+
+  long int tm_gmtoff;		/* Seconds east of UTC.  */
+  const char *tm_zone;		/* Timezone abbreviation.  */
+};
+
+#ifdef _BSD_SOURCE
+/* another wonderful BSD invention... :( */
+#define timercmp(a,b,CMP) (((a)->tv_sec == (b)->tv_sec) ? ((a)->tv_usec CMP (b)->tv_usec) : ((a)->tv_sec CMP (b)->tv_sec))
+#define timerclear(x) ((x)->tv_sec=(x)->tv_usec=0)
+#define timeradd(a,b,x) do { (x)->tv_sec=(a)->tv_sec+(b)->tv_sec; if (((x)->tv_usec=(a)->tv_usec+(b)->tv_usec)>=1000000) { ++(x)->tv_sec; (x)->tv_usec-=1000000; } } while (0)
+#define timersub(a,b,x) do { (x)->tv_sec=(a)->tv_sec-(b)->tv_sec; if (((x)->tv_usec=(a)->tv_usec-(b)->tv_usec)<0) { --(x)->tv_sec; (x)->tv_usec+=1000000; } } while (0)
+#define timerisset(x) ((x)->tv_sec || (x)->tv_usec)
+
+int utimes(const char * filename, struct timeval * tvp);
+#endif
+
+__END_DECLS
+
+#endif

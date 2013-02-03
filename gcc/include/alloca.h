@@ -1,21 +1,17 @@
-/* libc/include/alloca.h - Allocate memory on stack */
+#ifndef _ALLOCA_H
+#define _ALLOCA_H
 
-/* Written 2000 by Werner Almesberger */
-/* Rearranged for general inclusion by stdlib.h.
-   2001, Corinna Vinschen <vinschen@redhat.com> */
+#include <sys/cdefs.h>
+#include <sys/types.h>
 
-#ifndef _NEWLIB_ALLOCA_H
-#define _NEWLIB_ALLOCA_H
-
-#include "_ansi.h"
-#include <sys/reent.h>
-
-#undef alloca
+__BEGIN_DECLS
 
 #ifdef __GNUC__
-#define alloca(size) __builtin_alloca(size)
+#define alloca(x) __builtin_alloca(x)
 #else
-void * _EXFUN(alloca,(size_t));
+void *alloca(size_t size) __THROW;
 #endif
+
+__END_DECLS
 
 #endif

@@ -1,136 +1,93 @@
-/*
- * string.h
- *
- * Definitions for memory and string functions.
- */
+#ifndef _STRING_H
+#define _STRING_H
 
-#ifndef _STRING_H_
-#define	_STRING_H_
-
-#include "_ansi.h"
-#include <sys/reent.h>
 #include <sys/cdefs.h>
+#include <sys/types.h>
 
-#define __need_size_t
-#include <stddef.h>
+__BEGIN_DECLS
 
-#ifndef NULL
-#define NULL 0
-#endif
+char *strcpy(char* __restrict__ dest, const char* __restrict__ src) __THROW __nonnull((1,2));
 
-_BEGIN_STD_C
+void *memccpy(void* __restrict__ dest, const void* __restrict__ src, int c, size_t n) __THROW __nonnull((1,2));
+void *memmove(void* dest, const void *src, size_t n) __THROW __nonnull((1,2));
 
-_PTR 	 _EXFUN(memchr,(const _PTR, int, size_t));
-int 	 _EXFUN(memcmp,(const _PTR, const _PTR, size_t));
-_PTR 	 _EXFUN(memcpy,(_PTR, const _PTR, size_t));
-_PTR	 _EXFUN(memmove,(_PTR, const _PTR, size_t));
-_PTR	 _EXFUN(memset,(_PTR, int, size_t));
-char 	*_EXFUN(strcat,(char *, const char *));
-char 	*_EXFUN(strchr,(const char *, int));
-int	 _EXFUN(strcmp,(const char *, const char *));
-int	 _EXFUN(strcoll,(const char *, const char *));
-char 	*_EXFUN(strcpy,(char *, const char *));
-size_t	 _EXFUN(strcspn,(const char *, const char *));
-char 	*_EXFUN(strerror,(int));
-size_t	 _EXFUN(strlen,(const char *));
-char 	*_EXFUN(strncat,(char *, const char *, size_t));
-int	 _EXFUN(strncmp,(const char *, const char *, size_t));
-char 	*_EXFUN(strncpy,(char *, const char *, size_t));
-char 	*_EXFUN(strpbrk,(const char *, const char *));
-char 	*_EXFUN(strrchr,(const char *, int));
-size_t	 _EXFUN(strspn,(const char *, const char *));
-char 	*_EXFUN(strstr,(const char *, const char *));
+int memccmp(const void* s1, const void* s2, int c, size_t n) __THROW __pure __nonnull((1,2));
 
-#ifndef _REENT_ONLY
-char 	*_EXFUN(strtok,(char *, const char *));
-#endif
+void* memset(void* s, int c, size_t n) __THROW __nonnull((1));
+int memcmp(const void* s1, const void* s2, size_t n) __THROW __pure __nonnull((1,2));
+void* memcpy(void* __restrict__ dest, const void* __restrict__ src, size_t n) __THROW __nonnull((1,2));
 
-size_t	 _EXFUN(strxfrm,(char *, const char *, size_t));
+char *strncpy(char* __restrict__ dest, const char* __restrict__ src, size_t n) __THROW __nonnull((1,2));
+int strncmp(const char* s1, const char* s2, size_t n) __THROW __pure __nonnull((1,2));
 
-#ifndef __STRICT_ANSI__
-char 	*_EXFUN(strtok_r,(char *, const char *, char **));
+char *strcat(char* __restrict__ dest, const char* __restrict__ src) __THROW __nonnull((1,2));
+char *strncat(char* __restrict__ dest, const char* __restrict__ src, size_t n) __THROW __nonnull((1,2));
 
-int	 _EXFUN(bcmp,(const void *, const void *, size_t));
-void	 _EXFUN(bcopy,(const void *, void *, size_t));
-void	 _EXFUN(bzero,(void *, size_t));
-int	 _EXFUN(ffs,(int));
-char 	*_EXFUN(index,(const char *, int));
-_PTR	 _EXFUN(memccpy,(_PTR, const _PTR, int, size_t));
-_PTR	 _EXFUN(mempcpy,(_PTR, const _PTR, size_t));
-_PTR	 _EXFUN(memmem, (const _PTR, size_t, const _PTR, size_t));
-char 	*_EXFUN(rindex,(const char *, int));
-char 	*_EXFUN(stpcpy,(char *, const char *));
-char 	*_EXFUN(stpncpy,(char *, const char *, size_t));
-int	 _EXFUN(strcasecmp,(const char *, const char *));
-char	*_EXFUN(strcasestr,(const char *, const char *));
-char 	*_EXFUN(strchrnul,(const char *, int));
-char 	*_EXFUN(strdup,(const char *));
-char 	*_EXFUN(_strdup_r,(struct _reent *, const char *));
-char 	*_EXFUN(strndup,(const char *, size_t));
-char 	*_EXFUN(_strndup_r,(struct _reent *, const char *, size_t));
-/* There are two common strerror_r variants.  If you request
-   _GNU_SOURCE, you get the GNU version; otherwise you get the POSIX
-   version.  POSIX requires that #undef strerror_r will still let you
-   invoke the underlying function, but that requires gcc support.  */
+int strcmp(const char *s1, const char *s2) __THROW __pure __nonnull((1,2));
+
+size_t strlen(const char *s) __THROW __pure __nonnull((1));
 #ifdef _GNU_SOURCE
-char    *_EXFUN(strerror_r,(int, char *, size_t));
-#else
-# ifdef __GNUC__
-int      _EXFUN(strerror_r,(int, char *, size_t)) __asm__ (__ASMNAME ("__xpg_strerror_r"));
-# else
-int      _EXFUN(__xpg_strerror_r,(int, char *, size_t));
-#  define strerror_r __xpg_strerror_r
-# endif
-#endif
-size_t	 _EXFUN(strlcat,(char *, const char *, size_t));
-size_t	 _EXFUN(strlcpy,(char *, const char *, size_t));
-int	 _EXFUN(strncasecmp,(const char *, const char *, size_t));
-size_t	 _EXFUN(strnlen,(const char *, size_t));
-char 	*_EXFUN(strsep,(char **, const char *));
-char	*_EXFUN(strlwr,(char *));
-char	*_EXFUN(strupr,(char *));
-#ifndef DEFS_H	/* Kludge to work around problem compiling in gdb */
-char  *_EXFUN(strsignal, (int __signo));
-#endif
-#ifdef __CYGWIN__
-int     _EXFUN(strtosigno, (const char *__name));
+size_t strnlen(const char *s,size_t maxlen) __THROW __pure __nonnull((1));
 #endif
 
-/* Recursive version of strerror.  */
-char *	_EXFUN(_strerror_r, (struct _reent *, int, int, int *));
+char *strstr(const char *haystack, const char *needle) __THROW __pure __nonnull((1,2));
 
-#if defined _GNU_SOURCE && defined __GNUC__
-#define strdupa(__s) \
-	(__extension__ ({const char *__in = (__s); \
-			 size_t __len = strlen (__in) + 1; \
-			 char * __out = (char *) __builtin_alloca (__len); \
-			 (char *) memcpy (__out, __in, __len);}))
-#define strndupa(__s, __n) \
-	(__extension__ ({const char *__in = (__s); \
-			 size_t __len = strnlen (__in, (__n)) + 1; \
-			 char *__out = (char *) __builtin_alloca (__len); \
-			 __out[__len-1] = '\0'; \
-			 (char *) memcpy (__out, __in, __len-1);}))
-#endif /* _GNU_SOURCE && __GNUC__ */
+char *strdup(const char *s) __THROW __attribute_malloc__ __nonnull((1));
 
-/* These function names are used on Windows and perhaps other systems.  */
-#ifndef strcmpi
-#define strcmpi strcasecmp
-#endif
-#ifndef stricmp
-#define stricmp strcasecmp
-#endif
-#ifndef strncmpi
-#define strncmpi strncasecmp
-#endif
-#ifndef strnicmp
-#define strnicmp strncasecmp
+char *strchr(const char *s, int c) __THROW __pure __nonnull((1));
+char *strrchr(const char *s, int c) __THROW __pure __nonnull((1));
+
+size_t strspn(const char *s, const char *_accept) __THROW __nonnull((1,2));
+size_t strcspn(const char *s, const char *reject) __THROW __nonnull((1,2));
+
+char *strpbrk(const char *s, const char *_accept) __THROW __nonnull((1,2));
+char *strsep(char ** __restrict__ stringp, const char * __restrict__ delim) __THROW __nonnull((1,2));
+
+void* memchr(const void *s, int c, size_t n) __THROW __pure __nonnull((1));
+#ifdef _GNU_SOURCE
+void* memrchr(const void *s, int c, size_t n) __THROW __pure __nonnull((1));
 #endif
 
-#endif /* ! __STRICT_ANSI__ */
+/* I would like to make this const, but Paul Jarc points out it has to
+ * be char* :-( */
+char *strerror(int errnum) __THROW __attribute_const__;
+/* work around b0rken GNU crapware like tar 1.13.19 */
+#define strerror strerror
+int strerror_r(int errnum,char* buf,size_t n) __THROW __attribute_dontuse__;
 
-#include <sys/string.h>
+#ifdef _GNU_SOURCE
+const char *strsignal(int signum) __THROW __attribute_const__;
+void *memmem(const void *haystack, size_t haystacklen, const void *needle, size_t needlelen) __THROW __nonnull((1,3));
 
-_END_STD_C
+void* mempcpy(void* __restrict__ dest,const void* __restrict__ src,size_t n) __THROW __nonnull((1,2));
 
-#endif /* _STRING_H_ */
+char *strndup(const char *s,size_t n) __THROW __attribute_malloc__ __nonnull((1));
+
+#define strdupa(s) ({ const char* tmp=s; size_t l=strlen(tmp)+1; char* x=alloca(l); memcpy(x,tmp,l); })
+#define strndupa(s,n) ({ const char* tmp=s; const char* y=memchr(tmp,0,(n)); size_t l=y?y-tmp:n; char* x=alloca(l+1); x[l]=0; memcpy(x,tmp,l); })
+#endif
+
+char *strtok(char * __restrict__ s, const char * __restrict__ delim) __THROW __nonnull((2));
+char *strtok_r(char * __restrict__ s, const char * __restrict__ delim, char ** __restrict__ ptrptr) __THROW __nonnull((2,3));
+
+size_t strlcpy(char * __restrict__ dst, const char * __restrict__ src, size_t size) __THROW __nonnull((1,2));
+size_t strlcat(char * __restrict__ dst, const char * __restrict__ src, size_t size) __THROW __nonnull((1,2));
+
+int strcoll(const char *s1, const char *s2) __THROW __nonnull((1,2));
+size_t strxfrm(char *dest, const char * __restrict__ src, size_t n) __THROW __nonnull((1,2));
+
+#ifdef _BSD_SOURCE
+#include <strings.h>
+#endif
+
+char *stpcpy(char * __restrict__ dest, const char * __restrict__ src) __THROW __nonnull((1,2));
+char* stpncpy(char* __restrict__ dest, const char* __restrict__ src, size_t n) __THROW __nonnull((1,2));
+
+#ifdef _GNU_SOURCE
+int ffsl(long i) __THROW __attribute_const__;
+int ffsll(long long i) __THROW __attribute_const__;
+#endif
+
+__END_DECLS
+
+#endif

@@ -1,144 +1,113 @@
-/* libc/sys/linux/sys/cdefs.h - Helper macros for K&R vs. ANSI C compat. */
-
-/* Written 2000 by Werner Almesberger */
-
-/*
- * Copyright (c) 1991, 1993
- *	The Regents of the University of California.  All rights reserved.
- *
- * This code is derived from software contributed to Berkeley by
- * Berkeley Software Design, Inc.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- *
- *	@(#)cdefs.h	8.8 (Berkeley) 1/9/95
- * $FreeBSD: src/sys/sys/cdefs.h,v 1.54 2002/05/11 03:58:24 alfred Exp $
- */
-
 #ifndef _SYS_CDEFS_H
 #define _SYS_CDEFS_H
 
-#define __FBSDID(x) /* nothing */
-/*
- * Note: the goal here is not compatibility to K&R C. Since we know that we
- * have GCC which understands ANSI C perfectly well, we make use of this.
- */
-
-#define __P(args)	args
-#define __PMT(args)	args
-#define __const		const
-#define __signed	signed
-#define __volatile	volatile
-#define __DOTS    	, ...
+#ifndef __cplusplus
 #define __THROW
-
-/*
- * The __CONCAT macro is used to concatenate parts of symbol names, e.g.
- * with "#define OLD(foo) __CONCAT(old,foo)", OLD(foo) produces oldfoo.
- * The __CONCAT macro is a bit tricky to use if it must work in non-ANSI
- * mode -- there must be no spaces between its arguments, and for nested
- * __CONCAT's, all the __CONCAT's must be at the left.  __CONCAT can also
- * concatenate double-quoted strings produced by the __STRING macro, but
- * this only works with ANSI C.
- *
- * __XSTRING is like __STRING, but it expands any macros in its argument
- * first.  It is only available with ANSI C.
- */
-#define __CONCAT1(x,y)  x ## y
-#define __CONCAT(x,y)   __CONCAT1(x,y)
-#define __STRING(x)     #x              /* stringify without expanding x */
-#define __XSTRING(x)    __STRING(x)     /* expand x, then stringify */
-
-#ifdef __GNUC__
-# define __ASMNAME(cname)  __XSTRING (__USER_LABEL_PREFIX__) cname
+#define __BEGIN_DECLS
+#define __END_DECLS
+#else
+#define __THROW throw ()
+#define __BEGIN_DECLS extern "C" {
+#define __END_DECLS }
 #endif
 
-#define __ptr_t void *
-#define __long_double_t  long double
+#ifndef __GNUC__
+#define __attribute__(xyz)
+#define __extension__
+#endif
 
+#if (__GNUC__ > 2) || ((__GNUC__ == 2) && (__GNUC_MINOR__ >= 96))
+#define __pure __attribute__ ((__pure__))
+#else
+#define __pure
+#endif
+
+#if (__GNUC__ == 2) && (__GNUC_MINOR__ < 95)
+#define __restrict__
+#endif
+
+#ifndef __STRICT_ANSI__
+#define restrict __restrict__
+#if __GNUC__ < 3
+#define __builtin_expect(foo,bar) (foo)
+#define __expect(foo,bar) (foo)
+#define __malloc__
+#else
+#define __expect(foo,bar) __builtin_expect((long)(foo),bar)
+#define __attribute_malloc__ __attribute__((__malloc__))
+#endif
+#endif
+
+/* idea for these macros taken from Linux kernel */
+#define __likely(foo) __expect((foo),1)
+#define __unlikely(foo) __expect((foo),0)
+
+#ifndef __attribute_malloc__
 #define __attribute_malloc__
-#define __attribute_pure__
-#define __attribute_format_strfmon__(a,b)
-#define __flexarr      [0]
-
-#ifdef  __cplusplus
-# define __BEGIN_DECLS  extern "C" {
-# define __END_DECLS    }
-#else
-# define __BEGIN_DECLS
-# define __END_DECLS
 #endif
 
-#ifndef __BOUNDED_POINTERS__
-# define __bounded      /* nothing */
-# define __unbounded    /* nothing */
-# define __ptrvalue     /* nothing */
+#define __P(x) x
+
+#define __ptr_t void*
+
+#if defined(__STRICT_ANSI__) && __STDC_VERSION__ + 0 < 199900L
+#define inline
 #endif
 
-#ifdef __GNUC__
-#define	__strong_reference(sym,aliassym)	\
-	extern __typeof (sym) aliassym __attribute__ ((__alias__ (#sym)));
-#ifdef __ELF__
-#ifdef __STDC__
-#define	__weak_reference(sym,alias)	\
-	__asm__(".weak " #alias);	\
-	__asm__(".equ "  #alias ", " #sym)
-#define	__warn_references(sym,msg)	\
-	__asm__(".section .gnu.warning." #sym);	\
-	__asm__(".asciz \"" msg "\"");	\
-	__asm__(".previous")
-#else
-#define	__weak_reference(sym,alias)	\
-	__asm__(".weak alias");		\
-	__asm__(".equ alias, sym")
-#define	__warn_references(sym,msg)	\
-	__asm__(".section .gnu.warning.sym"); \
-	__asm__(".asciz \"msg\"");	\
-	__asm__(".previous")
-#endif	/* __STDC__ */
-#else	/* !__ELF__ */
-#ifdef __STDC__
-#define	__weak_reference(sym,alias)	\
-	__asm__(".stabs \"_" #alias "\",11,0,0,0");	\
-	__asm__(".stabs \"_" #sym "\",1,0,0,0")
-#define	__warn_references(sym,msg)	\
-	__asm__(".stabs \"" msg "\",30,0,0,0");		\
-	__asm__(".stabs \"_" #sym "\",1,0,0,0")
-#else
-#define	__weak_reference(sym,alias)	\
-	__asm__(".stabs \"_/**/alias\",11,0,0,0");	\
-	__asm__(".stabs \"_/**/sym\",1,0,0,0")
-#define	__warn_references(sym,msg)	\
-	__asm__(".stabs msg,30,0,0,0");			\
-	__asm__(".stabs \"_/**/sym\",1,0,0,0")
-#endif	/* __STDC__ */
-#endif	/* __ELF__ */
-#endif	/* __GNUC__ */
+#ifndef __i386__
+#define __regparm__(x)
+#endif
 
-#endif /* _SYS_CDEFS_H */
+#if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 2))
+#define __attribute_dontuse__ __attribute__((__deprecated__))
+#else
+#define __attribute_dontuse__
+#define __deprecated__
+#endif
+
+#if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 3))
+# define __nonnull(params) __attribute__ ((__nonnull__ params))
+#else
+# define __nonnull(params)
+#endif
+
+#if (__GNUC__ > 3) || ((__GNUC__ == 3) && (__GNUC_MINOR__ >= 4))
+# define __attribute_used __attribute__ ((__used__))
+#else
+# define __attribute_used
+# define __warn_unused_result__
+#endif
+
+#if (__GNUC__ >= 4)
+#define __needsNULL__(x) __sentinel__(x)
+#else
+#define __needsNULL__(x)
+#define __sentinel__
+#endif
+
+#if (__GNUC__ < 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ < 3))
+# define __cold__
+# define __hot__
+#endif
+
+#if (__GNUC__ < 4) || ((__GNUC__ == 4) && (__GNUC_MINOR__ < 3))
+#define __attribute_alloc__(x)
+#define __attribute_alloc2__(x,y)
+#else
+#define __attribute_alloc__(x) __attribute__((alloc_size(x))
+#define __attribute_alloc2__(x,y) __attribute__((alloc_size(x,y))
+#endif
+
+#if (__GNUC__ < 2) || ((__GNUC__ == 2) && (__GNUC_MINOR__ < 5))
+#define __attribute_const__
+#else
+#define __attribute_const__ __attribute__((const))
+#endif
+
+#if (__GNUC__ < 2) || ((__GNUC__ == 2) && (__GNUC_MINOR__ < 8))
+#define __attribute_formatarg__(x)
+#else
+#define __attribute_formatarg__(x) __attribute__((format_arg(x)))
+#endif
+
+#endif

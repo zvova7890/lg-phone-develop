@@ -1,40 +1,61 @@
 #ifndef _SYS_WAIT_H
 #define _SYS_WAIT_H
 
-#ifdef __cplusplus
-extern "C" {
+#include <sys/cdefs.h>
+#include <sys/resource.h>
+
+__BEGIN_DECLS
+
+#define WNOHANG		0x00000001
+#define WUNTRACED	0x00000002
+
+#define __WNOTHREAD	0x20000000	/* Don't wait on children of other threads in this group */
+#define __WALL		0x40000000	/* Wait on all children, regardless of type */
+#define __WCLONE	0x80000000	/* Wait only on non-SIGCHLD children */
+
+/* If WIFEXITED(STATUS), the low-order 8 bits of the status.  */
+#define __WEXITSTATUS(status)	(((status) & 0xff00) >> 8)
+#define WEXITSTATUS __WEXITSTATUS
+
+/* If WIFSIGNALED(STATUS), the terminating signal.  */
+#define __WTERMSIG(status)	((status) & 0x7f)
+#define WTERMSIG __WTERMSIG
+
+/* If WIFSTOPPED(STATUS), the signal that stopped the child.  */
+#define __WSTOPSIG(status)	__WEXITSTATUS(status)
+#define WSTOPSIG __WSTOPSIG
+
+/* Nonzero if STATUS indicates normal termination.  */
+#define WIFEXITED(status)	(__WTERMSIG(status) == 0)
+
+/* Nonzero if STATUS indicates termination by a signal.  */
+#define WIFSIGNALED(status)	(!WIFSTOPPED(status) && !WIFEXITED(status))
+
+/* Nonzero if STATUS indicates the child is stopped.  */
+#define WIFSTOPPED(status)	(((status) & 0xff) == 0x7f)
+
+/* Nonzero if STATUS indicates the child dumped core. */
+#define WCOREDUMP(status) ((status) & 0x80)
+
+#ifdef _BSD_SOURCE
+#define W_STOPCODE(sig) ((sig) << 8 | 0x7f)
 #endif
 
-#include <sys/types.h>
+pid_t wait(int *status) __THROW;
+pid_t waitpid(pid_t pid, int *status, int options) __THROW;
 
-#define WNOHANG 1
-#define WUNTRACED 2
+pid_t wait3(int *status, int options, struct rusage *rusage) __THROW;
 
-/* A status looks like:
-      <2 bytes info> <2 bytes code>
+pid_t wait4(pid_t pid, int *status, int options, struct rusage *rusage) __THROW;
 
-      <code> == 0, child has exited, info is the exit value
-      <code> == 1..7e, child has exited, info is the signal number.
-      <code> == 7f, child has stopped, info was the signal number.
-      <code> == 80, there was a core dump.
-*/
-   
-#define WIFEXITED(w)	(((w) & 0xff) == 0)
-#define WIFSIGNALED(w)	(((w) & 0x7f) > 0 && (((w) & 0x7f) < 0x7f))
-#define WIFSTOPPED(w)	(((w) & 0xff) == 0x7f)
-#define WEXITSTATUS(w)	(((w) >> 8) & 0xff)
-#define WTERMSIG(w)	((w) & 0x7f)
-#define WSTOPSIG	WEXITSTATUS
+typedef enum {
+  P_ALL,		/* Wait for any child.  */
+  P_PID,		/* Wait for specified process.  */
+  P_PGID		/* Wait for members of process group.  */
+} idtype_t;
 
-pid_t wait (int *);
-pid_t waitpid (pid_t, int *, int);
+int waitid(idtype_t idtype, id_t id, siginfo_t *infop, int options);
 
-/* Provide prototypes for most of the _<systemcall> names that are
-   provided in newlib for some compilers.  */
-pid_t _wait (int *);
-
-#ifdef __cplusplus
-};
-#endif
+__END_DECLS
 
 #endif

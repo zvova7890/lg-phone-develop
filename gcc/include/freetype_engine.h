@@ -59,21 +59,6 @@ typedef struct
     fte_info *fti;
 }ft_font;
 
-/*
-typedef struct
-{
-    void *context;
-    void (*setPixel)(void *context, int x, int y, unsigned int color);
-    int width, height;
-    char bits;
-
-    unsigned short clip_x1;
-    unsigned short clip_y1;
-    unsigned short clip_x2;
-    unsigned short clip_y2;
-
-}ft_font_render_context;
-*/
 
 ft_engine * fte_open(const char *file);
 void fte_close(ft_engine *fte, int);

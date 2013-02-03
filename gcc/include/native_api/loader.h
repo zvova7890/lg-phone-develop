@@ -112,8 +112,8 @@ int loader_dlopen(const char *name)
 __def( 0x80 + 0, int, name)
 
 __inl
-int loader_dlsym(int handle, const char *name)
-__def( 0x80 + 1, int, handle, name)
+void *loader_dlsym(int handle, const char *name)
+__def( 0x80 + 1, void *, handle, name)
 
 __inl
 int loader_dlclose(int handle)

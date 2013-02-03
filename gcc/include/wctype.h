@@ -1,47 +1,28 @@
-#ifndef _WCTYPE_H_
-#define _WCTYPE_H_
+#ifndef _WCTYPE_H
+#define _WCTYPE_H
 
-#include <_ansi.h>
-#include <sys/_types.h>
+#include <sys/cdefs.h>
+#include <wchar.h>
 
-#define __need_wint_t
-#include <stddef.h>
+typedef const int32_t* wctrans_t;
 
-#ifndef WEOF
-# define WEOF ((wint_t)-1)
+int iswalnum(wint_t) __THROW __attribute__ ((__const__));
+int iswalpha(wint_t) __THROW __attribute__ ((__const__));
+int iswblank(wint_t) __THROW __attribute__ ((__const__));
+int iswcntrl(wint_t) __THROW __attribute__ ((__const__));
+int iswdigit(wint_t) __THROW __attribute__ ((__const__));
+int iswgraph(wint_t) __THROW __attribute__ ((__const__));
+int iswlower(wint_t) __THROW __attribute__ ((__const__));
+int iswprint(wint_t) __THROW __attribute__ ((__const__));
+int iswpunct(wint_t) __THROW __attribute__ ((__const__));
+int iswspace(wint_t) __THROW __attribute__ ((__const__));
+int iswupper(wint_t) __THROW __attribute__ ((__const__));
+int iswxdigit(wint_t) __THROW __attribute__ ((__const__));
+int iswctype(wint_t, wctype_t) __THROW __attribute__ ((__const__));
+wint_t towctrans(wint_t, wctrans_t) __THROW;
+wint_t towlower(wint_t) __THROW;
+wint_t towupper(wint_t) __THROW;
+wctrans_t wctrans(const char *) __THROW;
+wctype_t wctype(const char *) __THROW;
+
 #endif
-
-_BEGIN_STD_C
-
-#ifndef _WCTYPE_T
-#define _WCTYPE_T
-typedef int wctype_t;
-#endif
-
-#ifndef _WCTRANS_T
-#define _WCTRANS_T
-typedef int wctrans_t;
-#endif
-
-int	_EXFUN(iswalpha, (wint_t));
-int	_EXFUN(iswalnum, (wint_t));
-int	_EXFUN(iswblank, (wint_t));
-int	_EXFUN(iswcntrl, (wint_t));
-int	_EXFUN(iswctype, (wint_t, wctype_t));
-int	_EXFUN(iswdigit, (wint_t));
-int	_EXFUN(iswgraph, (wint_t));
-int	_EXFUN(iswlower, (wint_t));
-int	_EXFUN(iswprint, (wint_t));
-int	_EXFUN(iswpunct, (wint_t));
-int	_EXFUN(iswspace, (wint_t));
-int	_EXFUN(iswupper, (wint_t));
-int	_EXFUN(iswxdigit, (wint_t));
-wint_t	_EXFUN(towctrans, (wint_t, wctrans_t));
-wint_t	_EXFUN(towupper, (wint_t));
-wint_t	_EXFUN(towlower, (wint_t));
-wctrans_t _EXFUN(wctrans, (const char *));
-wctype_t _EXFUN(wctype, (const char *));
-
-_END_STD_C
-
-#endif /* _WCTYPE_H_ */

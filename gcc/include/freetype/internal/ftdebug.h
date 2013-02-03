@@ -217,10 +217,13 @@ FT_BEGIN_HEADER
 #include "stdio.h"  /* for vfprintf() */
 
   /* print a message */
+  
+#define FT_Message printf
+/*
   FT_BASE( void )
   FT_Message( const char*  fmt,
               ... );
-
+*/
   /* print a message and exit */
   FT_BASE( void )
   FT_Panic( const char*  fmt,

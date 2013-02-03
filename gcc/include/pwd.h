@@ -1,78 +1,46 @@
-/*-
- * Copyright (c) 1989 The Regents of the University of California.
- * All rights reserved.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 3. All advertising materials mentioning features or use of this software
- *    must display the following acknowledgement:
- *	This product includes software developed by the University of
- *	California, Berkeley and its contributors.
- * 4. Neither the name of the University nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- *
- *	@(#)pwd.h	5.13 (Berkeley) 5/28/91
- */
+#ifndef _PWD_H
+#define _PWD_H
 
-#ifndef _PWD_H_
-#ifdef __cplusplus
-extern "C" {
-#endif
-#define	_PWD_H_
-
+#include <sys/cdefs.h>
 #include <sys/types.h>
+#include <stdio.h>
 
-#ifndef _POSIX_SOURCE
-#define	_PATH_PASSWD		"/etc/passwd"
-
-#define	_PASSWORD_LEN		128	/* max length, not counting NULL */
-#endif
+__BEGIN_DECLS
 
 struct passwd {
-	char	*pw_name;		/* user name */
-	char	*pw_passwd;		/* encrypted password */
-	uid_t	pw_uid;			/* user uid */
-	gid_t	pw_gid;			/* user gid */
-	char	*pw_comment;		/* comment */
-	char	*pw_gecos;		/* Honeywell login info */
-	char	*pw_dir;		/* home directory */
-	char	*pw_shell;		/* default shell */
+  char *pw_name;		/* Username.  */
+  char *pw_passwd;		/* Password.  */
+  uid_t pw_uid;			/* User ID.  */
+  gid_t pw_gid;			/* Group ID.  */
+  char *pw_gecos;		/* Real name.  */
+  char *pw_dir;			/* Home directory.  */
+  char *pw_shell;		/* Shell program.  */
 };
 
-#ifndef __INSIDE_CYGWIN__
-struct passwd	*getpwuid (uid_t);
-struct passwd	*getpwnam (const char *);
-int 		 getpwnam_r (const char *, struct passwd *,
-			char *, size_t , struct passwd **);
-int		 getpwuid_r (uid_t, struct passwd *, char *,
-			size_t, struct passwd **);
-#ifndef _POSIX_SOURCE
-struct passwd	*getpwent (void);
-void		 setpwent (void);
-void		 endpwent (void);
-#endif
-#endif
+extern struct passwd *getpwuid (uid_t uid) __THROW;
+extern struct passwd *getpwnam (const char *name) __THROW;
 
-#ifdef __cplusplus
-}
+extern struct passwd *getpwent(void) __THROW;
+extern void setpwent(void) __THROW;
+extern void endpwent(void) __THROW;
+extern int putpwent(const struct passwd *p, FILE *stream) __THROW __attribute_dontuse__;
+
+int getpwent_r(struct passwd *res, char *buf, size_t buflen,
+	       struct passwd **res_sig) __THROW;
+int getpwnam_r(const char* name,
+	       struct passwd *res, char *buf, size_t buflen,
+	       struct passwd **res_sig) __THROW;
+int getpwuid_r(uid_t uid,
+	       struct passwd *res, char *buf, size_t buflen,
+	       struct passwd **res_sig) __THROW;
+
+/* NON STANDARD */
+extern struct passwd *fgetpwent(FILE * fp);
+extern void fsetpwent(int fd) __THROW;
+extern int fgetpwent_r(int fd,struct passwd *res, 
+		char *buf, size_t buflen,
+	       	struct passwd **res_sig);
+
+__END_DECLS
+
 #endif
-#endif /* _PWD_H_ */
