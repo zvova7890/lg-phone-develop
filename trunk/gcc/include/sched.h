@@ -1,97 +1,76 @@
-/*
- *  Written by Joel Sherrill <joel@OARcorp.com>.
- *
- *  COPYRIGHT (c) 1989-2010.
- *  On-Line Applications Research Corporation (OAR).
- *
- *  Permission to use, copy, modify, and distribute this software for any
- *  purpose without fee is hereby granted, provided that this entire notice
- *  is included in all copies of any software which is or includes a copy
- *  or modification of this software.
- *
- *  THIS SOFTWARE IS BEING PROVIDED "AS IS", WITHOUT ANY EXPRESS OR IMPLIED
- *  WARRANTY.  IN PARTICULAR,  THE AUTHOR MAKES NO REPRESENTATION
- *  OR WARRANTY OF ANY KIND CONCERNING THE MERCHANTABILITY OF THIS
- *  SOFTWARE OR ITS FITNESS FOR ANY PARTICULAR PURPOSE.
- *
- *  $Id: sched.h,v 1.2 2010/04/01 18:33:33 jjohnstn Exp $
- */
+#ifndef _SCHED_H
+#define _SCHED_H 1
 
-#ifndef _SCHED_H_
-#define _SCHED_H_
-
+#include <time.h>
 #include <sys/types.h>
-#include <sys/sched.h>
 
-#ifdef __cplusplus
-extern "C" {
+__BEGIN_DECLS
+
+/*
+ * Scheduling policies
+ */
+#define SCHED_OTHER		0
+#define SCHED_FIFO		1
+#define SCHED_RR		2
+
+/*
+ * This is an additional bit set when we want to
+ * yield the CPU for one re-schedule..
+ */
+#define SCHED_YIELD		0x10
+
+struct sched_param {
+  int sched_priority;
+};
+
+/* END OF COPY form kernel-header */
+
+int __sched_setparam(pid_t pid, const struct sched_param* p);
+int sched_setparam(pid_t pid, const struct sched_param* p);
+
+int __sched_getparam(pid_t pid, struct sched_param* p);
+int sched_getparam(pid_t pid, struct sched_param* p);
+
+int __sched_getscheduler(pid_t pid);
+int sched_getscheduler(pid_t pid);
+
+int __sched_setscheduler(pid_t pid, int policy, const struct sched_param* p);
+int sched_setscheduler(pid_t pid, int policy, const struct sched_param* p);
+
+int __sched_yield(void);
+int sched_yield(void);
+
+int __sched_get_priority_max(int policy);
+int sched_get_priority_max(int policy);
+
+int __sched_get_priority_min(int policy);
+int sched_get_priority_min(int policy);
+
+int __sched_rr_get_interval(pid_t pid, struct timespec* tp);
+int sched_rr_get_interval(pid_t pid, struct timespec* tp);
+
+#ifdef _GNU_SOURCE
+/*
+ * cloning flags:
+ */
+#define CSIGNAL         0x000000ff      /* signal mask to be sent at exit */
+#define CLONE_VM        0x00000100      /* set if VM shared between processes */
+#define CLONE_FS        0x00000200      /* set if fs info shared between processes */
+#define CLONE_FILES     0x00000400      /* set if open files shared between processes */
+#define CLONE_SIGHAND   0x00000800      /* set if signal handlers and blocked signals shared */
+#define CLONE_PID       0x00001000      /* set if pid shared */
+#define CLONE_PTRACE    0x00002000      /* set if we want to let tracing continue on the child too */
+#define CLONE_VFORK     0x00004000      /* set if the parent wants the child to wake it up on mm_release */
+#define CLONE_PARENT    0x00008000      /* set if we want to have the same parent as the cloner */
+#define CLONE_THREAD    0x00010000      /* Same thread group? */
+
+#define CLONE_SIGNAL    (CLONE_SIGHAND | CLONE_THREAD)
+
+int clone(void*(*fn)(void*),void*stack,int flags,void*arg);
+
+int unshare(int flags);
 #endif
 
-#if defined(_POSIX_PRIORITY_SCHEDULING)
-/*
- *  XBD 13 - Set Scheduling Parameters, P1003.1b-2008, p. 1803
- */
-int sched_setparam(
-  pid_t                     __pid,
-  const struct sched_param *__param
-);
+__END_DECLS
 
-/*
- *  XBD 13 - Set Scheduling Parameters, P1003.1b-2008, p. 1800
- */
-int sched_getparam(
-  pid_t                     __pid,
-  struct sched_param       *__param
-);
-
-/*
- *  XBD 13 - Set Scheduling Policy and Scheduling Parameters,
- *         P1003.1b-2008, p. 1805
- */
-int sched_setscheduler(
-  pid_t                     __pid,
-  int                       __policy,
-  const struct sched_param *__param
-);
-
-/*
- *  XBD 13 - Get Scheduling Policy, P1003.1b-2008, p. 1801
- */
-int sched_getscheduler(
-  pid_t                     __pid
-);
-
-/*
- *  XBD 13 - Get Scheduling Parameter Limits, P1003.1b-2008, p. 1799
- */
-int sched_get_priority_max(
-  int __policy
-);
-
-int sched_get_priority_min(
-  int  __policy
-);
-
-/*
- *  XBD 13 - Get Scheduling Parameter Limits, P1003.1b-2008, p. 1802
- */
-int sched_rr_get_interval(
-  pid_t             __pid,
-  struct timespec  *__interval
-);
-#endif /* _POSIX_PRIORITY_SCHEDULING */
-
-#if defined(_POSIX_THREADS) || defined(_POSIX_PRIORITY_SCHEDULING)
-
-/*
- *  XBD 13 - Yield Processor, P1003.1b-2008, p. 1807
- */
-int sched_yield( void );
-
-#endif /* _POSIX_THREADS or _POSIX_PRIORITY_SCHEDULING */
-
-#ifdef __cplusplus
-}
 #endif
-
-#endif /* _SCHED_H_ */

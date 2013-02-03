@@ -1,6 +1,7 @@
 // -*- C++ -*- forwarding header.
 
-// Copyright (C) 2000, 2002, 2003, 2009 Free Software Foundation, Inc.
+// Copyright (C) 1997, 1998, 1999, 2000, 2001, 2002, 2003, 2004, 2005,
+// 2009, 2010, 2012  Free Software Foundation, Inc.
 //
 // This file is part of the GNU ISO C++ Library.  This library is free
 // software; you can redistribute it and/or modify it under the
@@ -22,6 +23,16 @@
 // see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
 // <http://www.gnu.org/licenses/>.
 
+/** @file include/cstdio
+ *  This is a Standard C++ Library file.  You should @c #include this file
+ *  in your programs, rather than any of the @a *.h implementation files.
+ *
+ *  This is the C++ version of the Standard C Library header @c stdio.h,
+ *  and its contents are (mostly) the same as that header, but are all
+ *  contained in the namespace @c std (except for names which are defined
+ *  as macros in C).
+ */
+
 //
 // ISO C++ 14882: 27.8.2  C Library files
 //
@@ -31,7 +42,12 @@
 
 #pragma GCC system_header
 
-#include_next <stdio.h>
+#include <bits/c++config.h>
+#include <stdio.h>
+
+#ifndef _GLIBCXX_HAVE_GETS
+extern "C" char* gets (char* __s) __attribute__((deprecated));
+#endif
 
 // Get rid of those macros defined in <stdio.h> in lieu of real functions.
 #undef clearerr
@@ -75,5 +91,98 @@
 #undef vfprintf
 #undef vprintf
 #undef vsprintf
+
+namespace std
+{
+  using ::FILE;
+  using ::fpos_t;
+
+  using ::clearerr;
+  using ::fclose;
+  using ::feof;
+  using ::ferror;
+  using ::fflush;
+  using ::fgetc;
+  using ::fgetpos;
+  using ::fgets;
+  using ::fopen;
+  using ::fprintf;
+  using ::fputc;
+  using ::fputs;
+  using ::fread;
+  using ::freopen;
+  using ::fscanf;
+  using ::fseek;
+  using ::fsetpos;
+  using ::ftell;
+  using ::fwrite;
+  using ::getc;
+  using ::getchar;
+  using ::gets;
+  using ::perror;
+  //using ::printf;
+  using ::putc;
+  using ::putchar;
+  using ::puts;
+  using ::remove;
+  using ::rename;
+  using ::rewind;
+  //using ::scanf;
+  using ::setbuf;
+  using ::setvbuf;
+  using ::sprintf;
+  using ::sscanf;
+  using ::tmpfile;
+  using ::tmpnam;
+  using ::ungetc;
+  using ::vfprintf;
+  using ::vprintf;
+  using ::vsprintf;
+} // namespace std
+
+#if _GLIBCXX_USE_C99
+
+#undef snprintf
+#undef vfscanf
+#undef vscanf
+#undef vsnprintf
+#undef vsscanf
+
+namespace __gnu_cxx
+{
+#if _GLIBCXX_USE_C99_CHECK || _GLIBCXX_USE_C99_DYNAMIC
+  extern "C" int
+  (snprintf)(char * __restrict, std::size_t, const char * __restrict, ...)
+  throw ();
+  extern "C" int
+  (vfscanf)(FILE * __restrict, const char * __restrict, __gnuc_va_list);
+  extern "C" int (vscanf)(const char * __restrict, __gnuc_va_list);
+  extern "C" int
+  (vsnprintf)(char * __restrict, std::size_t, const char * __restrict,
+	      __gnuc_va_list) throw ();
+  extern "C" int
+  (vsscanf)(const char * __restrict, const char * __restrict, __gnuc_va_list)
+  throw ();
+#endif
+
+#if !_GLIBCXX_USE_C99_DYNAMIC
+  using ::snprintf;
+  using ::vfscanf;
+  using ::vscanf;
+  using ::vsnprintf;
+  using ::vsscanf;
+#endif
+} // namespace __gnu_cxx
+
+namespace std
+{
+  using ::__gnu_cxx::snprintf;
+  using ::__gnu_cxx::vfscanf;
+  using ::__gnu_cxx::vscanf;
+  using ::__gnu_cxx::vsnprintf;
+  using ::__gnu_cxx::vsscanf;
+} // namespace std
+
+#endif
 
 #endif

@@ -1,89 +1,60 @@
-/*
- * Copyright (c) 1989, 1993
- *	The Regents of the University of California.  All rights reserved.
- *
- * This code is derived from software contributed to Berkeley by
- * Guido van Rossum.
- *
- * Redistribution and use in source and binary forms, with or without
- * modification, are permitted provided that the following conditions
- * are met:
- * 1. Redistributions of source code must retain the above copyright
- *    notice, this list of conditions and the following disclaimer.
- * 2. Redistributions in binary form must reproduce the above copyright
- *    notice, this list of conditions and the following disclaimer in the
- *    documentation and/or other materials provided with the distribution.
- * 4. Neither the name of the University nor the names of its contributors
- *    may be used to endorse or promote products derived from this software
- *    without specific prior written permission.
- *
- * THIS SOFTWARE IS PROVIDED BY THE REGENTS AND CONTRIBUTORS ``AS IS'' AND
- * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
- * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
- * ARE DISCLAIMED.  IN NO EVENT SHALL THE REGENTS OR CONTRIBUTORS BE LIABLE
- * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
- * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
- * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
- * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
- * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
- * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
- * SUCH DAMAGE.
- *
- *	@(#)glob.h	8.1 (Berkeley) 6/2/93
- * $FreeBSD: src/include/glob.h,v 1.6 2002/03/23 17:24:53 imp Exp $
- */
-
-#ifndef _GLOB_H_
-#define	_GLOB_H_
+#ifndef _GLOB_H
+#define _GLOB_H
 
 #include <sys/cdefs.h>
-
-struct stat;
-typedef struct {
-	int gl_pathc;		/* Count of total paths so far. */
-	int gl_matchc;		/* Count of paths matching pattern. */
-	int gl_offs;		/* Reserved at beginning of gl_pathv. */
-	int gl_flags;		/* Copy of flags parameter to glob. */
-	char **gl_pathv;	/* List of paths matching pattern. */
-				/* Copy of errfunc parameter to glob. */
-	int (*gl_errfunc)(const char *, int);
-
-	/*
-	 * Alternate filesystem access methods for glob; replacement
-	 * versions of closedir(3), readdir(3), opendir(3), stat(2)
-	 * and lstat(2).
-	 */
-	void (*gl_closedir)(void *);
-	struct dirent *(*gl_readdir)(void *);
-	void *(*gl_opendir)(const char *);
-	int (*gl_lstat)(const char *, struct stat *);
-	int (*gl_stat)(const char *, struct stat *);
-} glob_t;
-
-#define	GLOB_APPEND	0x0001	/* Append to output from previous call. */
-#define	GLOB_DOOFFS	0x0002	/* Use gl_offs. */
-#define	GLOB_ERR	0x0004	/* Return on error. */
-#define	GLOB_MARK	0x0008	/* Append / to matching directories. */
-#define	GLOB_NOCHECK	0x0010	/* Return pattern itself if nothing matches. */
-#define	GLOB_NOSORT	0x0020	/* Don't sort. */
-
-#define	GLOB_ALTDIRFUNC	0x0040	/* Use alternately specified directory funcs. */
-#define	GLOB_BRACE	0x0080	/* Expand braces ala csh. */
-#define	GLOB_MAGCHAR	0x0100	/* Pattern had globbing characters. */
-#define	GLOB_NOMAGIC	0x0200	/* GLOB_NOCHECK without magic chars (csh). */
-#define	GLOB_QUOTE	0x0400	/* Quote special chars with \. */
-#define	GLOB_TILDE	0x0800	/* Expand tilde names from the passwd file. */
-#define	GLOB_LIMIT	0x1000	/* limit number of returned paths */
-
-/* backwards compatibility, this is the old name for this option */
-#define GLOB_MAXPATH	GLOB_LIMIT
-
-#define	GLOB_NOSPACE	(-1)	/* Malloc call failed. */
-#define	GLOB_ABEND	(-2)	/* Unignored error. */
+#include <sys/types.h>
 
 __BEGIN_DECLS
-int	glob(const char *, int, int (*)(const char *, int), glob_t *);
-void	globfree(glob_t *);
+
+typedef struct {
+	size_t gl_pathc;    /* Count of paths matched so far  */
+	char **gl_pathv;    /* List of matched pathnames.  */
+	size_t gl_offs;     /* Slots to reserve in `gl_pathv'.  */
+	int gl_flags;		/* Set to FLAGS, maybe | GLOB_MAGCHAR.  */
+} glob_t;
+
+
+int glob(const char *pattern, int flags,
+	 int errfunc(const char * epath, int eerrno),
+	 glob_t *pglob) __THROW;
+
+void globfree(glob_t *pglob) __THROW;
+
+
+
+/* Bits set in the FLAGS argument to `glob'.  */
+#define	GLOB_ERR	(1 << 0)/* Return on read errors.  */
+#define	GLOB_MARK	(1 << 1)/* Append a slash to each name.  */
+#define	GLOB_NOSORT	(1 << 2)/* Don't sort the names.  */
+#define	GLOB_DOOFFS	(1 << 3)/* Insert PGLOB->gl_offs NULLs.  */
+#define	GLOB_NOCHECK	(1 << 4)/* If nothing matches, return the pattern.  */
+#define	GLOB_APPEND	(1 << 5)/* Append to results of a previous call.  */
+#define	GLOB_NOESCAPE	(1 << 6)/* Backslashes don't quote metacharacters.  */
+#define	GLOB_PERIOD	(1 << 7)/* Leading `.' can be matched by metachars.  */
+
+#define GLOB_MAGCHAR	 (1 << 8)/* Set in gl_flags if any metachars seen.  */
+#define GLOB_ALTDIRFUNC  (1 << 9)/* Use gl_opendir et al functions.  */
+#define GLOB_BRACE	 (1 << 10)/* Expand "{a,b}" to "a" "b".  */
+#define GLOB_NOMAGIC	 (1 << 11)/* If no magic chars, return the pattern.  */
+#define GLOB_TILDE	 (1 << 12)/* Expand ~user and ~ to home directories. */
+#define GLOB_ONLYDIR	 (1 << 13)/* Match only directories.  */
+#define GLOB_TILDE_CHECK (1 << 14)/* Like GLOB_TILDE but return an error
+				      if the user name is not available.  */
+#define __GLOB_FLAGS	(GLOB_ERR|GLOB_MARK|GLOB_NOSORT|GLOB_DOOFFS| \
+			 GLOB_NOESCAPE|GLOB_NOCHECK|GLOB_APPEND|     \
+			 GLOB_PERIOD|GLOB_ALTDIRFUNC|GLOB_BRACE|     \
+			 GLOB_NOMAGIC|GLOB_TILDE|GLOB_ONLYDIR|GLOB_TILDE_CHECK)
+
+
+/* Error returns from `glob'.  */
+#define	GLOB_NOSPACE	1	/* Ran out of memory.  */
+#define	GLOB_ABORTED	2	/* Read error.  */
+#define	GLOB_NOMATCH	3	/* No matches found.  */
+#define GLOB_NOSYS	4	/* Not implemented.  */
+/* Previous versions of this file defined GLOB_ABEND instead of
+   GLOB_ABORTED.  Provide a compatibility definition here.  */
+#define GLOB_ABEND GLOB_ABORTED
+
 __END_DECLS
 
-#endif /* !_GLOB_H_ */
+#endif

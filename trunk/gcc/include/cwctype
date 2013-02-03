@@ -1,40 +1,56 @@
-// -*- C++ -*- forwarding header.
+#ifndef __DIETLIBC_CWCTYPE_INCLUDED
+#define __DIETLIBC_CWCTYPE_INCLUDED
 
-// Copyright (C) 2000, 2002, 2003, 2009 Free Software Foundation, Inc.
-//
-// This file is part of the GNU ISO C++ Library.  This library is free
-// software; you can redistribute it and/or modify it under the
-// terms of the GNU General Public License as published by the
-// Free Software Foundation; either version 3, or (at your option)
-// any later version.
+#include <endian.h>
+#include <wctype.h>
+#include <cstddef>
+#include <cwchar>
 
-// This library is distributed in the hope that it will be useful,
-// but WITHOUT ANY WARRANTY; without even the implied warranty of
-// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-// GNU General Public License for more details.
-
-// Under Section 7 of GPL version 3, you are granted additional
-// permissions described in the GCC Runtime Library Exception, version
-// 3.1, as published by the Free Software Foundation.
-
-// You should have received a copy of the GNU General Public License and
-// a copy of the GCC Runtime Library Exception along with this program;
-// see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
-// <http://www.gnu.org/licenses/>.
-
-//
-// ISO C++ 14882: <cwctype>
-//
-
-#ifndef _GLIBCXX_CWCTYPE
-#define _GLIBCXX_CWCTYPE 1
-
-#pragma GCC system_header
-
-#include <bits/c++config.h>
-
-#if _GLIBCXX_HAVE_WCTYPE_H
-#include_next <wctype.h>
+#if __BYTE_ORDER == __BIG_ENDIAN
+#  define _ISbit(bit)	(1 << (bit))
+#else
+# define _ISbit(bit)	((bit) < 8 ? ((1 << (bit)) << 8) : ((1 << (bit)) >> 8))
 #endif
+
+enum
+{
+  _ISupper = _ISbit (0),	/* UPPERCASE.  */
+  _ISlower = _ISbit (1),	/* lowercase.  */
+  _ISalpha = _ISbit (2),	/* Alphabetic.  */
+  _ISdigit = _ISbit (3),	/* Numeric.  */
+  _ISxdigit = _ISbit (4),	/* Hexadecimal numeric.  */
+  _ISspace = _ISbit (5),	/* Whitespace.  */
+  _ISprint = _ISbit (6),	/* Printing.  */
+  _ISgraph = _ISbit (7),	/* Graphical.  */
+  _ISblank = _ISbit (8),	/* Blank (usually SPC and TAB).  */
+  _IScntrl = _ISbit (9),	/* Control character.  */
+  _ISpunct = _ISbit (10),	/* Punctuation.  */
+  _ISalnum = _ISbit (11)	/* Alphanumeric.  */
+};
+
+namespace std {
+    using ::wctype_t;
+    using ::wctrans_t;
+    using ::wint_t;
+
+    using ::iswalnum;
+    using ::iswalpha;
+    using ::iswblank;
+    using ::iswcntrl;
+    using ::iswctype;
+    using ::iswdigit;
+    using ::iswgraph;
+    using ::iswlower;
+    using ::iswprint;
+    using ::iswpunct;
+    using ::iswspace;
+    using ::iswupper;
+    using ::iswxdigit;
+    using ::towctrans;
+    using ::towlower;
+    using ::towupper;
+    using ::wctrans;
+    using ::wctype;
+}
 
 #endif

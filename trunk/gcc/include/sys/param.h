@@ -1,25 +1,29 @@
-/* This is a dummy <sys/param.h> file, not customized for any
-   particular system.  If there is a param.h in libc/sys/SYSDIR/sys,
-   it will override this one.  */
-
 #ifndef _SYS_PARAM_H
-# define _SYS_PARAM_H
+#define _SYS_PARAM_H
 
-#include <sys/config.h>
-#include <machine/endian.h>
-#include <machine/param.h>
+#include <limits.h>
 
-#ifndef HZ
-# define HZ (60)
-#endif
-#ifndef NOFILE
-# define NOFILE	(60)
-#endif
-#ifndef PATHSIZE
-# define PATHSIZE (1024)
+#define MAXPATHLEN	PATH_MAX
+#define MAXHOSTNAMELEN	64
+#define NGROUPS		32
+#define NOGROUP		(-1)
+#define NOFILE		OPEN_MAX
+
+#undef MIN
+#undef MAX
+#define MIN(a,b) (((a)<(b))?(a):(b))
+#define MAX(a,b) (((a)>(b))?(a):(b))
+
+#ifdef __alpha__
+#define HZ 1024
+#else
+#define HZ 100
 #endif
 
-#define MAX(a,b) ((a) > (b) ? (a) : (b))
-#define MIN(a,b) ((a) < (b) ? (a) : (b))
+#ifndef howmany
+# define howmany(x, y)  (((x)+((y)-1))/(y))
+#endif
+#define roundup(x, y)   ((((x)+((y)-1))/(y))*(y))
+#define powerof2(x)     ((((x)-1)&(x))==0)
 
 #endif

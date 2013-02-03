@@ -98,10 +98,15 @@ static inline GLColor rgb16ToRgb32(GLColor c) {
 #define glRgb16(r,g,b)  ((uint16_t)((r & 0xF8) << 8) | ((g & 0xFC) << 3) | ((b & 0xF8) >> 3))
 #define glRgb32(r,g,b,a)  ((uint32_t)(a << 24) | (r << 16) | (g << 8) | (b))
 
-
+/*
 #define glColorRed16(c) (((c & 0xF800) >> 11) << 3)
 #define glColorGreen16(c) (((c & 0x7E0) >> 5) << 2)
-#define glColorBlue16(c) ((c & 0x1F) << 3)
+#define glColorBlue16(c) ((c & 0x1F) << 3)*/
+
+
+#define glColorRed16(c) ((c >> 8) & 0xF8)
+#define glColorGreen16(c) ((c >> 3) & 0xFC)
+#define glColorBlue16(c) ((c << 3) & 0xF8)
 
 
 #define glColorAlpha(color32) (color32 >> 24)
@@ -149,39 +154,9 @@ void glDestroyContext(GLContext *ctx);
 #define glActiveContext() DefaultGLContext
 
 
-/*GLColor _glAlphaBlend(GLColor color, GLColor background, unsigned char alpha);
-unsigned short _glAlphaBlend16(GLColor color, unsigned short background, unsigned char alpha);
-unsigned short _glAlphaBlend16c(unsigned short color, unsigned short background, unsigned char alpha);*/
-
-/*
-__attribute__((always_inline))
-static inline GLColor glAlphaBlend(GLColor color, GLColor background, unsigned char alpha) {
-    if(alpha == 0xFF)
-        return color;
-    return _glAlphaBlend(color, background, alpha);
-}
-
-__attribute__((always_inline))
-static inline unsigned short glAlphaBlend16(GLColor color, unsigned short background, unsigned char alpha) {
-    if(alpha == 0xFF)
-        return rgb32ToRgb16(color);
-    return _glAlphaBlend16(color, background, alpha);
-}
-
-__attribute__((always_inline))
-static inline unsigned short glAlphaBlend16c(unsigned short color, unsigned short background, unsigned char alpha) {
-    if(alpha == 0xFF)
-        return color;
-    return _glAlphaBlend16c(color, background, alpha);
-}
-*/
-
 __attribute__((always_inline))
 static inline GLColor glAlphaBlend32_32(GLColor color, GLColor background, unsigned char alpha)
 {
-    /*if(alpha == 0xFF)
-        return color;*/
-
     unsigned char a = glColorAlpha(background);
     unsigned char alpha2 = 0xff - alpha;
     unsigned int r = (glColorRed(color) * alpha + (glColorRed(background) * alpha2) ) >> 8;
@@ -195,9 +170,6 @@ static inline GLColor glAlphaBlend32_32(GLColor color, GLColor background, unsig
 __attribute__((always_inline))
 static inline unsigned short glAlphaBlend16_32(GLColor color, unsigned short background, unsigned char alpha)
 {
-    /*if(alpha == 0xFF)
-        return rgb32ToRgb16(color);*/
-
     unsigned char alpha2 = 0xff - alpha;
 
     unsigned char r = (glColorRed(color) * alpha + (glColorRed16(background) * alpha2) ) >> 8;
@@ -224,9 +196,6 @@ static inline GLColor glAlphaBlend32_16(unsigned short color, unsigned short bac
 __attribute__((always_inline))
 static inline unsigned short glAlphaBlend16_16(unsigned short color, unsigned short background, unsigned char alpha)
 {
-    /*if(alpha == 0xFF)
-        return color;*/
-
     unsigned char alpha2 = 0xff - alpha;
 
     unsigned char r = (glColorRed16(color) * alpha + (glColorRed16(background) * alpha2) ) >> 8;
@@ -237,6 +206,22 @@ static inline unsigned short glAlphaBlend16_16(unsigned short color, unsigned sh
 }
 
 
+__attribute__((always_inline))
+static inline void glCtxSetPen(GLContext *ctx, GLColor color) {
+    ctx->pen = color;
+    ctx->alpha = glColorAlpha(color);
+
+    switch(ctx->depth)
+    {
+        case 16:
+            ctx->depth_dep_pen = rgb32ToRgb16(color);
+            break;
+
+        case 32:
+            ctx->depth_dep_pen = color;
+            break;
+    }
+}
 
 
 glPixelSetProc glGetPixelProc(GLContext *ctx);
@@ -247,7 +232,6 @@ void glCtxEnable(GLContext *ctx, int mode);
 void glCtxDisable(GLContext *ctx, int mode);
 #define glDisable(mode) glCtxDisable(DefaultGLContext, mode)
 
-void glCtxSetPen(GLContext *ctx, GLColor color);
 #define glSetPen(color) glCtxSetPen(DefaultGLContext, color)
 
 void glCtxSetClipRegion(GLContext *ctx, int x1, int y1, int x2, int y2);
@@ -270,7 +254,7 @@ void glCtxClear(GLContext *ctx, GLColor color);
 void glCtxDrawHLine(GLContext *ctx, int x1, int x2, int y);
 #define glDrawHLine(x1, x2, y) glCtxDrawHLine(DefaultGLContext, x1, x2, y)
 void glCtxDrawVLine(GLContext *ctx, int y1, int y2, int x);
-#define glDrawVLine(y1, y2, x) glDrawVLine(DefaultGLContext, y1, y2, x)
+#define glDrawVLine(y1, y2, x) glCtxDrawVLine(DefaultGLContext, y1, y2, x)
 void glCtxDrawLine(GLContext *ctx, int x1, int y1, int x2, int y2);
 #define glDrawLine(x1, y1, x2, y2) glCtxDrawLine(DefaultGLContext, x1, y1, x2, y2)
 
@@ -352,8 +336,9 @@ int glStringMetrics(int font, const char *str, uint32_t *height, uint32_t *top, 
 int glQueueListCreate(GLQueueList *list);
 int glQueueListDestroy(GLQueueList *list);
 GLQueueListItem *glQueueListPush(GLQueueList *list, void *body, int body_size /* must be aligned by 4! */);
+GLQueueListItem *glQueueListPushFront(GLQueueList *list, void *body, int body_size);
 
-/* Warning: dont use that functions on big lists, because it queue list, and it fast push and back */
+/* Warning: dont use that functions on big lists */
 GLQueueListItem *glQueueListInsert(GLQueueList *list, void *body, int body_size, int at);
 GLQueueListItem *glQueueListItem(GLQueueList *list, int at);
 

@@ -30,16 +30,19 @@
 //
 // ISO C++ 14882: 22.1  Locales
 //
-  
+
 // ctype bits to be inlined go here. Non-inlinable (ie virtual do_*)
 // functions go in ctype.cc
-  
+
 // The following definitions are portable, but insanely slow. If one
 // cares at all about performance, then specialized ctype
 // functionality should be added for the native os in question: see
 // the config/os/bits/ctype_*.h files.
 
 // Constructing a synthetic "C" table should be seriously considered...
+
+
+#include <ctype.h>
 
 namespace std _GLIBCXX_VISIBILITY(default)
 {
@@ -48,13 +51,13 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
   bool
   ctype<char>::
   is(mask __m, char __c) const
-  { 
+  {
     if (_M_table)
       return _M_table[static_cast<unsigned char>(__c)] & __m;
     else
       {
 	bool __ret = false;
-	const size_t __bitmasksize = 15; 
+	const size_t __bitmasksize = 15;
 	size_t __bitcur = 0; // Lowest bitmask in ctype_base == 0
 	for (; __bitcur <= __bitmasksize; ++__bitcur)
 	  {
@@ -65,37 +68,37 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 		switch (__bit)
 		  {
 		  case space:
-		    __testis = isspace(__c);
+		    __testis = ::isspace((int)__c);
 		    break;
 		  case print:
-		    __testis = isprint(__c);
+		    __testis = ::isprint(__c);
 		    break;
 		  case cntrl:
-		    __testis = iscntrl(__c);
+		    __testis = ::iscntrl(__c);
 		    break;
 		  case upper:
-		    __testis = isupper(__c);
+		    __testis = ::isupper(__c);
 		    break;
 		  case lower:
-		    __testis = islower(__c);
+		    __testis = ::islower(__c);
 		    break;
 		  case alpha:
-		    __testis = isalpha(__c);
+		    __testis = ::isalpha(__c);
 		    break;
 		  case digit:
-		    __testis = isdigit(__c);
+		    __testis = ::isdigit(__c);
 		    break;
 		  case punct:
-		    __testis = ispunct(__c);
+		    __testis = ::ispunct(__c);
 		    break;
 		  case xdigit:
-		    __testis = isxdigit(__c);
+		    __testis = ::isxdigit(__c);
 		    break;
 		  case alnum:
-		    __testis = isalnum(__c);
+		    __testis = ::isalnum(__c);
 		    break;
 		  case graph:
-		    __testis = isgraph(__c);
+		    __testis = ::isgraph(__c);
 		    break;
 		  default:
 		    __testis = false;
@@ -107,7 +110,7 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
 	return __ret;
       }
   }
-   
+
   const char*
   ctype<char>::
   is(const char* __low, const char* __high, mask* __vec) const
@@ -118,12 +121,12 @@ _GLIBCXX_BEGIN_NAMESPACE_VERSION
     else
       {
 	// Highest bitmask in ctype_base == 10.
-	const size_t __bitmasksize = 15; 
+	const size_t __bitmasksize = 15;
 	for (;__low < __high; ++__vec, ++__low)
 	  {
 	    mask __m = 0;
 	    // Lowest bitmask in ctype_base == 0
-	    size_t __i = 0; 
+	    size_t __i = 0;
 	    for (;__i <= __bitmasksize; ++__i)
 	      {
 		const mask __bit = static_cast<mask>(1 << __i);
