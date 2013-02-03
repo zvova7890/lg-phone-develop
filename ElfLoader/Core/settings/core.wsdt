@@ -12,7 +12,7 @@
           
           
           
-        <Column0>115</Column0><Column1>30</Column1><Column2>24</Column2><Column3>0</Column3></ColumnWidths>
+        <Column0>123</Column0><Column1>23</Column1><Column2>17</Column2><Column3>0</Column3></ColumnWidths>
       </Workspace>
       <Build>
         
@@ -32,7 +32,7 @@
             <Factory>Workspace</Factory>
             <Session>
               
-            <NodeDict><ExpandedNode>core</ExpandedNode></NodeDict></Session>
+            <NodeDict><ExpandedNode>core</ExpandedNode><ExpandedNode>core/loader3</ExpandedNode></NodeDict></Session>
           </Tab>
         </Tabs>
         
@@ -52,14 +52,14 @@
       
       
       
-    <Pane><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\corelib.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>210</SelStart><SelEnd>225</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\init.c</Filename><XPos>0</XPos><YPos>120</YPos><SelStart>1278</SelStart><SelEnd>1278</SelEnd></Tab><ActiveTab>1</ActiveTab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\pxeapi.c</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>1260</SelStart><SelEnd>1260</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\core.c</Filename><XPos>0</XPos><YPos>46</YPos><SelStart>840</SelStart><SelEnd>840</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\mirfs_hook.asm</Filename><XPos>0</XPos><YPos>7</YPos><SelStart>137</SelStart><SelEnd>137</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\mirfs.c</Filename><XPos>0</XPos><YPos>30</YPos><SelStart>610</SelStart><SelEnd>610</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\mirfs.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>69</SelStart><SelEnd>69</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\swihook.c</Filename><XPos>0</XPos><YPos>57</YPos><SelStart>2082</SelStart><SelEnd>2082</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\core.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>38</SelStart><SelEnd>38</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\fwlib.h</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>556</SelStart><SelEnd>556</SelEnd></Tab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
+    <Pane><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\loader3\loadlib.c</Filename><XPos>0</XPos><YPos>620</YPos><SelStart>12789</SelStart><SelEnd>12789</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\loader3\loadelf.c</Filename><XPos>0</XPos><YPos>91</YPos><SelStart>0</SelStart><SelEnd>0</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\loader3\loader.c</Filename><XPos>0</XPos><YPos>464</YPos><SelStart>12528</SelStart><SelEnd>12528</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\init.c</Filename><XPos>0</XPos><YPos>189</YPos><SelStart>6007</SelStart><SelEnd>6007</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\memcpy.S</Filename><XPos>0</XPos><YPos>1</YPos><SelStart>1454</SelStart><SelEnd>1454</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\cpu-features.h</Filename><XPos>0</XPos><YPos>100</YPos><SelStart>2027</SelStart><SelEnd>2027</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\swihook_body.asm</Filename><XPos>0</XPos><YPos>0</YPos><SelStart>155</SelStart><SelEnd>172</SelEnd></Tab><Tab><Factory>TextEditor</Factory><Filename>Z:\media\541716c3-9c58-458f-b724-ea87247501cf\LG-elfs\Core\memset.S</Filename><XPos>0</XPos><YPos>10</YPos><SelStart>574</SelStart><SelEnd>574</SelEnd></Tab><ActiveTab>7</ActiveTab></Pane><ActivePane>0</ActivePane><Sizes><Pane><X>1000000</X><Y>1000000</Y></Pane></Sizes><SplitMode>1</SplitMode></Editor>
     <Positions>
       
       
       
       
       
-    <Top><Row0><Sizes><Toolbar-0045aeb0><key>iaridepm.enu1</key></Toolbar-0045aeb0></Sizes></Row0></Top><Left><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>588</Bottom><Right>189</Right><x>-2</x><y>-2</y><xscreen>203</xscreen><yscreen>214</yscreen><sizeHorzCX>161111</sizeHorzCX><sizeHorzCY>253555</sizeHorzCY><sizeVertCX>151587</sizeVertCX><sizeVertCY>699052</sizeVertCY></Rect></Wnd0></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>212</Bottom><Right>1262</Right><x>-2</x><y>-2</y><xscreen>1264</xscreen><yscreen>214</yscreen><sizeHorzCX>1003175</sizeHorzCX><sizeHorzCY>253555</sizeHorzCY><sizeVertCX>161111</sizeVertCX><sizeVertCY>253555</sizeVertCY></Rect></Wnd1></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
+    <Top><Row0><Sizes><Toolbar-0045aeb8><key>iaridepm.enu1</key></Toolbar-0045aeb8></Sizes></Row0></Top><Left><Row0><Sizes><Wnd0><Rect><Top>-2</Top><Left>-2</Left><Bottom>593</Bottom><Right>183</Right><x>-2</x><y>-2</y><xscreen>203</xscreen><yscreen>214</yscreen><sizeHorzCX>161111</sizeHorzCX><sizeHorzCY>253555</sizeHorzCY><sizeVertCX>146825</sizeVertCX><sizeVertCY>704976</sizeVertCY></Rect></Wnd0></Sizes></Row0></Left><Right><Row0><Sizes/></Row0></Right><Bottom><Row0><Sizes><Wnd1><Rect><Top>-2</Top><Left>-2</Left><Bottom>207</Bottom><Right>1262</Right><x>-2</x><y>-2</y><xscreen>1264</xscreen><yscreen>209</yscreen><sizeHorzCX>1003175</sizeHorzCX><sizeHorzCY>247630</sizeHorzCY><sizeVertCX>161111</sizeVertCX><sizeVertCY>253555</sizeVertCY></Rect></Wnd1></Sizes></Row0></Bottom><Float><Sizes/></Float></Positions>
   </Desktop>
 </Workspace>
 
