@@ -1,4 +1,5 @@
 
+#if 0
 #define PC(ctx) (ctx.arm_pc)
 
 /*
@@ -30,3 +31,4 @@ struct sigcontext {
 	unsigned long fault_address;
 };
 
+#endif
