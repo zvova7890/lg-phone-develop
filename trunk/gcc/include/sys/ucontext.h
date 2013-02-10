@@ -4,6 +4,8 @@
 #include <asm/sigcontext.h>
 #include <signal.h>
 
+
+#if 0
 __BEGIN_DECLS
 
 #if !defined(__sparc__) && !defined(__sparc64__)
@@ -122,5 +124,6 @@ struct ucontext {
 typedef struct ucontext ucontext_t;
 
 __END_DECLS
+#endif
 
 #endif

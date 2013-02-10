@@ -224,8 +224,8 @@ typedef		void*		T_HANDLE; //	handle
  /*  INT8    :   8 bit signed integer    */
 #ifndef		TYPEDEF_T_INT8
 #define		TYPEDEF_T_INT8
- typedef char     	      INT8;	
-#endif 
+ typedef char     	      INT8;
+#endif
 
 /*  UINT8   :   8 bit unsigned integer    */
 #ifndef UINT8
@@ -243,9 +243,10 @@ typedef signed short    INT16;
 typedef signed long     INT32;
 
 #ifndef UINT32
+#define _UINT32
 /*  UINT32  :   32 bit unsigned integer   */
- typedef unsigned long   UINT32;  
-#endif 
+ typedef unsigned long   UINT32;
+#endif
 
 
 //------------------------------------------------------------------------------
@@ -301,7 +302,7 @@ typedef signed long     INT32;
 #define		min(X,Y)		((X) < (Y) ? (X) : (Y))
 #endif
 
- 
+
 #ifndef		max
 #define		max(X,Y)		((X) > (Y) ? (X) : (Y))
 #endif
@@ -322,7 +323,7 @@ typedef signed long     INT32;
 #ifndef		TOUPPER
 #define		TOUPPER(c)		((c) >= 'a' && (c) <= 'z' ? (c) -'a'+'A' : (c))
 #endif
- 
+
 #ifndef		BNS_SWAP
 #define		BNS_SWAP(TYPE,A,B)	{ TYPE C = A; A = B; B = C; }
 #endif

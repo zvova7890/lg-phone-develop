@@ -69,8 +69,8 @@ inline int putc_unlocked(int c, FILE *stream) __THROW { return fputc_unlocked(c,
 #endif
 
 
-inline int getc_unlocked(FILE *stream) __THROW { return fgetc_unlocked(stream); }
-inline int getchar_unlocked(void) __THROW { return fgetc_unlocked(stdin); }
+static inline int getc_unlocked(FILE *stream) __THROW { return fgetc_unlocked(stream); }
+static inline int getchar_unlocked(void) __THROW { return fgetc_unlocked(stdin); }
 
 
 int puts(const char *s) __THROW;
