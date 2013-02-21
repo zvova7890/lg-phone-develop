@@ -17,14 +17,16 @@ void FSEntryMenuItem::paintEvent()
         glDrawFilledRectange(rect().x(), rect().y(), rect().x2()-1, rect().y2());
     }
 
-    glSetPen(((ListMenu*)parent())->_iline);
-    glDrawHLine(rect().x(), rect().x2()-1, rect().y());
+    if(currentDisplayID() != 0 ) {
+        glSetPen(((ListMenu*)parent())->_iline);
+        glDrawHLine(rect().x(), rect().x2()-1, rect().y());
+    }
 
     if(currentDisplayID() == (int)parent()->itemList()->size()-1)
         glDrawHLine(rect().x(), rect().x2()-1, rect().y2());
 
     glSetPen(((ListMenu*)parent())->_ilinetext);
-    glDrawString(_text.c_str(), rect().x(), rect().y(), rect().x2()-1, rect().y2(), 24, FT_TEXT_H_CENTER, 0, 128);
+    glDrawString(_text.c_str(), rect().x()+2, rect().y(), rect().x2()-2, rect().y2(), 24, FT_TEXT_H_CENTER, 0, 128);
 }
 
 
@@ -53,7 +55,7 @@ void FSEntryMenu::paintEvent()
     drawImage(rect().x()-3, rect().y()-3, &background);
 
     glSetPen(0xFF9FFFFF);
-    glDrawString(_fsinfo.name.c_str(), rect().x(), rect().y(), rect().x2(), rect().y()+30, 19, FT_TEXT_H_CENTER, 0, 128);
+    glDrawString(_head_text.c_str(), rect().x()+2, rect().y(), rect().x2()-2, rect().y()+27, 19, FT_TEXT_H_CENTER, 0, 128);
 
 
     moveY(_last_y + 30);

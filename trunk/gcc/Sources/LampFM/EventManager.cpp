@@ -15,7 +15,7 @@ EventManager::EventManager() :
 
 EventManager::~EventManager()
 {
-    printf("EventManager::~EventManager()\n");
+    //printf("EventManager::~EventManager()\n");
 }
 
 
@@ -41,12 +41,12 @@ void EventManager::update()
 
         if(!block_refresh)
             refresh();
-    }
 
-    for(EventManagerAction & e : _elist)
-    {
-        e.call(e.user);
-    }
+        for(EventManagerAction & e : _elist)
+        {
+            e.call(e.user);
+        }
 
-    _elist.clear();
+        _elist.clear();
+    }
 }

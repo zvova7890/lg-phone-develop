@@ -13,6 +13,6 @@
 EventManager & eventManager();
 ResourceManager & resourceManager();
 ExtManager & extensionManager();
-
+UActiveArea & mainActiveArea();
 
 #endif // __MAIN_H__

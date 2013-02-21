@@ -5,6 +5,7 @@
 #include "UActiveArea.h"
 #include "ActiveList.h"
 #include <sigc++/sigc++.h>
+#include <signals/signal.h>
 #include <string>
 #include <png_ops.h>
 
@@ -21,18 +22,21 @@ public:
     void touchEvent(int action, int x, int y);
 
 
-    template <class T>
-    void connectPressedSignal(T t) {
-        _pressed.connect(t);
+    signal_slot::multi_signal<void(ListMenuItem*)> & onPressedSignal() {
+        return _pressed;
     }
 
-    template <class T>
-    void connectReleasedSignal(T t) {
-        _released.connect(t);
+    signal_slot::multi_signal<void(ListMenuItem*)> & onReleasedSignal() {
+        return _released;
+    }
+
+    void setText(const std::string &text) {
+        _text = text;
     }
 
 protected:
-    sigc::signal <void, ListMenuItem *> _pressed, _released;
+    //sigc::signal <void, ListMenuItem *> _pressed, _released;
+    signal_slot::multi_signal<void(ListMenuItem*)> _pressed, _released;
     std::string _text;
 };
 
@@ -40,25 +44,36 @@ protected:
 class ListMenu : public ActiveList
 {
 public:
-    ListMenu(UActiveArea *parent, const Rect &r, EventManager *e);
+    typedef signal_slot::multi_signal<void(ListMenu*)> signal;
+
+    ListMenu(UActiveArea *parent, const Rect &r, EventManager *e, bool blockable = true);
     ~ListMenu();
 
     void paintEvent();
     void touchEvent(int action, int x, int y);
 
+    void show(int after = 0);
     void hide();
     void setBackgroundColor(GLColor color);
     void setItemLineColor(GLColor color);
     void setPressedLineColor(GLColor color);
     void setItemTextColor(GLColor color);
 
-    template <class T>
-    auto connectOnHideSignal(T t) -> sigc::signal <void, ListMenu *>::iterator {
-        return _on_hide.connect(t);
+    inline signal & onHideSignal() {
+        return _on_hide;
+    }
+
+    inline signal & onShowSignal() {
+        return _on_show;
+    }
+
+    inline signal & onOffScreenTouch() {
+        return _on_offsreen_touch;
     }
 
 protected:
-    sigc::signal <void, ListMenu *> _on_hide;
+    //sigc::signal <void, ListMenu *> _on_hide, _on_show;
+    signal _on_hide, _on_show, _on_offsreen_touch;
     UActiveArea *_parent;
 
 public:

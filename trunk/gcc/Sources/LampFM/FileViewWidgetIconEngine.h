@@ -8,14 +8,15 @@
 
 
 
-class FileViewWidgetIconItem : public FileViewWidgetAbstractItem
+class FileViewWidgetIconItem : public ActiveListItem
 {
 public:
-    class FsEntryItem : public UActiveAreaItem<ActiveAreaItem>
+    class FsEntryItem : public UActiveAreaItem<ActiveAreaItem>, public FileViewWidgetAbstractItem
     {
     public:
         FsEntryItem(FileViewWidgetIconItem *parent, FSEntryInfo *fentry, const Rect &r) :
             UActiveAreaItem<ActiveAreaItem>(r),
+            FileViewWidgetAbstractItem((FileViewWidget*)parent->parent()),
             _is_longpress(false),
             _fs_entry_info(fentry),
             _item_parent(parent)
@@ -24,6 +25,10 @@ public:
 
         virtual ~FsEntryItem() {
 
+        }
+
+        const FSEntryInfo & getSelectedEntry() {
+            return *_fs_entry_info;
         }
 
         void paintEvent();
@@ -47,6 +52,9 @@ public:
     void paintEvent();
     void touchEvent(int action, int x, int y);
 
+    UActiveArea *itemsUActiveArea() {
+        return &_touch_area;
+    }
 
 protected:
     void itemTouched(FSEntryInfo *);
@@ -57,7 +65,7 @@ protected:
 protected:
     std::vector<FSEntryInfo> _fsinfo;
     int max_view;
-
+    FileViewWidget *_fvparent;
     UActiveArea _touch_area;
 };
 
@@ -77,9 +85,16 @@ public:
     int fsEntriesPerLine();
     int viewItemsCount();
 
+    void setMarkedAll();
+    void setUnMarkedAll();
+    std::list<const FSEntryInfo *> getSelectedEntriesList();
+
+    void block();
+    void unblock();
 
 protected:
     std::vector <FileViewWidgetIconItem*> _items;
+    bool _is_blocked;
 };
 
 #endif // FILEVIEWWIDGETICONENGINE_H

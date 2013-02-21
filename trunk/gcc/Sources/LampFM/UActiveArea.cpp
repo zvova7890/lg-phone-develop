@@ -17,6 +17,13 @@ UActiveArea::UActiveArea(const Rect &r, bool long_press_support) :
 
 UActiveArea::~UActiveArea()
 {
+    /*for(GLQueueListItem *i = (GLQueueListItem *)aarea.item_list.first; i; i = (GLQueueListItem *)i->next)
+    {
+        ActiveAreaItem *ai = *glQueueListItemBody(i, ActiveAreaItem **);
+        auto uaa = (UActiveAreaItem<ActiveAreaItem> *)ai->user;
+        uaa->parentHasDied();
+    }*/
+
     timedTrackDestroy(&__long_press);
     activeAreaDestroy((ActiveArea*)&aarea);
 }

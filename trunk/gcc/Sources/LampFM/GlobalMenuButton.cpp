@@ -3,41 +3,43 @@
 
 
 
-GlobalMenuButton::GlobalMenuButton(EventManager *e, const Rect &r) :
-    UButton(e, r)
+GlobalMenuButton::GlobalMenuButton(EventManager *e, const Rect &r, bool blockable) :
+    UButton(e, r, blockable),
+    _border_img(0)
 {
-    background = resourceManager().image("global-menu");
+
 }
 
 
 void GlobalMenuButton::paintEvent()
 {
-    /*if(background.bitmap) {
-        int cx, cy;
-        cx = rect().x() + (rect().w()/2 - background.w/2);
-        cy = rect().y() + (rect().h()/2 - background.h/2);
+    int x = rect().x(),
+        y = rect().y();
 
-        drawImage(cx, cy, &background);
-    }*/
+    drawImage(x, y, _border_img);
+
+    char extra_info[256];
+
+    glSetPen(0xFFFFFFFF);
+    glDrawString(_directory.c_str(), x+2, y+2, x+rect().w()-2, y+35-2, 15, FT_TEXT_H_UP, 0, 100500);
+
+
+    sprintf(extra_info, "Files: %d Dirs: %d", _files_cnt, _dirs_cnt);
+    glDrawString(extra_info, x+2, y+2, x+rect().w()-2, y+35-2, 13, FT_TEXT_H_DOWN, 0, 100500);
+
+    sprintf(extra_info, "%d/%d", _line, _entries);
+    glDrawString(extra_info, x+2, y+2, x+rect().w()-2, y+35-2, 13, FT_TEXT_H_DOWN | FT_TEXT_W_RIGHT, 0, 100500);
+
 
     if(isTouched()) {
         glSetPen(0x4F000000);
         glDrawFilledRectange(rect().x(), rect().y(), rect().x2(), rect().y2());
     }
-
-    //glSetPen(0x9FF01F00);
-    //glDrawString(_name.c_str(), rect().x(), rect().y(), rect().x2(), rect().y2(), 20, FT_TEXT_H_CENTER | FT_TEXT_W_CENTER, 0, 128);
 }
 
 
 void GlobalMenuButton::touchEvent(int action, int x, int y)
 {
-    _move.emit(this, action, x, y);
-}
-
-
-void GlobalMenuButton::timerEvent()
-{
-
+    _move.trigger(this, action, x, y);
 }
 

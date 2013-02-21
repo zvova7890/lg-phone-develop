@@ -1,12 +1,20 @@
 
+#include <sstream>
+#include <iostream>
+
 #include <math.h>
+#include <unistd.h>
 #include <fs.h>
 #include <loader.h>
+
 #include "FileViewWidget.h"
 #include "FileViewWidgetListEngine.h"
 #include "FileViewWidgetIconEngine.h"
+#include "FileViewWidgetAbstractItem.h"
+#include "FSEntryInfo.h"
 
 
+FSEntryInfo __fs_entryinfo_null_entry;
 
 
 FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rect &r, EventManager *e) :
@@ -16,13 +24,16 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
     _main_view_engine(0),
     __null_fs_entry(FSEntryInfo("=Invalid=", 0, 0)),
     _first_height(r.h()),
-    _fsentry_menu(parent, Rect(20, 60, 200, 280), event_mngr),
+    _fsentry_menu(parent, Rect(10, 60, 240-20, 280), event_mngr),
+    global_yes_no_question(0),
     __current_dir("/"),
     need_cd(false),
     effect_manager(em),
     _parent_area(parent),
-    global_menu(parent, Rect(10, 0, 240, 310), e),
-    global_menu_button(e, Rect(0, 0, 36, 38))
+    global_menu(parent, Rect(1, 0, 238, 310), e),
+    global_menu_button(e, Rect(0, 0, 240, 39), false),
+    global_menu_showing(false) /*,
+    marked_files(0)*/
 {
     memset(&cd_prev_screen_image, 0, sizeof(cd_prev_screen_image));
 
@@ -31,78 +42,118 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
     else
         _main_view_engine = new FileViewWidgetListEngine(this);
 
-    border_img = getBorderImage();
-    folder_icon = getFolderIcon();
-    file_icon = getFileIcon();
-    back_action_icon = getBackActionIcon();
+    border_img = resourceManager().image("border");
+    folder_icon = resourceManager().image("folder-icon");
+    file_icon = resourceManager().image("file-icon");
+    back_action_icon = resourceManager().image("arrow-back-icon");
+    checkedbox_icon = resourceManager().image("checkedbox");
+    checkbox_icon = resourceManager().image("checkbox");
 
     initGlobalMenu();
 
     global_menu_button.setHeight(border_img.h);
     global_menu_button.setWidth(border_img.w);
+    global_menu_button.setBackround(&border_img);
+    global_menu_button.setFullScreenBlock(false);
+    global_menu_button.setBlockable(true);
     _parent_area->pushFront(&global_menu_button);
 
 
-    auto event = [](TimerWrap *tt, void *u) {
-        auto self = (FileViewWidget*)u;
+    auto event = [this](Timer *t) {
 
         int new_y = 0;
 
-        if(self->global_menu_way == 2) {
-            new_y = self->global_menu.rect().y()+self->global_menu_speed;
+        if(global_menu_way == 2) {
+            new_y = global_menu.rect().y()+global_menu_speed;
 
-            if(new_y > self->border_img.h) {
-                TimerStop(tt);
-                self->global_menu.move( self->border_img.w/2 - self->global_menu.rect().w()/2,
-                                        self->border_img.h);
-                self->event_mngr->updateAfterEvent();
+            if(new_y > 0) {
+                t->stop();
+                global_menu.move( global_menu.rect().x(), global_menu.offsetY()+1);
+                global_menu_button.move( 0, global_menu.rect().y2()+global_menu.offsetY() );
+                event_mngr->updateAfterEvent();
                 return;
             }
 
-        } else if(self->global_menu_way == 1) {
-            new_y = self->global_menu.rect().y()-self->global_menu_speed;
+        } else if(global_menu_way == 1) {
+            new_y = global_menu.rect().y()-global_menu_speed;
 
-            if(new_y+self->global_menu.rect().h() < 0) {
-                self->_parent_area->pop(&self->global_menu);
-                TimerStop(tt);
-                self->event_mngr->updateAfterEvent();
+            if(new_y+global_menu.rect().h() < 0) {
+
+                global_menu.hide();
+
+                t->stop();
+                global_menu_button.move( 0, 0 );
+                global_menu.setFullScreenBlock(false);
+                event_mngr->updateAfterEvent();
                 return;
             }
         }
 
-        self->global_menu_speed += (self->global_menu_speed*25)/100;
-        self->global_menu.move( self->border_img.w/2 - self->global_menu.rect().w()/2, new_y);
-        self->event_mngr->updateAfterEvent();
+        global_menu_speed += (global_menu_speed*30)/100;
+        global_menu.move( global_menu.rect().x(), new_y);
+        global_menu_button.move( 0, global_menu.rect().y2()+global_menu.offsetY() );
+        event_mngr->updateAfterEvent();
     };
-
-    TimerCreate(&global_menu_timer, 1, event, this);
-
+    global_menu_timer.timerEventSignal().connect( event );
 
 
-    global_menu_button.connectTouchAction( [this](GlobalMenuButton *, int action, int x, int y) {
+    global_menu_button.touchActionSignal().connect( [this](GlobalMenuButton *mm, int action, int x, int y) {
 
         switch(action)
         {
             case TOUCH_ACTION_PRESS:
-                global_menu_first_move = true;
+
+                if(mm->isOffRectTouch()) {
+                    return;
+                }
+
+                if(isSelectionMode()) {
+                    mark_start_stop->setText("Закончить выделение");
+                } else {
+                    mark_start_stop->setText("Начать выделение");
+                }
+
+                if(!global_menu_showing)
+                   global_menu_first_move = true;
+                else
+                   global_menu_first_move = false;
+
+
+                global_menu_fix_y = y - global_menu_button.rect().y();
                 global_menu_last_x = x;
                 global_menu_last_y = y;
-                global_menu_speed = 15;
+                global_menu_speed = 25;
+
                 break;
 
             case TOUCH_ACTION_RELEASE:
+                if(!global_menu_first_move && !mm->isOffRectTouch())
+                    global_menu_timer.start(5);
 
-                TimerStart(&global_menu_timer, 5);
+                if(mm->isOffRectTouch() && !mm->isMoved()) {
+                    global_menu.hide();
+                    return;
+                }
+
 
                 break;
 
             case TOUCH_ACTION_MOVE:
+                if(!mm->isTouched() || mm->isOffRectTouch())
+                    return;
+
                 if(global_menu_first_move) {
                     stopScroll();
                     global_menu.resetViewListPosition();
-                    _parent_area->pushFront(&global_menu);
+                    global_menu.show();
+                    global_menu.setFullScreenBlock(false);
+                    global_menu_button.setFullScreenBlock(true);
+                    global_menu_showing = true;
+
                     fixScrollPosition();
                     global_menu_first_move = false;
+
+
                 }
 
                 if(global_menu_last_y > y) { // UP
@@ -114,11 +165,23 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
                 global_menu_last_x = x;
                 global_menu_last_y = y;
 
-                global_menu.move( border_img.w/2 - global_menu.rect().w()/2, y-global_menu.rect().h() );
+                global_menu.move( global_menu.rect().x(), (y-global_menu_fix_y)-global_menu.rect().h() );
+                global_menu_button.move( 0, (y-global_menu_fix_y)+global_menu.offsetY() );
                 event_mngr->updateAfterEvent();
                 break;
         }
 
+    });
+
+
+    global_menu.onHideSignal().connect( [this](ListMenu *) {
+        global_menu_timer.stop();
+
+        global_menu_button.setFullScreenBlock(false);
+        global_menu_button.move( 0, 0 );
+
+        global_menu_showing = false;
+        event_mngr->updateAfterEvent();
     });
 
     /*global_menu_button.connectReleased( [this](UButton *) {
@@ -132,8 +195,6 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
 
 FileViewWidget::~FileViewWidget()
 {
-    TimerDestroy(&global_menu_timer);
-
     clearFSEntries();
     setViewList();
     clearItems();
@@ -152,6 +213,11 @@ FileViewWidget::~FileViewWidget()
     }
     global_menu.itemList()->clear();
 
+    if(global_yes_no_question) {
+        global_yes_no_question->hide();
+        delete global_yes_no_question;
+    }
+
     delete _main_view_engine;
 }
 
@@ -165,45 +231,62 @@ void FileViewWidget::initGlobalMenu()
 
 
     global_menu.pushBack( mi = new GlobalMenuItem(&global_menu, global_menu.rect().w(), 40, "Назад..."));
-    mi->connectReleasedSignal( [this](ListMenuItem *) {
-        _parent_area->pop(&global_menu);
+    mi->onReleasedSignal().connect( [this](ListMenuItem *) {
+        global_menu.hide();
         cdDown();
     } );
 
     global_menu.pushBack( mi = new GlobalMenuItem(&global_menu, global_menu.rect().w(), 40, "В начало"));
-    mi->connectReleasedSignal( [this](ListMenuItem *) {
-        _parent_area->pop(&global_menu);
+    mi->onReleasedSignal().connect( [this](ListMenuItem *) {
+        global_menu.hide();
         resetViewListPosition();
         setViewListScrollCoordinateY(rect().x2());
         fixScrollPosition();
     } );
 
     global_menu.pushBack( mi = new GlobalMenuItem(&global_menu, global_menu.rect().w(), 40, "В конец"));
-    mi->connectReleasedSignal( [this](ListMenuItem *) {
-        _parent_area->pop(&global_menu);
+    mi->onReleasedSignal().connect( [this](ListMenuItem *) {
+        global_menu.hide();
         resetViewListPosition();
         setLineItem(linesCount()-1);
         fixScrollPosition();
     } );
 
+
+    mi = global_menu.pushBack(new GlobalMenuItem(&global_menu, global_menu.rect().w(), 40, "Обновить"));
+    mi->onReleasedSignal().connect( [this](ListMenuItem *) {
+        global_menu.hide();
+        refreshDir();
+        event_mngr->updateAfterEvent();
+    } );
+
     global_menu.pushBack( mi = new GlobalMenuItem(&global_menu, global_menu.rect().w(), 40, "Сменить вид"));
-    mi->connectReleasedSignal( [this](ListMenuItem *) {
-        _parent_area->pop(&global_menu);
+    mi->onReleasedSignal().connect( [this](ListMenuItem *) {
+        global_menu.hide();
         switchViewType();
     } );
 
 
-    global_menu.pushBack(new GlobalMenuItem(&global_menu, global_menu.rect().w(), 40, "Удалить все..."));
-    global_menu.pushBack(new GlobalMenuItem(&global_menu, global_menu.rect().w(), 40, "Выделить"));
-    global_menu.pushBack(new GlobalMenuItem(&global_menu, global_menu.rect().w(), 40, "Информация..."));
+    global_menu.pushBack( mark_start_stop = mi = new GlobalMenuItem(&global_menu, global_menu.rect().w(), 40, "Начать выделение"));
+    mi->onReleasedSignal().connect( [this](ListMenuItem *) {
+        setSelectMode(!isSelectionMode());
+
+        if(isSelectionMode())
+            unMarkAllFiles();
+
+        global_menu.hide();
+        event_mngr->updateAfterEvent();
+    } );
+
+    global_menu.pushBack(new GlobalMenuItem(&global_menu, global_menu.rect().w(), 40, "Информация"));
 
     global_menu.pushBack( mi = new GlobalMenuItem(&global_menu, global_menu.rect().w(), 40, "Выход..."));
-    mi->connectReleasedSignal( [this](ListMenuItem *) {
-        __exit_signal.emit(this);
+    mi->onReleasedSignal().connect( [this](ListMenuItem *) {
+        __exit_signal.trigger(this);
     } );
 
 
-    global_menu.connectOnHideSignal( [this](ListMenu *){
+    global_menu.onHideSignal().connect( [this](ListMenu *){
         event_mngr->updateAfterEvent();
     });
 
@@ -274,18 +357,9 @@ void FileViewWidget::paintEvent()
     ActiveList::paintEvent();
     glRestoreClipRegion();
 
-    drawImage(0, 0, &border_img);
-
-    glSetPen(0xFFFFFFFF);
-    glDrawString(directory().c_str(), 2, 2, rect().w(), 35, 15, FT_TEXT_H_UP, 0, 100500);
-
-    char extra_info[128];
-
-
     int cline = lineItem()+1;
     int entries = fsEntriesCount();
     int dirs = viewDirsCount();
-
 
 
     if(1) {
@@ -304,12 +378,11 @@ void FileViewWidget::paintEvent()
     }
 
 
-
-    sprintf(extra_info, "Files: %d Dirs: %d", viewFilesCount(), dirs);
-    glDrawString(extra_info, 2, 2, rect().w(), 35-2, 13, FT_TEXT_H_DOWN, 0, 100500);
-
-    sprintf(extra_info, "%d/%d", cline, entries);
-    glDrawString(extra_info, 2, 2, rect().w()-1, 35-2, 13, FT_TEXT_H_DOWN | FT_TEXT_W_RIGHT, 0, 100500);
+    global_menu_button.setDirecory(directory());
+    global_menu_button.setDirectoriesCount(dirs);
+    global_menu_button.setFilesCount(viewFilesCount());
+    global_menu_button.setCurrentLine(cline);
+    global_menu_button.setViewLines(entries);
 
     global_menu_button.paintEvent();
 }
@@ -334,19 +407,27 @@ void FileViewWidget::touchEvent(int action, int x, int y)
 }
 
 
+int FileViewWidget::refreshDir()
+{
+    clearScreen();
+    fillEntries();
+    setViewList();
+    return 0;
+}
+
+
 int FileViewWidget::cdUp(const std::string &dir, bool effect)
 {
+    if(isSelectionMode()) {
+        setSelectMode(false);
+    }
+
     need_cd = false;
     if(effect)
         cdEffectPrepare();
 
-    clearScreen();
-
     setDirectory(dir == "/"? dir : directory()+dir);
-
-    fillEntrys();
-
-    setViewList();
+    refreshDir();
 
     if(effect)
         cdEffectStart(EFFECT_SUB_ALPHA);
@@ -356,6 +437,10 @@ int FileViewWidget::cdUp(const std::string &dir, bool effect)
 
 int FileViewWidget::cdDown()
 {
+    if(isSelectionMode()) {
+        setSelectMode(false);
+    }
+
     need_cd = false;
     if(directory() == "/")
         return -1;
@@ -371,7 +456,7 @@ int FileViewWidget::cdDown()
 
     setDirectory(new_dir);
 
-    fillEntrys();
+    fillEntries();
 
     setViewList();
 
@@ -388,7 +473,7 @@ int FileViewWidget::cdUpAfterAction(const std::string &dir)
 }
 
 
-int FileViewWidget::fillEntrys()
+int FileViewWidget::fillEntries()
 {
     auto push_item = [this](const std::string & name, int attr, unsigned long size, bool action) {
         pushBackFile(FSEntryInfo(name, attr, size, action));
@@ -553,19 +638,31 @@ const std::string FileViewWidget::sizeToString(unsigned long bytes) const
 
 
 
-void FileViewWidget::onItemMenu(const FSEntryInfo &f, UActiveAreaItem<ActiveAreaItem> *l)
+void FileViewWidget::onItemMenu(const FSEntryInfo &f, FileViewWidgetAbstractItem *abstract_item)
 {
-    ((void)l);
+    ((void)f);
 
-    /*
-    for(ActiveListItem *i : *_fsentry_menu.itemList()) {
-        delete i;
+
+
+    std::list <const FSEntryInfo *> selected_list;
+
+    if(isSelectionMode()) {
+        selected_list = getSelectedEntriesList();
+
+        std::stringstream ss;
+        ss << "Выбрано ";
+        ss << selected_list.size();
+        ss << " объектов";
+        _fsentry_menu.setHeadText(ss.str());
     }
-    _fsentry_menu.itemList()->clear();
-    _fsentry_menu.resetViewListPosition();
-    _fsentry_menu.setLinesCount(0);*/
+    else {
+        auto l = abstract_item->getSelectedEntry();
 
-    _fsentry_menu.setFSEntryInfo(f);
+        _fsentry_menu.setHeadText(l.name.c_str());
+    }
+
+
+    _fsentry_menu.setUserData(abstract_item);
     _fsentry_menu.setFullScreenBlock(true);
     _fsentry_menu.setBackgroundColor(0xBF900000);
     _fsentry_menu.setItemLineColor(0x4FFFFFFF);
@@ -573,30 +670,122 @@ void FileViewWidget::onItemMenu(const FSEntryInfo &f, UActiveAreaItem<ActiveArea
     _fsentry_menu.setPressedLineColor(0x4F00FF00);
 
     FSEntryMenuItem *it = 0;
-    _fsentry_menu.pushBack( (it = new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Открыть...")) );
-    it->connectReleasedSignal( [this](ListMenuItem *i) {
 
+    if(!isSelectionMode()) {
+        _fsentry_menu.pushBack( (it = new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Открыть...")) );
+        it->onReleasedSignal().connect( [&f, this](ListMenuItem *i) {
+            ((void)i);
+            _fsentry_menu.hide();
+            const FSEntryInfo & fs_entry = f;
+
+            if(fs_entry.attr & FS_ATTR_FOLDER && !fs_entry.action) {
+                cdUp(fs_entry.name, true);
+
+            } else if(!fs_entry.action) {
+                extensionManager().run(directory()+fs_entry.name);
+            }
+
+
+        } );
+    }
+
+
+    _fsentry_menu.pushBack( (it = new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Удалить")) );
+    it->onReleasedSignal().connect( [&selected_list, this](ListMenuItem *i) {
         FSEntryMenu *mi = (FSEntryMenu *)i->parent();
+        auto item = (FileViewWidgetAbstractItem*)mi->userData();
         _fsentry_menu.hide();
 
-        if(mi->fsEntryInfo().attr & FS_ATTR_FOLDER && !mi->fsEntryInfo().action) {
-            cdUp(mi->fsEntryInfo().name);
-        } else if(!mi->fsEntryInfo().action) {
-            extensionManager().run(directory()+mi->fsEntryInfo().name);
+        if(global_yes_no_question) {
+            printf("Another question has view??\n");
         }
+
+        global_yes_no_question = new QuestionDialog(Rect(20, 80, 240-40, 400-160), "Удалить?");
+        global_yes_no_question->show();
+
+        global_yes_no_question->connectChoisPressed( [&selected_list, item, this](QuestionDialog *self, int choise) {
+
+            if(choise == 1) {
+
+                if(isSelectionMode()) {
+                    unlinkFiles(selected_list);
+                    setSelectMode(false);
+                }
+                else {
+                    std::list<const FSEntryInfo *> list;
+                    list.push_back(&item->getSelectedEntry());
+                    unlinkFiles(list);
+                }
+                refreshDir();
+            }
+
+            self->hide();
+
+            /* delete it after event safetly */
+            event_mngr->notifyAfterEvent( EventManager::EventManagerAction( [](void *_m) {
+                auto self = (QuestionDialog*)_m;
+                delete self;
+            }, self));
+
+            event_mngr->updateAfterEvent();
+            global_yes_no_question = 0;
+        });
+
 
     } );
 
+    if(!isSelectionMode()) {
+        _fsentry_menu.pushBack( new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Переименовать...") );
+    }
 
-    _fsentry_menu.pushBack( new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Удалить нах") );
-    _fsentry_menu.pushBack( new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Переименовать...") );
     _fsentry_menu.pushBack( new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Копировать...") );
     _fsentry_menu.pushBack( new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Переместить...") );
-    _fsentry_menu.pushBack( new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Вставить...") );
-    _fsentry_menu.pushBack( new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Выделить") );
+
+    if(!isSelectionMode()) {
+        _fsentry_menu.pushBack( new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Вставить...") );
+    }
+
+    _fsentry_menu.pushBack( it = new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Выделить/Снять") );
+    it->onReleasedSignal().connect( [abstract_item, this](ListMenuItem *i) {
+        ((void)i);
+        _fsentry_menu.hide();
+
+        if(!isSelectionMode()) {
+            _item_select_mode = !_item_select_mode;
+            abstract_item->setMarked(true);
+        } else {
+            abstract_item->setMarked(!abstract_item->isMarked());
+        }
+
+        event_mngr->updateAfterEvent();
+    });
+
+    if(isSelectionMode()) {
+        _fsentry_menu.pushBack( it = new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Выделить все") );
+        it->onReleasedSignal().connect( [this](ListMenuItem *i) {
+            ((void)i);
+            _fsentry_menu.hide();
+
+            markAllFiles();
+            event_mngr->updateAfterEvent();
+        });
+
+        _fsentry_menu.pushBack( it = new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Снять все") );
+        it->onReleasedSignal().connect( [this](ListMenuItem *i) {
+            ((void)i);
+            _fsentry_menu.hide();
+
+            unMarkAllFiles();
+            event_mngr->updateAfterEvent();
+        });
+
+    }
+
+
+
     _fsentry_menu.setLinesCount(_fsentry_menu.itemList()->size());
 
-    _on_hide_it = _fsentry_menu.connectOnHideSignal( [this](ListMenu *m){
+    _on_hide_it = _fsentry_menu.onHideSignal().connect ( [this](ListMenu *m){
 
         m->event_mngr->notifyAfterEvent( EventManager::EventManagerAction( [](void *_m){
             FSEntryMenu *fsm = (FSEntryMenu *)_m;
@@ -609,23 +798,50 @@ void FileViewWidget::onItemMenu(const FSEntryInfo &f, UActiveAreaItem<ActiveArea
             fsm->setLinesCount(0);
             fsm->setLineItem(0);
         }, m));
+
         m->event_mngr->updateAfterEvent();
-        _on_hide_it->disconnect();
+        _fsentry_menu.onHideSignal().disconnect(_on_hide_it);
     });
 
-    _parent_area->pushFront(&_fsentry_menu);
+    _fsentry_menu.show();
 }
 
 
 
+void FileViewWidget::unMarkAllFiles()
+{
+    _main_view_engine->setUnMarkedAll();
+}
 
 
+void FileViewWidget::markAllFiles()
+{
+    _main_view_engine->setMarkedAll();
+}
 
 
+std::list <const FSEntryInfo *> FileViewWidget::getSelectedEntriesList()
+{
+    return _main_view_engine->getSelectedEntriesList();
+}
 
 
+int FileViewWidget::unlinkFiles(const std::list<const FSEntryInfo *> & list)
+{
+    printf("unlinkFiles(%d)\n", list.size());
+    int unlinked = 0;
 
+    for(auto entry : list)
+    {
+        if((entry->attr & FS_ATTR_FILE || entry->attr == FS_ATTR_FILE) && !entry->action)
+        {
+            printf("unlink %s action: %d file: %d\n", entry->name.c_str(), entry->action, entry->attr & FS_ATTR_FILE);
+            unlink((directory() + entry->name).c_str());
+            unlinked ++;
+        }
+    }
 
-
+    return unlinked;
+}
 
 

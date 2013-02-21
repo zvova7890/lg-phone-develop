@@ -1,5 +1,6 @@
 #include "FileViewWidgetIconEngine.h"
 #include "FileViewWidget.h"
+#include "FileViewWidgetAbstractItem.h"
 #include <fs.h>
 
 
@@ -12,7 +13,8 @@
 
 
 FileViewWidgetIconItem::FileViewWidgetIconItem(FileViewWidget *parent, int w, int h, int num, const std::vector<FSEntryInfo> &entries) :
-    FileViewWidgetAbstractItem(parent, w, h),
+    ActiveListItem(parent, w, h),
+    _fvparent(parent),
    _touch_area(Rect(0, 0, w, h))
 {
     _fsinfo = entries;
@@ -33,13 +35,20 @@ FileViewWidgetIconItem::FileViewWidgetIconItem(FileViewWidget *parent, int w, in
 
 FileViewWidgetIconItem::~FileViewWidgetIconItem()
 {
-    GLQueueList *q = _touch_area.itemsQueue();
+    /*GLQueueList *q = _touch_area.itemsQueue();
     GLQueueListItem *item;
     for(item = q->first; item; item = (GLQueueListItem*)item->next)
     {
         ActiveAreaItem *titem = *glQueueListItemBody(item, ActiveAreaItem **);
         auto aai = (FsEntryItem*)titem->user;
         delete aai;
+    }*/
+
+    /* iterator style for items queue */
+    for(auto item : _touch_area)
+    {
+        auto fei = (FsEntryItem*)item->user;
+        delete fei;
     }
 }
 
@@ -78,8 +87,7 @@ void FileViewWidgetIconItem::itemTouched(FSEntryInfo *fs_entry)
             _fvparent->cdUpAfterAction(fs_entry->name);
         }
     } else {
-        extensionManager().run(parentWidget()->directory() + fs_entry->name);
-
+        extensionManager().run(_fvparent->directory() + fs_entry->name);
     }
 }
 
@@ -131,6 +139,15 @@ void FileViewWidgetIconItem::FsEntryItem::paintEvent()
             }
         }
 
+        if(_fvparent->isSelectionMode() && !_fs_entry_info->action) {
+            if(isMarked()) {
+                drawImage(x, y, &_fvparent->checkedbox_icon);
+
+            } else {
+                drawImage(x, y, &_fvparent->checkbox_icon);
+            }
+        }
+
         //uint32_t font_h, font_top;
         int attr = FT_TEXT_H_CENTER | FT_TEXT_W_CENTER | FT_TEXT_CENTER_BY_XSTART;
         /*int font_w = glStringMetrics(13, _fs_entry_info->name.c_str(), &font_h, &font_top, 50);
@@ -176,6 +193,12 @@ void FileViewWidgetIconItem::FsEntryItem::touchEvent(int action, int x, int y)
                 return;
             }
 
+            if(_fvparent->isSelectionMode() && !_fs_entry_info->action) {
+                setMarked(!isMarked());
+                _fvparent->event_mngr->updateAfterEvent();
+                return;
+            }
+
             _item_parent->itemTouched(_fs_entry_info);
             _is_longpress = false;
             break;
@@ -189,8 +212,6 @@ void FileViewWidgetIconItem::FsEntryItem::touchEvent(int action, int x, int y)
 
     //_item_parent->_fvparent->event_mngr->updateAfterEvent();
 }
-
-
 
 
 
@@ -329,3 +350,69 @@ int FileViewWidgetIconEngine::viewItemsCount()
     return _items.size();
 }
 
+
+void FileViewWidgetIconEngine::setMarkedAll()
+{
+    for(int i=viewItemsCount(); i<itemsForViewList(); ++i)
+        getListItem(i);
+
+    for(FileViewWidgetIconItem * i : _items)
+    {
+        if(i) {
+            /* iterate items per line */
+            for(auto item : *i->itemsUActiveArea())
+            {
+                auto fei = (FileViewWidgetIconItem::FsEntryItem*)item->user;
+                fei->setMarked();
+            }
+        }
+    }
+}
+
+
+void FileViewWidgetIconEngine::setUnMarkedAll()
+{
+    for(FileViewWidgetIconItem * i : _items)
+    {
+        if(i) {
+            for(auto item : *i->itemsUActiveArea())
+            {
+                auto fei = (FileViewWidgetIconItem::FsEntryItem*)item->user;
+                fei->setMarked(false);
+            }
+        }
+    }
+}
+
+
+std::list<const FSEntryInfo *> FileViewWidgetIconEngine::getSelectedEntriesList()
+{
+    std::list<const FSEntryInfo *> list;
+
+    for(FileViewWidgetIconItem * i : _items)
+    {
+        if(i) {
+            for(auto item : *i->itemsUActiveArea())
+            {
+                auto fei = (FileViewWidgetIconItem::FsEntryItem*)item->user;
+                if(i && fei->isMarked() && !fei->getSelectedEntry().action) {
+                    list.push_back(&fei->getSelectedEntry());
+                }
+            }
+        }
+    }
+
+    return list;
+}
+
+
+void FileViewWidgetIconEngine::block()
+{
+    _is_blocked = true;
+}
+
+
+void FileViewWidgetIconEngine::unblock()
+{
+    _is_blocked = false;
+}

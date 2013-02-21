@@ -84,8 +84,8 @@ private:
 
 
 public:
-    ActiveList(const Rect &r, EventManager *e) :
-        UActiveAreaItem<ScrollArea>(r),
+    ActiveList(const Rect &r, EventManager *e, bool blockable = true) :
+        UActiveAreaItem<ScrollArea>(r, blockable),
         _item_step(0),
         event_mngr(e)
     {
@@ -107,7 +107,7 @@ public:
     }
 
     virtual ~ActiveList() {
-        printf("~ActiveList()\n");
+        //printf("~ActiveList()\n");
         scrollAreaDestroy(area());
     }
 

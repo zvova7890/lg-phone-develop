@@ -209,8 +209,8 @@ int ExtManager::loadConfig(const std::string &conf)
         }
 
         _ext_map[ext].push_back(extinfo);
-        printf(" ====== %s ======\naction: %s\nsmall_icon: %s\nbig_icon: %s\n",
-               ext.c_str(), extinfo.action.c_str(), extinfo.s_icon.c_str(), extinfo.b_icon.c_str());
+        //printf(" ====== %s ======\naction: %s\nsmall_icon: %s\nbig_icon: %s\n",
+          //     ext.c_str(), extinfo.action.c_str(), extinfo.s_icon.c_str(), extinfo.b_icon.c_str());
 
     }
 

@@ -13,15 +13,15 @@ GlobalMenuItem::GlobalMenuItem(GlobalMenu *parent, int w, int h, const std::stri
 void GlobalMenuItem::paintEvent()
 {
 
-    if(!_light)
+    /*if(!_light)
         glSetPen(0xFF000000);
     else
-        glSetPen(0xFF2e2e2e);
+        glSetPen(0xFF2e2e2e);*/
 
 
-    glDrawFilledRectange(rect().x(), rect().y(), rect().x2()-1, rect().y2());
-    //glSetPen(0x4FAFAFFF);
-    //glDrawHLine(rect().x(), rect().x2()-1, rect().y());
+    //glDrawFilledRectange(rect().x(), rect().y(), rect().x2()-1, rect().y2());
+    glSetPen(0x4FAFAFFF);
+    glDrawHLine(rect().x(), rect().x2()-1, rect().y());
 
     if(isTouched() && !isMoved()) {
         //glSetPen(0xAF0000FF);
@@ -78,9 +78,8 @@ void GlobalMenuItem::touchEvent(int action, int x, int y)
 
 
 
-GlobalMenu::GlobalMenu(UActiveArea *parent, const Rect &r, EventManager *e) :
-    ListMenu(parent, r, e),
-    _inited(false),
+GlobalMenu::GlobalMenu(UActiveArea *parent, const Rect &r, EventManager *e, bool blockable) :
+    ListMenu(parent, r, e, blockable),
     last_light(true),
     _offset_x(0), //6
     _offset_y(3)
@@ -95,26 +94,29 @@ GlobalMenu::~GlobalMenu()
 }
 
 
-void GlobalMenu::pushBack(GlobalMenuItem *m)
+GlobalMenuItem * GlobalMenu::pushBack(GlobalMenuItem *m)
 {
     ActiveList::pushBack(m);
 
     m->setLighting(last_light);
     last_light = !last_light;
+
+    return m;
 }
 
 
 void GlobalMenu::paintEvent()
 {
-    /* runtime initialization */
-    if(!_inited) {
-        background = resourceManager().image("main-menu");
-        _inited = true;
-    }
+    /*if(background.bitmap)
+        drawImage(rect().x()-_offset_x, rect().y()-_offset_y, &background);*/
 
+    int x = rect().x()-_offset_x-1;
+    int y = rect().y()-_offset_y-1;
 
-    if(background.bitmap)
-        drawImage(rect().x()-_offset_x, rect().y()-_offset_y, &background);
+    glSetPen(0xF0000000);
+    glDrawFilledRectange(x+1, y+1, x+239, y+314);
+    glSetPen(0xFFFFFFFF);
+    glDrawRectange(x, y, x+239, y+314);
 
     glSaveClipRegion();
     glSetClipRegion(rect().x(), rect().y(), rect().x2(), rect().y2());
