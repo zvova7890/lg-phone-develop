@@ -18,7 +18,7 @@ extern "C" {
 #endif
 
 
-static inline void drawImage(int x, int y, image_t *image)
+static inline void drawImage(int x, int y, const image_t *image)
 {
     if(image)
         glDrawBitmap(x, y, image->w, image->h, image->bit, image->bitmap);

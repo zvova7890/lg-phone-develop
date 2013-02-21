@@ -11,7 +11,7 @@
 class FileViewWidget;
 
 
-class FileViewWidgetListItem : public FileViewWidgetAbstractItem
+class FileViewWidgetListItem : public FileViewWidgetAbstractItem, public ActiveListItem
 {
 public:
     FileViewWidgetListItem(FileViewWidget *parent, int w, int h, const FSEntryInfo &entry);
@@ -19,6 +19,9 @@ public:
 
     void paintEvent();
     void touchEvent(int action, int x, int y);
+
+    const FSEntryInfo & getSelectedEntry();
+
 
 private:
     bool _is_longpress;
@@ -41,9 +44,16 @@ public:
     int fsEntriesPerLine();
     int viewItemsCount();
 
+    void setMarkedAll();
+    void setUnMarkedAll();
+    std::list<const FSEntryInfo *> getSelectedEntriesList();
+
+    void block();
+    void unblock();
 
 protected:
     std::vector <FileViewWidgetListItem*> _items;
+    bool _is_blocked;
 };
 
 

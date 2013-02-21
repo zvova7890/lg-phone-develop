@@ -4,7 +4,7 @@
 
 #include "EventManager.h"
 #include "ActiveList.h"
-
+#include "FSEntryInfo.h"
 
 class FileViewWidget;
 
@@ -49,6 +49,25 @@ public:
         return 0;
     }
 
+    virtual void setMarkedAll() {
+
+    }
+
+    virtual void setUnMarkedAll() {
+
+    }
+
+    virtual std::list<const FSEntryInfo *> getSelectedEntriesList() {
+        return std::list<const FSEntryInfo *>();
+    }
+
+    virtual void block() {
+
+    }
+
+    virtual void unblock() {
+
+    }
 
     /* ATENTION: KEP in thread! ;) */
 

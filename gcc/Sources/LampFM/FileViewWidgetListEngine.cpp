@@ -12,10 +12,12 @@
 
 
 FileViewWidgetListItem::FileViewWidgetListItem(FileViewWidget *parent, int w, int h, const FSEntryInfo & entry) :
-    FileViewWidgetAbstractItem(parent, w, h),
+    FileViewWidgetAbstractItem(parent),
+    ActiveListItem(parent, w, h),
     _is_longpress(false),
     _fsinfo(entry)
 {
+    _not_file = _fsinfo.action;
 }
 
 
@@ -25,8 +27,17 @@ FileViewWidgetListItem::~FileViewWidgetListItem()
 }
 
 
+const FSEntryInfo &FileViewWidgetListItem::getSelectedEntry()
+{
+    return _fsinfo;
+}
+
+
 void FileViewWidgetListItem::paintEvent()
 {
+    if(!_fvparent->isSelectionMode())
+        setMarked(false);
+
     int x = rect().x();
     int y = rect().y();
 
@@ -73,8 +84,26 @@ void FileViewWidgetListItem::paintEvent()
             drawImage(x+1, y+2, img);
             x_offset += img->w;
         }*/
+    }
+
+
+    if(_fvparent->isSelectionMode() && !_fsinfo.action && _fsinfo.name != "..") {
+        if( !isMarked() && _fvparent->checkbox_icon.bitmap)
+        {
+            drawImage(x+1, rect().y2()-_fvparent->checkbox_icon.h, &_fvparent->checkbox_icon);
+            if(x_offset < _fvparent->checkbox_icon.w)
+                x_offset = _fvparent->checkbox_icon.w+2;
+        }
+
+        if( isMarked() && _fvparent->checkedbox_icon.bitmap )
+        {
+            drawImage(x+1, rect().y2()-_fvparent->checkedbox_icon.h, &_fvparent->checkedbox_icon);
+            if(x_offset < _fvparent->checkedbox_icon.w)
+                x_offset = _fvparent->checkedbox_icon.w+2;
+        }
 
     }
+
 
     if(!_fsinfo.name.empty()) {
         glSetPen(0xFFFFFFFF);
@@ -116,10 +145,19 @@ void FileViewWidgetListItem::touchEvent(int action, int x, int y)
 
         case TOUCH_ACTION_RELEASE:
 
-            if(_is_longpress && !_fsinfo.action && _fsinfo.name != "..") {
-                _fvparent->onItemMenu(_fsinfo, (UActiveAreaItem<ActiveAreaItem>*)this);
-                _is_longpress = false;
-                return;
+            if(!_fsinfo.action && _fsinfo.name != "..") {
+
+                if(_fvparent->isSelectionMode() && !_is_longpress) {
+                    setMarked(!isMarked());
+
+                    _fvparent->event_mngr->updateAfterEvent();
+                    return;
+
+                } else if(_is_longpress) {
+                    _fvparent->onItemMenu(_fsinfo, this);
+                    _is_longpress = false;
+                    return;
+                }
             }
 
 
@@ -155,7 +193,8 @@ void FileViewWidgetListItem::touchEvent(int action, int x, int y)
 
 
 FileViewWidgetListEngine::FileViewWidgetListEngine(FileViewWidget *parent) :
-    FileViewWidgetEngine(parent)
+    FileViewWidgetEngine(parent),
+    _is_blocked(false)
 {
     event_mngr = &eventManager();
 }
@@ -171,6 +210,9 @@ FileViewWidgetListEngine::~FileViewWidgetListEngine()
 
 ScrollAreaItem *FileViewWidgetListEngine::getListItem(int index)
 {
+    if(_is_blocked)
+        return 0;
+
     if(index < 0) {
         printf("Warning: index must be >= 0. item: %d, index: %d\n ", fileViewParent()->item()->item, index);
         return 0;
@@ -253,4 +295,54 @@ int FileViewWidgetListEngine::fsEntriesPerLine()
 int FileViewWidgetListEngine::viewItemsCount()
 {
     return _items.size();
+}
+
+
+void FileViewWidgetListEngine::setMarkedAll()
+{
+    for(int i=viewItemsCount(); i<itemsForViewList(); ++i)
+        getListItem(i);
+
+    for(FileViewWidgetListItem * i : _items)
+    {
+        if(i)
+            i->setMarked(true);
+    }
+}
+
+
+void FileViewWidgetListEngine::setUnMarkedAll()
+{
+    for(FileViewWidgetListItem * i : _items)
+    {
+        if(i)
+            i->setMarked(false);
+    }
+}
+
+
+std::list<const FSEntryInfo *> FileViewWidgetListEngine::getSelectedEntriesList()
+{
+    std::list<const FSEntryInfo *> list;
+
+    for(FileViewWidgetListItem * i : _items)
+    {
+        if(i && i->isMarked() && !i->getSelectedEntry().action) {
+            list.push_back(&i->getSelectedEntry());
+        }
+    }
+
+    return list;
+}
+
+
+void FileViewWidgetListEngine::block()
+{
+    _is_blocked = true;
+}
+
+
+void FileViewWidgetListEngine::unblock()
+{
+    _is_blocked = false;
 }

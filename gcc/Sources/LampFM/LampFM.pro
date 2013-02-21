@@ -11,8 +11,8 @@ QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CFLAGS_RELEASE -= -O2
 #QMAKE_LFLAGS_APP -= -s
 
-QMAKE_CXXFLAGS += -O3 -std=c++11  -U__STRICT_ANSI__ -D__STDC_VERSION__=200001
-QMAKE_CFLAGS_RELEASE += -O3 -std=gnu99
+QMAKE_CXXFLAGS += -O2 -std=c++11  -U__STRICT_ANSI__ -D__STDC_VERSION__=200001
+QMAKE_CFLAGS_RELEASE += -O2 -std=gnu99
 QMAKE_LFLAGS +=
 
 LIBS   += -lscrt -lgcc -lc -lpng -lz -lm -lgl -lft -lc++ -lsigc++ -lsupc++
@@ -45,7 +45,11 @@ HEADERS += \
     FileViewWidgetEngine.h \
     FileViewWidgetListEngine.h \
     FileViewWidgetAbstractItem.h \
-    FileViewWidgetIconEngine.h
+    FileViewWidgetIconEngine.h \
+    QuestionDialog.h \
+    signals/signal.h \
+    Notify.h \
+    Timer.h
 
 SOURCES += \
     main.cpp \
@@ -68,4 +72,7 @@ SOURCES += \
     EventManager.cpp \
     FileViewWidgetListEngine.cpp \
     FileViewWidgetEngine.cpp \
-    FileViewWidgetIconEngine.cpp
+    FileViewWidgetIconEngine.cpp \
+    QuestionDialog.cpp \
+    Notify.cpp \
+    Timer.cpp

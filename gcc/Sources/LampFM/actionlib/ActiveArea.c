@@ -194,6 +194,8 @@ int activeAreaPopItem(ActiveArea *field, ActiveAreaItem *_item)
         if(titem == _item)
             goto __found;
     }
+
+    printf("activeAreaPopItem(%X): Not found\n", _item);
     return -1;
 
 __found:
@@ -249,10 +251,10 @@ void activeAreaTouchItem(ActiveAreaItem *item, int action, int x, int y, char in
             item->is_touched = 1;
             break;
 
-        case TOUCH_ACTION_RELEASE:
+        /*case TOUCH_ACTION_RELEASE:
             item->is_moving = 0;
             item->is_touched = 0;
-            break;
+            break;*/
 
         case TOUCH_ACTION_MOVE:
             item->is_moving = 1;
@@ -262,4 +264,9 @@ void activeAreaTouchItem(ActiveAreaItem *item, int action, int x, int y, char in
 
     if(invoke && item->touchEvent)
         item->touchEvent(item, action, x, y);
+
+    if(action == TOUCH_ACTION_RELEASE) {
+        item->is_moving = 0;
+        item->is_touched = 0;
+    }
 }

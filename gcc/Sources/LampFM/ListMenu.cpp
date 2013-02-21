@@ -36,9 +36,9 @@ void ListMenuItem::touchEvent(int action, int x, int y)
     if(!isMoved())
     {
         if(action == TOUCH_ACTION_RELEASE) {
-            _released.emit(this);
+            _released.trigger(this);
         } else if(action == TOUCH_ACTION_PRESS) {
-            _pressed.emit(this);
+            _pressed.trigger(this);
         }
     }
 }
@@ -48,8 +48,8 @@ void ListMenuItem::touchEvent(int action, int x, int y)
 
 
 
-ListMenu::ListMenu(UActiveArea *parent, const Rect &r, EventManager *e) :
-    ActiveList(r, e),
+ListMenu::ListMenu(UActiveArea *parent, const Rect &r, EventManager *e, bool blockable) :
+    ActiveList(r, e, blockable),
     _parent(parent)
 {
 
@@ -85,6 +85,7 @@ void ListMenu::touchEvent(int action, int x, int y)
             !isMoved())
         {
             hide();
+            //_on_offsreen_touch.trigger(this);
             return;
         }
     } else
@@ -96,9 +97,18 @@ void ListMenu::touchEvent(int action, int x, int y)
 void ListMenu::hide()
 {
     _parent->pop(this);
-    _on_hide.emit(this);
+    _on_hide.trigger(this);
 }
 
+
+void ListMenu::show(int after)
+{
+    if(!after)
+        _parent->pushFront(this);
+    else
+        _parent->insert(this, after);
+    _on_show.trigger(this);
+}
 
 
 void ListMenu::setBackgroundColor(GLColor color)

@@ -4,6 +4,7 @@
 #include <Rect.h>
 #include <ActiveArea.h>
 #include <TimedTrack.h>
+#include <sigc++/sigc++.h>
 
 
 class UActiveArea;
@@ -18,7 +19,8 @@ class UActiveAreaItem
 public:
 
     UActiveAreaItem(const Rect &r, bool blockable = true) :
-        __is_longpressed(false)
+        __is_longpressed(false),
+        current_touch_state(TOUCH_ACTION_RELEASE)
     {
         memset(item(), 0, sizeof(T));
         activeAreaItemCreate(activeAreaItem(), r.x(), r.y(), r.w(), r.h(), blockable);
@@ -33,6 +35,7 @@ public:
             else if(action == TOUCH_ACTION_LONG_PRESS)
                 self->__is_longpressed = true;
 
+            self->current_touch_state = action;
             self->touchEvent(action, x, y);
         };
 
@@ -49,6 +52,9 @@ public:
 
     }
 
+    virtual void parentHasDied() {
+        /* main active area has died, free resource here */
+    }
 
     inline ActiveAreaItem *activeAreaItem() {
         return (ActiveAreaItem*)&_item;
@@ -66,7 +72,7 @@ public:
         return &_item;
     }
 
-    inline Rect rect() {
+    inline Rect rect() const {
         return Rect(constActiveAreaItem()->x, constActiveAreaItem()->y, constActiveAreaItem()->w, constActiveAreaItem()->h);
     }
 
@@ -93,13 +99,15 @@ public:
     }
 
     virtual void paintEvent() {
-
+        __paint_event.emit(this);
     }
 
     virtual void touchEvent(int action, int x, int y) {
         ((void)action);
         ((void)x);
         ((void)y);
+
+        __touch_event.emit(this, action, x, y);
     }
 
     inline int lastTouchedX() const {
@@ -130,6 +138,11 @@ public:
         return constActiveAreaItem()->cur_y - constActiveAreaItem()->touched_y;
     }
 
+
+    inline void setBlockable(bool is) {
+        activeAreaItem()->is_blockable = is;
+    }
+
     inline void setFullScreenBlock(bool is) {
         activeAreaItem()->is_fullscreen_blocked = is;
     }
@@ -142,10 +155,36 @@ public:
         return constActiveAreaItem()->is_offscreen_touch;
     }
 
+    inline int touchState() const {
+        return current_touch_state;
+    }
+
+    template <class Tp>
+    inline void connectPaintSignal(Tp slot_) {
+        __paint_event.connect(slot_);
+    }
+
+    template <class Tp>
+    inline void connectTouchSignal(Tp slot_) {
+        __touch_event.connect(slot_);
+    }
+
+    inline void setUserData(void *u) {
+        _user_data = u;
+    }
+
+    inline void *userData() {
+        return _user_data;
+    }
+
 protected:
     bool __is_longpressed;
     T _item;
-    //UActiveArea *_parent;
+
+    void *_user_data;
+    int current_touch_state;
+    sigc::signal <void, UActiveAreaItem<T>* > __paint_event;
+    sigc::signal <void, UActiveAreaItem<T>*, int, int, int > __touch_event;
 };
 
 
@@ -210,6 +249,106 @@ public:
 
     inline void setProntTouch(bool front) {
         aarea.is_front_touch = front;
+    }
+
+
+
+    /* Item iteration */
+    class iterator
+    {
+    private:
+
+        iterator(UActiveArea *area, GLQueueListItem *item) {
+            _area = area;
+            _item = item;
+        }
+
+    public:
+        iterator(UActiveArea *area, bool last = false) {
+            _area = area;
+            _item = last? _area->itemsQueue()->last : _area->itemsQueue()->first;
+        }
+
+
+        iterator(const iterator &i) {
+            this->operator =( i );
+        }
+
+        iterator & operator = (const iterator & i) {
+            _area = i._area;
+            _item = i._item;
+            return *this;
+        }
+
+        bool operator == (const iterator & i) const {
+            if(_area == i._area &&
+                _item == i._item )
+                return true;
+
+            return false;
+        }
+
+        bool operator != (const iterator & i) const {
+            if(_area != i._area ||
+                _item != i._item )
+                return true;
+
+            return false;
+        }
+
+        iterator & operator++() {
+            if(_item)
+                _item = (GLQueueListItem*)_item->next;
+
+            return *this;
+        }
+
+        iterator operator++(int) {
+            UActiveArea *_areal = _area;
+            GLQueueListItem *_iteml = _item;
+
+            if(_item)
+                _item = (GLQueueListItem*)_item->next;
+
+            return iterator(_areal, _iteml);
+        }
+
+        iterator & operator--() {
+            if(_item && _item->prev)
+                _item = (GLQueueListItem*)_item->prev;
+
+            return *this;
+        }
+
+        iterator operator--(int) {
+            UActiveArea *_areal = _area;
+            GLQueueListItem *_iteml = _item;
+
+            if(_item && _item->prev)
+                _item = (GLQueueListItem*)_item->prev;
+
+            return iterator(_areal, _iteml);
+        }
+
+        ActiveAreaItem * operator*() {
+            return (*glQueueListItemBody(_item, ActiveAreaItem**));
+        }
+
+
+    private:
+        UActiveArea *_area;
+        GLQueueListItem *_item;
+    };
+
+
+    iterator begin() {
+        return iterator(this);
+    }
+
+    iterator end() {
+        iterator it(this, true);
+        it++; // end
+        return it;
     }
 
 protected:

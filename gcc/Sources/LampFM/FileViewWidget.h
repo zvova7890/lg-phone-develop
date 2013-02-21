@@ -9,14 +9,16 @@
 #include "FSEntryMenu.h"
 #include "FSEntryInfo.h"
 #include "main.h"
+#include <Timer.h>
+
+#include <signals/signal.h>
 
 #include "FileViewWidgetEngine.h"
-#include "FileViewWidgetAbstractItem.h"
+#include "QuestionDialog.h"
 
 
 
-class FileViewWidget;
-
+class  FileViewWidgetAbstractItem;
 
 
 
@@ -24,6 +26,8 @@ class FileViewWidget;
 class FileViewWidget : public ActiveList
 {
 public:
+    typedef signal_slot::multi_signal <void(FileViewWidget*)> signal;
+
     FileViewWidget(UActiveArea *parent, EffectManager *em, const Rect &r, EventManager *e);
     ~FileViewWidget();
 
@@ -34,12 +38,18 @@ public:
     void clearScreen();
     void setViewEngine(FileViewWidgetEngine *engine);
 
+    void unMarkAllFiles();
+    void markAllFiles();
 
+    std::list <const FSEntryInfo *> getSelectedEntriesList();
+    int unlinkFiles(const std::list<const FSEntryInfo *> & list);
+
+    int refreshDir();
     int cdUp(const std::string &dir, bool effect = true);
     int cdDown();
     int cdUpAfterAction(const std::string &dir);
 
-    int fillEntrys();
+    int fillEntries();
 
     void cdEffectPrepare(bool paint_fresh_screen = true);
     void cdEffectStart(int effect, int delay = 3);
@@ -89,29 +99,17 @@ public:
         _dir_fs_entrys.clear();
     }
 
-    inline image_t & getBorderImage() {
-        return resourceManager().image("border");
-    }
 
-    inline image_t & getFolderIcon() {
-        return resourceManager().image("folder-icon");
-    }
-
-    inline image_t & getFileIcon() {
-        return resourceManager().image("file-icon");
-    }
-
-    inline image_t & getBackActionIcon() {
-        return resourceManager().image("arrow-back-icon");
-    }
-
-    template <class T>
-    inline void connectDestroySignal(T slot_) {
-        __exit_signal.connect(slot_);
+    inline signal & onExitSignal() {
+        return __exit_signal;
     }
 
     inline bool isSelectionMode() {
         return _item_select_mode;
+    }
+
+    inline void setSelectMode(bool is = true) {
+        _item_select_mode = is;
     }
 
     inline int viewItemsCount() {
@@ -132,10 +130,11 @@ private:
     FSEntryInfo __null_fs_entry;
     std::vector<FSEntryInfo> _file_fs_entrys, _dir_fs_entrys;
     int _first_height;
-    sigc::signal <void, FileViewWidget*> __exit_signal;
+    signal __exit_signal;
     FSEntryMenu _fsentry_menu;
-    sigc::signal <void, ListMenu *>::iterator _on_hide_it;
-    TimerWrap global_menu_timer;
+    QuestionDialog *global_yes_no_question;
+    FSEntryMenu::signal::slot _on_hide_it;
+    Timer global_menu_timer;
 
 private:
     std::string __current_dir;
@@ -144,20 +143,27 @@ private:
     std::string __cd_to;
 
 public:
-    image_t border_img, folder_icon, file_icon, back_action_icon;
+    image_t border_img, folder_icon, file_icon, back_action_icon,
+            checkedbox_icon, checkbox_icon;
     EffectManager *effect_manager;
     image_t cd_prev_screen_image;
     UActiveArea *_parent_area;
 
+    /* глобальное меню */
     GlobalMenu global_menu;
     GlobalMenuButton global_menu_button;
-    bool global_menu_first_move;
-    int global_menu_last_x, global_menu_last_y;
+    GlobalMenuItem *mark_start_stop;
+
+    bool global_menu_first_move, global_menu_showing;
+    int global_menu_last_x, global_menu_last_y, global_menu_fix_y;
     int global_menu_way;
     int global_menu_speed;
 
+    //int marked_files;
+
 public:
-    void onItemMenu(const FSEntryInfo & f, UActiveAreaItem<ActiveAreaItem> *);
+
+    void onItemMenu(const FSEntryInfo & f,  FileViewWidgetAbstractItem *abstract_item);
 
 };
 

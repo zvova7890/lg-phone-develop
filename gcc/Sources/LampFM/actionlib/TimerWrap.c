@@ -14,7 +14,7 @@ static timers_t timers[128];
 __attribute__((constructor(101)))
 void __init_timers()
 {
-    printf("void __init_timers()\n");
+    //printf("void __init_timers()\n");
 
     for(int i=0; i<128; ++i) {
         timers[i].id = -1;
@@ -52,7 +52,9 @@ int allocTimerID()
 void __timer_notifier(int timer_id)
 {
     //printf("__timer_notifier: %d\n", timer_id);
-    if(timer_id > 0 && timer_id < 128 && timers[timer_id].id == timer_id && timers[timer_id].event) {
+    TimerWrap *timer = timers[timer_id].user;
+
+    if(timer_id > 0 && timer_id < 128 && timers[timer_id].id == timer_id && timers[timer_id].event && timer->magic == 0xF3FAFFAC) {
         timers[timer_id].event(timers[timer_id].user, ((TimerWrap*)timers[timer_id].user)->user);
     }
 }

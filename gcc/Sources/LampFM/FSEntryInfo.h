@@ -43,6 +43,11 @@ public:
     int attr;
     int size;
     bool action;
+
+    static FSEntryInfo & null_entry() {
+        extern FSEntryInfo __fs_entryinfo_null_entry;
+        return __fs_entryinfo_null_entry;
+    }
 };
 
 

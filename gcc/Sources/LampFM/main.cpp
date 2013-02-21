@@ -75,6 +75,9 @@ ExtManager & extensionManager() {
     return *ext_manager;
 }
 
+UActiveArea & mainActiveArea() {
+    return active_area;
+}
 
 
 void Screen_OnDraw()
@@ -126,7 +129,7 @@ void Screen_OnInit()
 
     main_view = new FileViewWidget(&active_area, &global_emanager, Rect(0, 0, 240, 400), &event_mngr);
 
-    main_view->connectDestroySignal( [](FileViewWidget *) {
+    main_view->onExitSignal().connect( [](FileViewWidget *) {
         TaskMngr_AppExit(0, 0, 0);
     } );
 
@@ -146,9 +149,8 @@ void Screen_OnExit()
 {
     main_view->setLinesCount(0);
 
+    active_area.pop(main_view);
     delete main_view;
-    //delete main_menu;
-    //delete menu_test;
 
     glDestroyContext( glActiveContext() );
 
