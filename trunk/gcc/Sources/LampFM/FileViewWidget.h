@@ -6,7 +6,6 @@
 #include <vector>
 #include <png_ops.h>
 #include "GlobalMenuButton.h"
-#include "FSEntryMenu.h"
 #include "FSEntryInfo.h"
 #include "main.h"
 #include <Timer.h>
@@ -131,9 +130,9 @@ private:
     std::vector<FSEntryInfo> _file_fs_entrys, _dir_fs_entrys;
     int _first_height;
     signal __exit_signal;
-    FSEntryMenu _fsentry_menu;
+    ListMenu _fsentry_menu;
     QuestionDialog *global_yes_no_question;
-    FSEntryMenu::signal::slot _on_hide_it;
+    ListMenu::signal::slot _on_hide_it;
     Timer global_menu_timer;
 
 private:

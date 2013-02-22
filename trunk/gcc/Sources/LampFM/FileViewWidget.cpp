@@ -69,7 +69,7 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
             if(new_y > 0) {
                 t->stop();
                 global_menu.move( global_menu.rect().x(), global_menu.offsetY()+1);
-                global_menu_button.move( 0, global_menu.rect().y2()+global_menu.offsetY() );
+                global_menu_button.move( 0, global_menu.rect().y2()+1 );
                 event_mngr->updateAfterEvent();
                 return;
             }
@@ -90,10 +90,11 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
         }
 
         global_menu_speed += (global_menu_speed*30)/100;
-        global_menu.move( global_menu.rect().x(), new_y);
-        global_menu_button.move( 0, global_menu.rect().y2()+global_menu.offsetY() );
+        global_menu.move( global_menu.rect().x(), new_y+global_menu.offsetY());
+        global_menu_button.move( 0, global_menu.rect().y2() +1);
         event_mngr->updateAfterEvent();
     };
+
     global_menu_timer.timerEventSignal().connect( event );
 
 
@@ -165,8 +166,8 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
                 global_menu_last_x = x;
                 global_menu_last_y = y;
 
-                global_menu.move( global_menu.rect().x(), (y-global_menu_fix_y)-global_menu.rect().h() );
-                global_menu_button.move( 0, (y-global_menu_fix_y)+global_menu.offsetY() );
+                global_menu.move( global_menu.rect().x(), (y-global_menu_fix_y)-global_menu.rect().h() +global_menu.offsetY() );
+                global_menu_button.move( 0, global_menu.rect().y2()+1 );
                 event_mngr->updateAfterEvent();
                 break;
         }
@@ -643,7 +644,6 @@ void FileViewWidget::onItemMenu(const FSEntryInfo &f, FileViewWidgetAbstractItem
     ((void)f);
 
 
-
     std::list <const FSEntryInfo *> selected_list;
 
     if(isSelectionMode()) {
@@ -664,15 +664,16 @@ void FileViewWidget::onItemMenu(const FSEntryInfo &f, FileViewWidgetAbstractItem
 
     _fsentry_menu.setUserData(abstract_item);
     _fsentry_menu.setFullScreenBlock(true);
-    _fsentry_menu.setBackgroundColor(0xBF900000);
-    _fsentry_menu.setItemLineColor(0x4FFFFFFF);
-    _fsentry_menu.setItemTextColor(0xFFFFFFFF);
-    _fsentry_menu.setPressedLineColor(0x4F00FF00);
 
-    FSEntryMenuItem *it = 0;
+    _fsentry_menu.style().setBackground(Brush(&resourceManager().image("fs-menu")));
+    _fsentry_menu.style().setHeaderSize(Rect(0, 0, _fsentry_menu.rect().w(), 27));
+    _fsentry_menu.style().setListSize(Rect(_fsentry_menu.rect().x(), _fsentry_menu.rect().y()+29,
+                                           _fsentry_menu.rect().w(), _fsentry_menu.rect().h()-29));
+
+    ListMenuItem *it = 0;
 
     if(!isSelectionMode()) {
-        _fsentry_menu.pushBack( (it = new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Открыть...")) );
+        _fsentry_menu.pushBack( (it = new ListMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Открыть...")) );
         it->onReleasedSignal().connect( [&f, this](ListMenuItem *i) {
             ((void)i);
             _fsentry_menu.hide();
@@ -690,9 +691,9 @@ void FileViewWidget::onItemMenu(const FSEntryInfo &f, FileViewWidgetAbstractItem
     }
 
 
-    _fsentry_menu.pushBack( (it = new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Удалить")) );
+    _fsentry_menu.pushBack( (it = new ListMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Удалить")) );
     it->onReleasedSignal().connect( [&selected_list, this](ListMenuItem *i) {
-        FSEntryMenu *mi = (FSEntryMenu *)i->parent();
+        ListMenu *mi = (ListMenu *)i->parent();
         auto item = (FileViewWidgetAbstractItem*)mi->userData();
         _fsentry_menu.hide();
 
@@ -735,17 +736,17 @@ void FileViewWidget::onItemMenu(const FSEntryInfo &f, FileViewWidgetAbstractItem
     } );
 
     if(!isSelectionMode()) {
-        _fsentry_menu.pushBack( new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Переименовать...") );
+        _fsentry_menu.pushBack( new ListMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Переименовать...") );
     }
 
-    _fsentry_menu.pushBack( new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Копировать...") );
-    _fsentry_menu.pushBack( new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Переместить...") );
+    _fsentry_menu.pushBack( new ListMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Копировать...") );
+    _fsentry_menu.pushBack( new ListMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Переместить...") );
 
     if(!isSelectionMode()) {
-        _fsentry_menu.pushBack( new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Вставить...") );
+        _fsentry_menu.pushBack( new ListMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Вставить...") );
     }
 
-    _fsentry_menu.pushBack( it = new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Выделить/Снять") );
+    _fsentry_menu.pushBack( it = new ListMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Выделить/Снять") );
     it->onReleasedSignal().connect( [abstract_item, this](ListMenuItem *i) {
         ((void)i);
         _fsentry_menu.hide();
@@ -761,7 +762,7 @@ void FileViewWidget::onItemMenu(const FSEntryInfo &f, FileViewWidgetAbstractItem
     });
 
     if(isSelectionMode()) {
-        _fsentry_menu.pushBack( it = new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Выделить все") );
+        _fsentry_menu.pushBack( it = new ListMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Выделить все") );
         it->onReleasedSignal().connect( [this](ListMenuItem *i) {
             ((void)i);
             _fsentry_menu.hide();
@@ -770,7 +771,7 @@ void FileViewWidget::onItemMenu(const FSEntryInfo &f, FileViewWidgetAbstractItem
             event_mngr->updateAfterEvent();
         });
 
-        _fsentry_menu.pushBack( it = new FSEntryMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Снять все") );
+        _fsentry_menu.pushBack( it = new ListMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Снять все") );
         it->onReleasedSignal().connect( [this](ListMenuItem *i) {
             ((void)i);
             _fsentry_menu.hide();
@@ -788,7 +789,7 @@ void FileViewWidget::onItemMenu(const FSEntryInfo &f, FileViewWidgetAbstractItem
     _on_hide_it = _fsentry_menu.onHideSignal().connect ( [this](ListMenu *m){
 
         m->event_mngr->notifyAfterEvent( EventManager::EventManagerAction( [](void *_m){
-            FSEntryMenu *fsm = (FSEntryMenu *)_m;
+            ListMenu *fsm = (ListMenu *)_m;
 
             for(ActiveListItem *i : *fsm->itemList()) {
                 delete i;
@@ -837,6 +838,11 @@ int FileViewWidget::unlinkFiles(const std::list<const FSEntryInfo *> & list)
         {
             printf("unlink %s action: %d file: %d\n", entry->name.c_str(), entry->action, entry->attr & FS_ATTR_FILE);
             unlink((directory() + entry->name).c_str());
+            unlinked ++;
+        }
+
+        else if(entry->attr & FS_ATTR_FOLDER && !entry->action) {
+            rmdir((directory() + entry->name).c_str());
             unlinked ++;
         }
     }

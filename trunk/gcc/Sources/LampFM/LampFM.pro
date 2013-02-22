@@ -39,7 +39,6 @@ HEADERS += \
     main.h \
     GlobalMenu.h \
     ListMenu.h \
-    FSEntryMenu.h \
     EventManager.h \
     FSEntryInfo.h \
     FileViewWidgetEngine.h \
@@ -49,7 +48,9 @@ HEADERS += \
     QuestionDialog.h \
     signals/signal.h \
     Notify.h \
-    Timer.h
+    Timer.h \
+    Brush.h \
+    ListMenuStyle.h
 
 SOURCES += \
     main.cpp \
@@ -68,11 +69,12 @@ SOURCES += \
     ResourceManager.cpp \
     GlobalMenu.cpp \
     ListMenu.cpp \
-    FSEntryMenu.cpp \
     EventManager.cpp \
     FileViewWidgetListEngine.cpp \
     FileViewWidgetEngine.cpp \
     FileViewWidgetIconEngine.cpp \
     QuestionDialog.cpp \
     Notify.cpp \
-    Timer.cpp
+    Timer.cpp \
+    Brush.cpp \
+    ListMenuStyle.cpp

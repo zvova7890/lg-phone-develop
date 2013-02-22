@@ -195,7 +195,7 @@ int activeAreaPopItem(ActiveArea *field, ActiveAreaItem *_item)
             goto __found;
     }
 
-    printf("activeAreaPopItem(%X): Not found\n", _item);
+    printf("activeAreaPopItem(%X): Not found\n", (unsigned int)_item);
     return -1;
 
 __found:

@@ -76,6 +76,13 @@ public:
         return Rect(constActiveAreaItem()->x, constActiveAreaItem()->y, constActiveAreaItem()->w, constActiveAreaItem()->h);
     }
 
+    inline void setSize(const Rect & r) {
+        activeAreaItem()->x = r.x();
+        activeAreaItem()->y = r.y();
+        activeAreaItem()->w = r.w();
+        activeAreaItem()->h = r.h();
+    }
+
     inline void move(int x , int y) {
         activeAreaItem()->x = x;
         activeAreaItem()->y = y;

@@ -31,10 +31,10 @@ void GlobalMenuButton::paintEvent()
     glDrawString(extra_info, x+2, y+2, x+rect().w()-2, y+35-2, 13, FT_TEXT_H_DOWN | FT_TEXT_W_RIGHT, 0, 100500);
 
 
-    if(isTouched()) {
+    /*if(isTouched()) {
         glSetPen(0x4F000000);
         glDrawFilledRectange(rect().x(), rect().y(), rect().x2(), rect().y2());
-    }
+    }*/
 }
 
 
