@@ -4,6 +4,8 @@
 
 #include "UActiveArea.h"
 #include "ActiveList.h"
+#include "ListMenuStyle.h"
+#include "Brush.h"
 #include <sigc++/sigc++.h>
 #include <signals/signal.h>
 #include <string>
@@ -34,6 +36,10 @@ public:
         _text = text;
     }
 
+    ListMenu *parent() {
+        return (ListMenu*)ActiveListItem::parent();
+    }
+
 protected:
     //sigc::signal <void, ListMenuItem *> _pressed, _released;
     signal_slot::multi_signal<void(ListMenuItem*)> _pressed, _released;
@@ -54,10 +60,6 @@ public:
 
     void show(int after = 0);
     void hide();
-    void setBackgroundColor(GLColor color);
-    void setItemLineColor(GLColor color);
-    void setPressedLineColor(GLColor color);
-    void setItemTextColor(GLColor color);
 
     inline signal & onHideSignal() {
         return _on_hide;
@@ -71,13 +73,26 @@ public:
         return _on_offsreen_touch;
     }
 
+    inline ListMenuStyle & style() {
+        return _style;
+    }
+
+    inline void setHeadText(const std::string &h) {
+        _head_text = h;
+    }
+
 protected:
-    //sigc::signal <void, ListMenu *> _on_hide, _on_show;
+
     signal _on_hide, _on_show, _on_offsreen_touch;
     UActiveArea *_parent;
 
+private:
+    ListMenuStyle _style;
+    std::string _head_text;
+
 public:
     GLColor _background, _iline, _ilinepressed, _ilinetext;
+
 };
 
 

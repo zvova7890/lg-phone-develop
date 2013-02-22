@@ -12,18 +12,50 @@ ListMenuItem::ListMenuItem(ListMenu *parent, int w, int h, const std::string &te
 
 void ListMenuItem::paintEvent()
 {
+    int pressed = 0;
+
     if(isTouched() && !isMoved()) {
-        glSetPen( ((ListMenu*)parent())->_ilinepressed );
-        glDrawFilledRectange(rect().x(), rect().y(), rect().x2()-1, rect().y2());
+        pressed = 1;
+
+        if(isHaveLongPress())
+            pressed += 1;
+
+        switch(pressed)
+        {
+        case 1:
+            parent()->style().linePressed().paint(Rect(rect().x(), rect().y(), rect().w()-1, rect().h()));
+            break;
+
+        case 2:
+            parent()->style().lineLongPressed().paint(Rect(rect().x(), rect().y(), rect().w()-1, rect().h()));
+            break;
+        }
+
     }
 
-    glSetPen(((ListMenu*)parent())->_iline);
+    glSetPen(parent()->style().separator());
     glDrawHLine(rect().x(), rect().x2()-1, rect().y());
 
     if(currentDisplayID() == (int)parent()->itemList()->size()-1)
         glDrawHLine(rect().x(), rect().x2()-1, rect().y2());
 
-    glSetPen(((ListMenu*)parent())->_ilinetext);
+
+    switch(pressed)
+    {
+    case 1:
+        glSetPen(parent()->style().linePressedText());
+        break;
+
+    case 2:
+        glSetPen(parent()->style().lineLongPressedText());
+        break;
+
+    default:
+        glSetPen(parent()->style().lineText());
+        break;
+    }
+
+
     glDrawString(_text.c_str(), rect().x(), rect().y(), rect().x2()-1, rect().y2(), 24, FT_TEXT_H_CENTER, 0, 128);
 }
 
@@ -52,7 +84,7 @@ ListMenu::ListMenu(UActiveArea *parent, const Rect &r, EventManager *e, bool blo
     ActiveList(r, e, blockable),
     _parent(parent)
 {
-
+    style().setSize(r);
 }
 
 
@@ -65,12 +97,26 @@ ListMenu::~ListMenu()
 void ListMenu::paintEvent()
 {
     glSaveClipRegion();
+
+    style().background().paint(rect());
+
+    glSetPen(style().headerText());
+
+    const Rect & r = style().headerSize();
+    glDrawString(_head_text.c_str(), rect().x()+r.x()+1, rect().y()+r.y(),
+                 rect().x()+r.w()-1, rect().y()+r.h(), 19, FT_TEXT_H_CENTER, 0, 128);
+
+    /* save old rect */
+    Rect save_rect = rect();
+
+    /* set new, for list */
+    setSize(style().listSize());
+
     glSetClipRegion(rect().x(), rect().y(), rect().x2(), rect().y2());
-
-    glSetPen(_background);
-    glDrawFilledRectange(rect().x(), rect().y(), rect().x2(), rect().y2());
-
     ActiveList::paintEvent();
+
+    /* restore */
+    setSize(save_rect);
 
     glRestoreClipRegion();
 }
@@ -88,8 +134,18 @@ void ListMenu::touchEvent(int action, int x, int y)
             //_on_offsreen_touch.trigger(this);
             return;
         }
-    } else
+    } else {
+        /* save old rect */
+        Rect save_rect = rect();
+
+        /* set new, for list */
+        setSize(style().listSize());
+
         ActiveList::touchEvent(action, x, y);
+
+        /* restore */
+        setSize(save_rect);
+    }
 }
 
 
@@ -108,29 +164,5 @@ void ListMenu::show(int after)
     else
         _parent->insert(this, after);
     _on_show.trigger(this);
-}
-
-
-void ListMenu::setBackgroundColor(GLColor color)
-{
-    _background = color;
-}
-
-
-void ListMenu::setItemLineColor(GLColor color)
-{
-    _iline = color;
-}
-
-
-void ListMenu::setPressedLineColor(GLColor color)
-{
-    _ilinepressed = color;
-}
-
-
-void ListMenu::setItemTextColor(GLColor color)
-{
-    _ilinetext = color;
 }
 
