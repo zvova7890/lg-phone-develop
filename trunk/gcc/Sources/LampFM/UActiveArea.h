@@ -166,14 +166,9 @@ public:
         return current_touch_state;
     }
 
-    template <class Tp>
-    inline void connectPaintSignal(Tp slot_) {
-        __paint_event.connect(slot_);
-    }
 
-
-    typename signal_slot::signal <void(UActiveAreaItem<T>*)> _PaintSignal;
-    typename signal_slot::signal <void(UActiveAreaItem<T>*, int, int, int) > _TouchSignal;
+    static typename signal_slot::signal <void(UActiveAreaItem<T>*)> &_PaintSignal;
+    static typename signal_slot::signal <void(UActiveAreaItem<T>*, int, int, int) > &_TouchSignal;
 
     typedef signal_slot::signal <void(UActiveAreaItem<T>*)> PaintSignal;
     typedef signal_slot::signal <void(UActiveAreaItem<T>*, int, int, int) > TouchSignal;
@@ -183,7 +178,7 @@ public:
         return __paint_event;
     }
 
-    inline auto touchSignal() -> decltype(_TouchSignal) {
+    auto touchSignal() -> decltype(_TouchSignal) {
         return __touch_event;
     }
 

@@ -137,6 +137,7 @@ private:
     ListMenu::signal::slot _on_hide_it;
     Timer global_menu_timer;
     std::vector <std::string> _current_protocol;
+    std::list <const FSEntryInfo *> _selected_list;
 
 private:
     std::string __current_dir;

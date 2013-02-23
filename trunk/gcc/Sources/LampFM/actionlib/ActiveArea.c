@@ -27,7 +27,16 @@ static void *__next_item_front(GLQueueListItem *q) {
 
 void activeAreaActionHandler(ActiveArea *field, int action, int x, int y)
 {
+    if(action == TOUCH_ACTION_PRESS && field->touched_item) {
+        printf("BUGON: %s[%d]\n", __FILE__, __LINE__);
+        field->touched_item = 0;
+    }
+
     if(field->touched_item) {
+        if(action == TOUCH_ACTION_PRESS) {
+            printf("BUGON: %s[%d]\n", __FILE__, __LINE__);
+        }
+
         if(action == TOUCH_ACTION_RELEASE) {
             activeAreaTouchItem(field->touched_item, action, x, y, 1);
             field->touched_item = 0;
@@ -75,6 +84,11 @@ void activeAreaActionHandler(ActiveArea *field, int action, int x, int y)
             break;
 
         } else {
+
+            if(action != TOUCH_ACTION_PRESS) {
+                printf("BUGON: %s[%d]\n", __FILE__, __LINE__);
+            }
+
             if(x >= field->x+titem->x && x < field->x+titem->x+titem->w &&
                     y >= field->y+titem->y && y < field->y+titem->y+titem->h)
             {

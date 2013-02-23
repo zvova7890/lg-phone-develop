@@ -21,7 +21,7 @@ public:
     void hide();
 
 
-    auto choisPressedSignal() -> signal_slot::multi_signal <void(QuestionDialog *, int)> {
+    signal_slot::multi_signal <void(QuestionDialog *, int)> & choisPressedSignal() {
         return __button_pressed;
     }
 

@@ -56,7 +56,7 @@ void ListMenuItem::paintEvent()
     }
 
 
-    glDrawString(_text.c_str(), rect().x(), rect().y(), rect().x2()-1, rect().y2(), 24, FT_TEXT_H_CENTER, 0, 128);
+    glDrawString(_text.c_str(), rect().x()+1, rect().y(), rect().x2()-1, rect().y2(), 24, FT_TEXT_H_CENTER, 0, 128);
 }
 
 

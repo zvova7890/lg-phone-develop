@@ -12,6 +12,8 @@
 #include "FileViewWidgetIconEngine.h"
 #include "FileViewWidgetAbstractItem.h"
 #include "FSEntryInfo.h"
+#include "LocalFSProtocol.h"
+
 
 
 FSEntryInfo __fs_entryinfo_null_entry;
@@ -30,7 +32,7 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
     need_cd(false),
     effect_manager(em),
     _parent_area(parent),
-    global_menu(parent, Rect(1, 0, 238, 310), e),
+    global_menu(parent, Rect(0, 0, 240, 310), e),
     global_menu_button(e, Rect(0, 0, 240, 39), false),
     global_menu_showing(false) /*,
     marked_files(0)*/
@@ -59,6 +61,7 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
     global_menu_button.setBackround(&border_img);
     global_menu_button.setFullScreenBlock(false);
     global_menu_button.setBlockable(true);
+
     _parent_area->pushFront(&global_menu_button);
 
 
@@ -232,6 +235,7 @@ void FileViewWidget::initGlobalMenu()
     ListMenuItem *mi;
 
     global_menu.setFullScreenBlock(true);
+    global_menu.style().setShadow(Brush());
 
 
     global_menu.pushBack( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Назад..."));
@@ -312,7 +316,7 @@ void FileViewWidget::pushBackFile(FSEntryInfo *info)
 
 void FileViewWidget::pushBackFile(const FSEntryInfo &info)
 {
-    if(info.attr & FS_ATTR_FOLDER) {
+    if(info.attr & FSProtocol::FSEntryFlags::Dir) {
         _dir_fs_entrys.push_back(info);
     } else {
         _file_fs_entrys.push_back(info);
@@ -334,7 +338,7 @@ void FileViewWidget::clearItems()
 
 void FileViewWidget::clearScreen()
 {
-    fullResetViewList();
+    //fullResetViewList();
     clearFSEntries();
     clearItems();
 }
@@ -413,9 +417,16 @@ void FileViewWidget::touchEvent(int action, int x, int y)
 
 int FileViewWidget::refreshDir()
 {
+    int linei = lineItem();
     clearScreen();
     fillEntries();
     setViewList();
+
+    if(linei >= linesCount())
+        linei = linesCount()-1;
+
+    setLineItem(linei);
+    fixScrollPosition();
     return 0;
 }
 
@@ -451,18 +462,13 @@ int FileViewWidget::cdDown()
 
     cdEffectPrepare();
 
-    clearScreen();
-
     std::string new_dir = directory();
 
     auto p = new_dir.find_last_of('/', new_dir.length()-2);
     new_dir = new_dir.assign(new_dir.begin(), new_dir.begin()+p+1);
 
     setDirectory(new_dir);
-
-    fillEntries();
-
-    setViewList();
+    refreshDir();
 
     cdEffectStart(EFFECT_ADD_ALPHA);
     return 0;
@@ -483,6 +489,8 @@ int FileViewWidget::fillEntries()
         pushBackFile(FSEntryInfo(name, attr, size, action));
     };
 
+    FSProtocol & proto = protocolsContainer().indexOf(_current_protocol.at(0));
+
     const std::string & path = __current_dir;
 
     if(path == "/") {
@@ -490,37 +498,36 @@ int FileViewWidget::fillEntries()
         const char *names[4] = {"usr/", "sys/", "mmc/", "cus/"};
 
         for(int i=0; i<4; ++i) {
-            push_item(names[i], FS_ATTR_FOLDER, 0, false);
+            push_item(names[i], FSProtocol::FSEntryFlags::Dir, 0, false);
         }
         return 0;
     } else {
 
-        auto h = fs_opendir(path.c_str());
-        //printf("fs_opendir: %X - %s\n", h, path.c_str());
+        void *h = proto.opendir(path.c_str(), "*.*");
 
-        if(h > 0) {
-            FS_INFO entry;
+        if(h) {
+            FSProtocol::FSEntry entry;
             int i = 0;
 
-            while(!fs_readdir(h, &entry)) {
+            while(!proto.readdir(h, &entry)) {
 
-                if(i == 0 && !strcmp(entry.name, ".")) {
+                if(i == 0 && entry.name ==  ".") {
                     continue;
                 }
 
-                if(i == 0 && strcmp(entry.name, "..")) {
-                    push_item("..", FS_ATTR_FOLDER, 0, true);
+                if(i == 0 && entry.name !=  "..") {
+                    push_item("..", FSProtocol::FSEntryFlags::Dir, 0, true);
                     ++i;
                 }
 
-                if(!strcmp(entry.name, "..")) {
-                    push_item(entry.name, entry.attr, 0, true);
+                if(entry.name ==  "..") {
+                    push_item(entry.name, entry.flags, 0, true);
 
                 } else {
-                    if(entry.attr & FS_ATTR_FOLDER) {
-                        push_item(std::string(entry.name) + "/", entry.attr, 0, false);
+                    if(entry.flags & FSProtocol::FSEntryFlags::Dir) {
+                        push_item(entry.name + "/", entry.flags, 0, false);
                     } else {
-                        push_item(entry.name, entry.attr, entry.size, false);
+                        push_item(entry.name, entry.flags, entry.size, false);
                     }
                 }
 
@@ -534,12 +541,12 @@ int FileViewWidget::fillEntries()
             }
 
             if(!i) {
-                push_item("..", FS_ATTR_FOLDER, 0, true);
+                push_item("..", FSProtocol::FSEntryFlags::Dir, 0, true);
             }
 
-            fs_closedir(h);
+            proto.closedir(h);
         } else {
-            push_item("..", FS_ATTR_FOLDER, 0, true);
+            push_item("..", FSProtocol::FSEntryFlags::Dir, 0, true);
         }
     }
 
@@ -647,7 +654,8 @@ void FileViewWidget::onItemMenu(const FSEntryInfo &f, FileViewWidgetAbstractItem
     ((void)f);
 
 
-    std::list <const FSEntryInfo *> selected_list;
+    _selected_list.clear();
+    std::list <const FSEntryInfo *> & selected_list = _selected_list;
 
     if(isSelectionMode()) {
         selected_list = getSelectedEntriesList();
@@ -682,13 +690,12 @@ void FileViewWidget::onItemMenu(const FSEntryInfo &f, FileViewWidgetAbstractItem
             _fsentry_menu.hide();
             const FSEntryInfo & fs_entry = f;
 
-            if(fs_entry.attr & FS_ATTR_FOLDER && !fs_entry.action) {
+            if(fs_entry.attr & FSProtocol::FSEntryFlags::Dir && !fs_entry.action) {
                 cdUp(fs_entry.name, true);
 
             } else if(!fs_entry.action) {
                 extensionManager().run(directory()+fs_entry.name);
             }
-
 
         } );
     }
@@ -723,6 +730,8 @@ void FileViewWidget::onItemMenu(const FSEntryInfo &f, FileViewWidgetAbstractItem
                 refreshDir();
             }
 
+            selected_list.clear();
+
             self->hide();
 
             /* delete it after event safetly */
@@ -732,6 +741,7 @@ void FileViewWidget::onItemMenu(const FSEntryInfo &f, FileViewWidgetAbstractItem
             }, self));
 
             event_mngr->updateAfterEvent();
+
             global_yes_no_question = 0;
         });
 
@@ -782,8 +792,9 @@ void FileViewWidget::onItemMenu(const FSEntryInfo &f, FileViewWidgetAbstractItem
             unMarkAllFiles();
             event_mngr->updateAfterEvent();
         });
-
     }
+
+    _fsentry_menu.pushBack( it = new ListMenuItem(&_fsentry_menu, _fsentry_menu.rect().w(), 40, "Информация") );
 
 
 
@@ -834,19 +845,24 @@ int FileViewWidget::unlinkFiles(const std::list<const FSEntryInfo *> & list)
 {
     printf("unlinkFiles(%d)\n", list.size());
     int unlinked = 0;
+    FSProtocol & p = protocolsContainer().indexOf(_current_protocol.at(0));
 
     for(auto entry : list)
     {
-        if((entry->attr & FS_ATTR_FILE || entry->attr == FS_ATTR_FILE) && !entry->action)
+        if((entry->attr == FSProtocol::FSEntryFlags::File) && !entry->action)
         {
-            printf("unlink %s action: %d file: %d\n", entry->name.c_str(), entry->action, entry->attr & FS_ATTR_FILE);
-            unlink((directory() + entry->name).c_str());
-            unlinked ++;
+            //unlink((directory() + entry->name).c_str());
+
+            int r = p.unlink((directory() + entry->name).c_str());
+
+            if(!r) unlinked ++;
         }
 
-        else if(entry->attr & FS_ATTR_FOLDER && !entry->action) {
-            rmdir((directory() + entry->name).c_str());
-            unlinked ++;
+        else if(entry->attr & FSProtocol::FSEntryFlags::Dir && !entry->action) {
+
+            int r = p.rmdir((directory() + entry->name).c_str());
+
+            if(!r) unlinked ++;
         }
     }
 

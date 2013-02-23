@@ -22,7 +22,7 @@ int ExtManager::run(const std::string &path)
 
     s = s.assign(s.begin()+pos+1, s.end());
 
-    printf("Runable? '%s'\n", s.c_str());
+    //printf("Runable? '%s'\n", s.c_str());
 
     if(s == "elf") {
         execelf(path.c_str(), 0, 0, 0, 0);
