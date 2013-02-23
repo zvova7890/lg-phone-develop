@@ -15,7 +15,7 @@ FSProtocol::~FSProtocol()
 }
 
 
-void *FSProtocol::open(const char *f, int mode)
+void *FSProtocol::open(const char *f, FSProtocol::OpenMode mode)
 {
     UNUSED(f);
     UNUSED(mode);
@@ -61,6 +61,28 @@ int FSProtocol::mkdir(const char *, bool )
 
 
 int FSProtocol::rmdir(const char *, bool )
+{
+    _err = -ENOTSUP;
+    return -1;
+}
+
+
+void *FSProtocol::opendir(const char *, const char *)
+{
+    printf("opendir not implemented\n");
+    _err = -ENOTSUP;
+    return 0;
+}
+
+
+int FSProtocol::readdir(void *, FSProtocol::FSEntry *)
+{
+    _err = -ENOTSUP;
+    return -1;
+}
+
+
+int FSProtocol::closedir(void *)
 {
     _err = -ENOTSUP;
     return -1;

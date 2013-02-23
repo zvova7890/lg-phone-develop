@@ -61,7 +61,7 @@ public:
 
 
     typedef signal_slot::multi_signal <void(UButton *)> signal;
-    typename signal_slot::multi_signal <void(UButton *)> _sig;
+    static typename signal_slot::multi_signal <void(UButton *)> &_sig;
 
 
     auto releasedSignal() -> decltype(_sig) {

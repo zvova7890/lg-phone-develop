@@ -61,7 +61,7 @@ void FileViewWidgetListItem::paintEvent()
 
     if(!_fsinfo.action) {
 
-        if(_fsinfo.attr & FS_ATTR_FOLDER) {
+        if(_fsinfo.attr & FSProtocol::FSEntryFlags::Dir) {
 
             image_t *img = &_fvparent->folder_icon;
 
@@ -106,12 +106,22 @@ void FileViewWidgetListItem::paintEvent()
 
 
     if(!_fsinfo.name.empty()) {
-        glSetPen(0xFFFFFFFF);
+
+        if(_fsinfo.attr & FSProtocol::FSEntryFlags::Hidden) {
+            if(_fsinfo.attr & FSProtocol::FSEntryFlags::Readonly)
+                glSetPen(0xFF925252);
+            else
+                glSetPen(0xFF525252);
+        } else if(_fsinfo.attr & FSProtocol::FSEntryFlags::Readonly)
+            glSetPen(0xFF520000);
+        else
+            glSetPen(0xFFFFFFFF);
+
         glDrawString(_fsinfo.name.c_str(), x_offset+x, y+4, x_offset+x+rect().w(), y+(rect().h()/2 + 14/2 ), 20, FT_TEXT_H_CENTER, 0, 56);
 
 
         char ext[128];
-        if(_fsinfo.attr & FS_ATTR_FOLDER) {
+        if(_fsinfo.attr & FSProtocol::FSEntryFlags::Dir) {
 
             if(!_fsinfo.action)
                 sprintf(ext, "folder");
@@ -161,7 +171,7 @@ void FileViewWidgetListItem::touchEvent(int action, int x, int y)
             }
 
 
-            if(_fsinfo.attr & FS_ATTR_FOLDER) {
+            if(_fsinfo.attr & FSProtocol::FSEntryFlags::Dir) {
 
                 if(_fsinfo.name == ".." && _fsinfo.action) {
                     _fvparent->cdUpAfterAction(std::string());
@@ -300,13 +310,28 @@ int FileViewWidgetListEngine::viewItemsCount()
 
 void FileViewWidgetListEngine::setMarkedAll()
 {
-    for(int i=viewItemsCount(); i<itemsForViewList(); ++i)
-        getListItem(i);
+    if(_items.size() < (unsigned int)itemsForViewList())
+        _items.reserve(itemsForViewList());
 
-    for(FileViewWidgetListItem * i : _items)
+    for(int i=0; i<itemsForViewList(); ++i)
     {
-        if(i)
-            i->setMarked(true);
+        FileViewWidgetListItem * item = 0;
+
+        if((unsigned int)i >= _items.size())
+        {
+            getListItem(i);
+            item = _items[i];
+        }
+        else
+            item = _items[i];
+
+        if(!item) {
+            getListItem(i);
+            item = _items[i];
+        }
+
+        if(item)
+            item->setMarked(true);
     }
 }
 

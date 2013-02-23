@@ -47,7 +47,7 @@ public:
 
 
     typedef signal_slot::multi_signal <void(EffectManager *)> signal;
-    typename signal_slot::multi_signal <void(EffectManager *)> _sig;
+    static typename signal_slot::multi_signal <void(EffectManager *)> &_sig;
 
 
     auto effectFinishedSignal() -> decltype(_sig) {

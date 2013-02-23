@@ -20,7 +20,7 @@ QuestionDialog::QuestionDialog(const Rect &r, const std::string &question) :
     buttons.push_back( new UActiveAreaItem<ActiveAreaItem>(Rect(rect().x2()-button_w-5, rect().h()-button_h-5, button_w, button_h)) );
 
 
-    buttons[0]->connectPaintSignal( [this](UActiveAreaItem<ActiveAreaItem> *_i) {
+    buttons[0]->paintSignal().connect ( [this](UActiveAreaItem<ActiveAreaItem> *_i) {
 
         if(_i->isTouched())
             glSetPen(0xF0FFFFFF);
@@ -45,7 +45,7 @@ QuestionDialog::QuestionDialog(const Rect &r, const std::string &question) :
     } );
 
 
-    buttons[1]->connectPaintSignal( [this](UActiveAreaItem<ActiveAreaItem> *_i) {
+    buttons[1]->paintSignal().connect( [this](UActiveAreaItem<ActiveAreaItem> *_i) {
 
         if(_i->isTouched())
             glSetPen(0xF0FFFFFF);
@@ -114,7 +114,6 @@ void QuestionDialog::touchEvent(int action, int x, int y)
 {
     if(action == TOUCH_ACTION_RELEASE && isOffRectTouch() && !isMoved()) {
         hide();
-
         __button_pressed.trigger(this, 0);
         return;
     }

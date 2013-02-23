@@ -26,14 +26,15 @@ static inline void scrollAreaNeedUpdate(ScrollArea *area)
 }
 
 
-void scrollAreaUpdateCoordinates(ScrollArea *area)
+int scrollAreaUpdateCoordinates(ScrollArea *area, int rectable)
 {
+    int diff = area->cy;
+
     if(area->scrolling_route == 1) {
-        //printf("Scroll down\n");
 
         if(area->item > 0) {
 
-            while(area->cy > /*area->items[area->item]->a.i.h + area->item_step*/ 0) {
+            while(area->cy > 0) {
                 area->item --;
                 if(area->item < 0) {
                     area->item = 0;
@@ -47,17 +48,16 @@ void scrollAreaUpdateCoordinates(ScrollArea *area)
                 int sub = i->a.h+area->item_step;
                 area->cy -= sub;
                 area->lcy -= sub;
-                //printf("DOWN: cy: %d i: %d\n", area->cy, area->item);
             }
         }
 
     } else if(area->scrolling_route == 2) {
-        //printf("Scroll up\n");
 
-        if(area->item/*+area->displaying_items*/ < area->icount) {
+
+        if(area->item < area->icount) {
             ScrollAreaItem *i = getScrollAreaItem(area, area->item);
             if(!i)
-                return;
+                return area->cy - diff;
             while(area->cy < -(i->a.h + area->item_step)) {
                 area->item ++;
 
@@ -73,28 +73,28 @@ void scrollAreaUpdateCoordinates(ScrollArea *area)
                 int add = i->a.h+area->item_step;
                 area->cy += add;
                 area->lcy += add;
-
-
-                //printf("UP: cy: %d i: %d\n", area->cy, area->item);
             }
         }
     }
 
 
-    ScrollAreaItem *i = getScrollAreaItem(area, area->item);
-    if(!i)
-        return;
+    if(rectable) {
+        ScrollAreaItem *i = getScrollAreaItem(area, area->item);
+        if(!i)
+            return area->cy - diff;
 
-    if(area->item == 0 && area->cy > (area->t.h) - i->a.h + area->item_step) {
-        area->cy = (area->t.h) - i->a.h + area->item_step;
-        area->auto_scroll.scroll_may_stop = 1;
+        if(area->item == 0 && area->cy > (area->t.h) - i->a.h + area->item_step) {
+            area->cy = (area->t.h) - i->a.h + area->item_step;
+            area->auto_scroll.scroll_may_stop = 1;
+        }
+
+        else if(area->item == area->icount-1 && area->cy < 0) {
+            area->cy = 0;
+            area->auto_scroll.scroll_may_stop = 1;
+        }
     }
 
-    else if(area->item == area->icount-1 && area->cy < 0) {
-        area->cy = 0;
-        area->auto_scroll.scroll_may_stop = 1;
-    }
-
+    return area->cy - diff;
 }
 
 
@@ -200,8 +200,7 @@ void scrollAreaCheckAndFixScrollPosition(ScrollArea *area)
         return;
 
 
-    printf("scrollAreaReleaseActionProvider 2\n");
-
+    printf("area->item: %d area->cy: %d\n", area->item, area->cy);
 
     if(area->item == 0 && area->cy > 0) {
 
@@ -223,11 +222,12 @@ void scrollAreaCheckAndFixScrollPosition(ScrollArea *area)
 
         TimerStop(&area->auto_scroll.timer);
 
+
         ScrollAreaItem *item = 0;
 
         printf("scrollAreaReleaseActionProvider 3\n");
 
-        int pos_y = area->cy;
+        int pos_y = 0;
 
         for(int i = area->item; i<area->icount; ++i)
         {
@@ -237,7 +237,7 @@ void scrollAreaCheckAndFixScrollPosition(ScrollArea *area)
 
             pos_y += item->a.h + area->item_step;
 
-            if(pos_y >= area->t.h) {
+            if(pos_y+area->cy >= area->t.h) {
                 printf("%d > %d???\n", pos_y, area->t.h);
                 goto end;
             }
@@ -245,22 +245,12 @@ void scrollAreaCheckAndFixScrollPosition(ScrollArea *area)
 
 
         int lol_h = 0;
-        //char can_break = 0;
 
         for(int i = area->icount-1; i > -1; --i)
         {
             item = getScrollAreaItem(area, i);
             if(!item)
                 break;
-
-            /*if(i >= area->item) {
-                if(pos_y < area->t.h)
-                    pos_y += item->a.h + area->item_step;
-                else
-                    goto end;
-            } else {
-                can_break = 1;
-            }*/
 
             lol_h += item->a.h + area->item_step;
             if(lol_h >= area->t.h) {
@@ -269,9 +259,10 @@ void scrollAreaCheckAndFixScrollPosition(ScrollArea *area)
             }
         }
 
+        printf("lol_h: %d pos_y: %d\n", lol_h, pos_y);
 
         area->auto_scroll.val_start = 0;
-        area->auto_scroll.val_end = lol_h - pos_y +1;
+        area->auto_scroll.val_end = lol_h - pos_y - area->cy + 1;
 
         printf("-> area->auto_scroll.val_end: %d\n", area->auto_scroll.val_end);
 
@@ -291,7 +282,6 @@ end:
 
 static inline void __resetTimer(ScrollArea *area)
 {
-    printf("RESET TIMER\n");
     timedTrackStopCount(&area->speed_meter);
     timedTrackReset(&area->speed_meter, 0);
     timedTrackStartCount(&area->speed_meter, 20);
@@ -336,7 +326,6 @@ void scrollAreaTouchActionHandler(ScrollArea *area, int action, int x, int y)
                 _item = getScrollAreaItem(area, item);
             }
 
-            printf("TROLOLO!!!!!!!! item: %d - %X \n", item, _item);
             if(_item && _item->a.touchEvent) {
                 area->touched_item = _item;
                 area->touched_item->a.touchEvent((struct _ActiveAreaItem*)area->touched_item, action, x, y);
@@ -413,7 +402,7 @@ __release_notify:
             }
 
             char route_changet = scrollAreaMove(area, x, y);
-            scrollAreaUpdateCoordinates(area);
+            scrollAreaUpdateCoordinates(area, 1);
 
             if(route_changet) {
 
@@ -422,8 +411,6 @@ __release_notify:
                 area->last_action_y = y;
                 area->auto_scroll.distance = 0;
 
-                printf("route_changet! area->last_action_y: %d\n", area->last_action_y);
-
                 area->auto_scroll.y_cnt = 0;
             }
 
@@ -431,7 +418,6 @@ __release_notify:
             area->auto_scroll.impulse_y = y;
 
             area->auto_scroll.y_cnt += abs(glMax(area->last_action_y, y) - glMin(area->last_action_y, y));
-            //printf("area->auto_scroll.y_cnt: %d {%d, %d}\n", area->auto_scroll.y_cnt, area->last_action_y, y);
 
             if(timedTrackValue(&area->speed_meter) > area->auto_scroll.timeStamp+10) {
                 area->last_action_y = y;
@@ -445,9 +431,6 @@ __release_notify:
                 area->auto_scroll.y_cnt = 0;
             }
 
-            //printf("cur time: %d, diff: %d\n", timedTrackValue(&area->speed_meter), area->auto_scroll.timeStampDiff);
-
-
             break;
 
 
@@ -460,7 +443,7 @@ __release_notify:
                 _item = getScrollAreaItem(area, item);
             }
 
-            printf("TROLOLO!!!!!!!! item: %d - %X \n", item, _item);
+
             if(_item && _item->a.touchEvent) {
                 area->touched_item = _item;
                 area->touched_item->a.touchEvent((struct _ActiveAreaItem*)area->touched_item, action, x, y);
@@ -502,8 +485,15 @@ static void timerKineticScrollAreaHandler(TimerWrap *timer, void *user)
                 val = 1;
 
             area->auto_scroll.val_start += val;
+            printf("area->auto_scroll.val_start: %d\n", area->auto_scroll.val_start);
+
             if(area->auto_scroll.val_start + val > area->auto_scroll.val_end)
-                val = area->auto_scroll.val_end - area->auto_scroll.val_start;
+                val -= (area->auto_scroll.val_start + val) - area->auto_scroll.val_end;
+
+            if(val < 1) {
+                area->auto_scroll.val_start = area->auto_scroll.val_end;
+                goto __fading_dep_end;
+            }
 
         } else {
 
@@ -519,7 +509,12 @@ static void timerKineticScrollAreaHandler(TimerWrap *timer, void *user)
             area->auto_scroll.val_start -= val;
 
             if(area->auto_scroll.val_start - val < area->auto_scroll.val_end)
-                val = area->auto_scroll.val_start - area->auto_scroll.val_end;
+                val -= area->auto_scroll.val_end - (area->auto_scroll.val_start - val);
+
+            if(val < 1) {
+                area->auto_scroll.val_start = area->auto_scroll.val_end;
+                goto __fading_dep_end;
+            }
         }
     } else {
 
@@ -537,15 +532,17 @@ static void timerKineticScrollAreaHandler(TimerWrap *timer, void *user)
     }
 
 
+    printf(" -->b area->cy: %d\n", area->cy);
+
     if(area->scrolling_route == 2) {
         area->cy -= val;
     } else if(area->scrolling_route == 1){
         area->cy += val;
-        //printf(" --> area->cy: %d\n", area->cy);
+
     }
 
-
-    scrollAreaUpdateCoordinates(area);
+    printf(" --> area->cy: %d\n", area->cy);
+    scrollAreaUpdateCoordinates(area, 0);
     scrollAreaNeedUpdate(area);
 
     return;
@@ -574,6 +571,7 @@ int scrollAreaCreate(ScrollArea *area, int item_step, void *user)
     printf(" ============================= LOL ========================== \n");
     printf("scrollAreaCreate(%d, %d, %d, %d)\n",  area->t.x, area->t.y, area->t.w, area->t.h);
 
+    area->item = 0;
     timedTrackCreate(&area->speed_meter, 0, 0, 0);
     timedTrackAddingValue(&area->speed_meter, 1);
     TimerCreate(&area->auto_scroll.timer, 1, timerKineticScrollAreaHandler, area);

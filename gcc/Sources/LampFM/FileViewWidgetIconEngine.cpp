@@ -69,7 +69,6 @@ void FileViewWidgetIconItem::paintEvent()
 void FileViewWidgetIconItem::touchEvent(int action, int x, int y)
 {
     _touch_area.move(rect().x(), rect().y());
-
     _touch_area.touchEvent(action, x, y);
 }
 
@@ -79,7 +78,7 @@ void FileViewWidgetIconItem::itemTouched(FSEntryInfo *fs_entry)
     //if(!fs_entry)
      //   return;
 
-    if(fs_entry->attr & FS_ATTR_FOLDER) {
+    if(fs_entry->attr & FSProtocol::FSEntryFlags::Dir) {
 
         if(fs_entry->name == ".." && fs_entry->action) {
             _fvparent->cdUpAfterAction(std::string());
@@ -125,7 +124,7 @@ void FileViewWidgetIconItem::FsEntryItem::paintEvent()
             }
 
         } else {
-            if(_fs_entry_info->attr & FS_ATTR_FOLDER) {
+            if(_fs_entry_info->attr & FSProtocol::FSEntryFlags::Dir) {
 
                 img = &_item_parent->_fvparent->folder_icon;
 
@@ -162,7 +161,17 @@ void FileViewWidgetIconItem::FsEntryItem::paintEvent()
             yc += img->h;
         }
 
-        glSetPen(0xFFFFFFFF);
+
+        if(_fs_entry_info->attr & FSProtocol::FSEntryFlags::Hidden) {
+            if(_fs_entry_info->attr & FSProtocol::FSEntryFlags::Readonly)
+                glSetPen(0xFF925252);
+            else
+                glSetPen(0xFF525252);
+        } else if(_fs_entry_info->attr & FSProtocol::FSEntryFlags::Readonly)
+            glSetPen(0xFF520000);
+        else
+            glSetPen(0xFFFFFFFF);
+
         glDrawString(_fs_entry_info->name.c_str(), x, yc, x+w, y+h, 13, attr, 0, 50);
 
         glRestoreClipRegion();
@@ -175,7 +184,7 @@ void FileViewWidgetIconItem::FsEntryItem::touchEvent(int action, int x, int y)
     ((void)x);
     ((void)y);
 
-    //printf("void FileViewWidgetIconItem::FsEntryItem::touchEvent()\n");
+    //printf("void FileViewWidgetIconItem::FsEntryItem::touchEvent() %d %dx%d\n", action, x, y);
     if(isMoved())
         return;
 
@@ -353,16 +362,28 @@ int FileViewWidgetIconEngine::viewItemsCount()
 
 void FileViewWidgetIconEngine::setMarkedAll()
 {
-    for(int i=viewItemsCount(); i<itemsForViewList(); ++i)
-        getListItem(i);
-
-    for(FileViewWidgetIconItem * i : _items)
+    for(int i=0; i<itemsForViewList(); ++i)
     {
-        if(i) {
+        FileViewWidgetIconItem * item = 0;
+
+        if((unsigned int)i >= _items.size())
+        {
+            getListItem(i);
+            item = _items[i];
+        }
+        else
+            item = _items[i];
+
+        if(!item) {
+            getListItem(i);
+            item = _items[i];
+        }
+
+        if(item) {
             /* iterate items per line */
-            for(auto item : *i->itemsUActiveArea())
+            for(auto items : *item->itemsUActiveArea())
             {
-                auto fei = (FileViewWidgetIconItem::FsEntryItem*)item->user;
+                auto fei = (FileViewWidgetIconItem::FsEntryItem*)items->user;
                 fei->setMarked();
             }
         }
