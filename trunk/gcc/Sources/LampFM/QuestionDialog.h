@@ -20,15 +20,15 @@ public:
     void show();
     void hide();
 
-    template <class Tp>
-    inline void connectChoisPressed(Tp slot_) {
-        __button_pressed.connect(slot_);
+
+    auto choisPressedSignal() -> signal_slot::multi_signal <void(QuestionDialog *, int)> {
+        return __button_pressed;
     }
 
 private:
     std::string _question;
     std::vector< UActiveAreaItem<ActiveAreaItem>* > buttons;
-    sigc::signal <void, QuestionDialog *, int> __button_pressed;
+    signal_slot::multi_signal <void(QuestionDialog *, int)> __button_pressed;
     UActiveArea buttons_area;
 };
 

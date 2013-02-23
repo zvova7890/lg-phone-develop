@@ -5,6 +5,7 @@
 Brush::Brush()
 {
     _type = Type::OWN;
+    _paint_event = [](Brush &, const Rect &) {};
 }
 
 
@@ -35,9 +36,9 @@ Brush::Brush(image_t *image)
 }
 
 
-Brush::Brush(const std::function<void(Brush &)> &f)
+Brush::Brush(const std::function<void(Brush &, const Rect &)> &f)
 {
-    _type = Type::IMAGE;
+    _type = Type::OWN;
     _paint_event = f;
 }
 
@@ -54,7 +55,15 @@ void Brush::paintEvent(const Rect &r)
     {
         case Type::COLOR:
             glSetPen(_color);
-            glDrawFilledRectange(r.x(), r.y(), r.x2(), r.y2());
+            if(r.w() == 1) {
+                glDrawVLine(r.y(), r.y2(), r.x());
+
+            } else if(r.h() == 1) {
+                glDrawHLine(r.x(), r.x2(), r.y());
+
+            } else
+                glDrawFilledRectange(r.x(), r.y(), r.x2(), r.y2());
+
             break;
 
         case Type::GRADIENT:
@@ -83,7 +92,7 @@ void Brush::paintEvent(const Rect &r)
         }
 
         default: case Type::OWN:
-            _paint_event(*this);
+            _paint_event(*this, r);
             break;
     }
 }

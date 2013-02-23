@@ -85,6 +85,7 @@ ListMenu::ListMenu(UActiveArea *parent, const Rect &r, EventManager *e, bool blo
     _parent(parent)
 {
     style().setSize(r);
+    style().setListSize(r);
 }
 
 
@@ -100,6 +101,13 @@ void ListMenu::paintEvent()
 
     style().background().paint(rect());
 
+    style().shadow().paint(Rect(rect().x(), rect().y()-1, rect().w(), 1));
+    style().shadow().paint(Rect(rect().x(), rect().y2(), rect().w(), 1));
+
+    style().shadow().paint(Rect(rect().x2(), rect().y(), 1, rect().h()));
+    style().shadow().paint(Rect(rect().x()-1, rect().y(), 1, rect().h()));
+
+
     glSetPen(style().headerText());
 
     const Rect & r = style().headerSize();
@@ -110,7 +118,11 @@ void ListMenu::paintEvent()
     Rect save_rect = rect();
 
     /* set new, for list */
-    setSize(style().listSize());
+
+    Rect list(style().listSize().x()+rect().x(), style().listSize().y()+rect().y(),
+              style().listSize().w(), style().listSize().h());
+
+    setSize(list);
 
     glSetClipRegion(rect().x(), rect().y(), rect().x2(), rect().y2());
     ActiveList::paintEvent();

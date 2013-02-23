@@ -15,7 +15,7 @@ QMAKE_CXXFLAGS += -O2 -std=c++11  -U__STRICT_ANSI__ -D__STDC_VERSION__=200001
 QMAKE_CFLAGS_RELEASE += -O2 -std=gnu99
 QMAKE_LFLAGS +=
 
-LIBS   += -lscrt -lgcc -lc -lpng -lz -lm -lgl -lft -lc++ -lsigc++ -lsupc++
+LIBS   += -lscrt -lgcc -lc -lpng -lz -lm -lgl -lft -lc++ -lsupc++
 
 HEADERS += \
     Rect.h \
@@ -37,7 +37,6 @@ HEADERS += \
     GlobalMenuButton.h \
     ResourceManager.h \
     main.h \
-    GlobalMenu.h \
     ListMenu.h \
     EventManager.h \
     FSEntryInfo.h \
@@ -50,7 +49,9 @@ HEADERS += \
     Notify.h \
     Timer.h \
     Brush.h \
-    ListMenuStyle.h
+    ListMenuStyle.h \
+    FSProtocol.h \
+    LocalFSProtocol.h
 
 SOURCES += \
     main.cpp \
@@ -67,7 +68,6 @@ SOURCES += \
     EffectManager.cpp \
     GlobalMenuButton.cpp \
     ResourceManager.cpp \
-    GlobalMenu.cpp \
     ListMenu.cpp \
     EventManager.cpp \
     FileViewWidgetListEngine.cpp \
@@ -77,4 +77,6 @@ SOURCES += \
     Notify.cpp \
     Timer.cpp \
     Brush.cpp \
-    ListMenuStyle.cpp
+    ListMenuStyle.cpp \
+    FSProtocol.cpp \
+    LocalFSProtocol.cpp

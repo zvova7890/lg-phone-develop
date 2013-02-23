@@ -5,7 +5,7 @@
 #include <EventManager.h>
 #include <UActiveArea.h>
 #include <string>
-#include <sigc++/sigc++.h>
+#include "signals/signal.h"
 
 
 
@@ -50,9 +50,9 @@ public:
 
         if(!isMoved()) {
             if(action == TOUCH_ACTION_RELEASE) {
-                _released.emit(this);
+                _released.trigger(this);
             } else if(action == TOUCH_ACTION_PRESS) {
-                _pressed.emit(this);
+                _pressed.trigger(this);
             }
         }
 
@@ -60,15 +60,22 @@ public:
     }
 
 
-    template <class T>
-    inline void connectReleased(T slot_) {
-        _released.connect(slot_);
+    typedef signal_slot::multi_signal <void(UButton *)> signal;
+    typename signal_slot::multi_signal <void(UButton *)> _sig;
+
+
+    auto releasedSignal() -> decltype(_sig) {
+        return _released;
+    }
+
+    auto pressedSignal() -> decltype(_sig) {
+        return _pressed;
     }
 
 
 private:
 
-    sigc::signal <void, UButton *> _pressed, _released;
+    signal _pressed, _released;
     std::string _name;
     EventManager *event_mngr;
 };

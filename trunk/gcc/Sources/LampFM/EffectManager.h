@@ -5,7 +5,7 @@
 #include <TimerWrap.h>
 #include "EventManager.h"
 #include "UActiveArea.h"
-#include <sigc++/sigc++.h>
+#include <signals/signal.h>
 
 
 enum Effects{
@@ -45,9 +45,13 @@ public:
         event_mngr = e;
     }
 
-    template <class T>
-    inline void connectEffectFinishSignal(T t) {
-        effectFinished.connect(t);
+
+    typedef signal_slot::multi_signal <void(EffectManager *)> signal;
+    typename signal_slot::multi_signal <void(EffectManager *)> _sig;
+
+
+    auto effectFinishedSignal() -> decltype(_sig) {
+        return effectFinished;
     }
 
 private:
@@ -59,7 +63,7 @@ private:
     void dominoEffect(int t);
 
 private:
-    sigc::signal <void, EffectManager *> effectFinished;
+    signal effectFinished;
     int speed, start_pos, end_pos;
     image_t prev_img, next_img;
     TimerWrap timer;

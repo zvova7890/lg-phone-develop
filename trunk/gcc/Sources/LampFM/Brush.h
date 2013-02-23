@@ -31,7 +31,7 @@ public:
     Brush(GLColor color);
     Brush(GLGradient *gradient);
     Brush(image_t *image);
-    Brush(const std::function<void(Brush &)> & f);
+    Brush(const std::function<void(Brush &, const Rect &)> &f);
 
 
     Brush & operator=(const Brush &b) {
@@ -53,7 +53,7 @@ private:
     GLColor _color;
     GLGradient *_gradient;
     image_t *_image;
-    std::function<void(Brush &)> _paint_event;
+    std::function<void(Brush &, const Rect &)> _paint_event;
 };
 
 #endif // BRUSH_H
