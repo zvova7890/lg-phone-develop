@@ -3,16 +3,16 @@
 
 #include "EventManager.h"
 #include "ActiveList.h"
-#include "GlobalMenu.h"
 #include "ResourceManager.h"
 #include "EffectManager.h"
 #include "ExtManager.h"
-
+#include "FSProtocol.h"
 
 
 EventManager & eventManager();
 ResourceManager & resourceManager();
 ExtManager & extensionManager();
 UActiveArea & mainActiveArea();
+FSProtocolsContainer & protocolsContainer();
 
 #endif // __MAIN_H__

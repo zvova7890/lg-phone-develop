@@ -37,6 +37,9 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
 {
     memset(&cd_prev_screen_image, 0, sizeof(cd_prev_screen_image));
 
+    _current_protocol.push_back("local");
+    _current_protocol.push_back("local");
+
     if(curent_engine)
         _main_view_engine = new FileViewWidgetIconEngine(this);
     else
@@ -68,7 +71,7 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
 
             if(new_y > 0) {
                 t->stop();
-                global_menu.move( global_menu.rect().x(), global_menu.offsetY()+1);
+                global_menu.move( global_menu.rect().x(), 1);
                 global_menu_button.move( 0, global_menu.rect().y2()+1 );
                 event_mngr->updateAfterEvent();
                 return;
@@ -90,7 +93,7 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
         }
 
         global_menu_speed += (global_menu_speed*30)/100;
-        global_menu.move( global_menu.rect().x(), new_y+global_menu.offsetY());
+        global_menu.move( global_menu.rect().x(), new_y);
         global_menu_button.move( 0, global_menu.rect().y2() +1);
         event_mngr->updateAfterEvent();
     };
@@ -166,7 +169,7 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
                 global_menu_last_x = x;
                 global_menu_last_y = y;
 
-                global_menu.move( global_menu.rect().x(), (y-global_menu_fix_y)-global_menu.rect().h() +global_menu.offsetY() );
+                global_menu.move( global_menu.rect().x(), (y-global_menu_fix_y)-global_menu.rect().h() );
                 global_menu_button.move( 0, global_menu.rect().y2()+1 );
                 event_mngr->updateAfterEvent();
                 break;
@@ -226,18 +229,18 @@ FileViewWidget::~FileViewWidget()
 void FileViewWidget::initGlobalMenu()
 {
     /* init menu */
-    GlobalMenuItem *mi;
+    ListMenuItem *mi;
 
     global_menu.setFullScreenBlock(true);
 
 
-    global_menu.pushBack( mi = new GlobalMenuItem(&global_menu, global_menu.rect().w(), 40, "Назад..."));
+    global_menu.pushBack( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Назад..."));
     mi->onReleasedSignal().connect( [this](ListMenuItem *) {
         global_menu.hide();
         cdDown();
     } );
 
-    global_menu.pushBack( mi = new GlobalMenuItem(&global_menu, global_menu.rect().w(), 40, "В начало"));
+    global_menu.pushBack( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "В начало"));
     mi->onReleasedSignal().connect( [this](ListMenuItem *) {
         global_menu.hide();
         resetViewListPosition();
@@ -245,7 +248,7 @@ void FileViewWidget::initGlobalMenu()
         fixScrollPosition();
     } );
 
-    global_menu.pushBack( mi = new GlobalMenuItem(&global_menu, global_menu.rect().w(), 40, "В конец"));
+    global_menu.pushBack( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "В конец"));
     mi->onReleasedSignal().connect( [this](ListMenuItem *) {
         global_menu.hide();
         resetViewListPosition();
@@ -254,21 +257,21 @@ void FileViewWidget::initGlobalMenu()
     } );
 
 
-    mi = global_menu.pushBack(new GlobalMenuItem(&global_menu, global_menu.rect().w(), 40, "Обновить"));
+    global_menu.pushBack( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Обновить"));
     mi->onReleasedSignal().connect( [this](ListMenuItem *) {
         global_menu.hide();
         refreshDir();
         event_mngr->updateAfterEvent();
     } );
 
-    global_menu.pushBack( mi = new GlobalMenuItem(&global_menu, global_menu.rect().w(), 40, "Сменить вид"));
+    global_menu.pushBack( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Сменить вид"));
     mi->onReleasedSignal().connect( [this](ListMenuItem *) {
         global_menu.hide();
         switchViewType();
     } );
 
 
-    global_menu.pushBack( mark_start_stop = mi = new GlobalMenuItem(&global_menu, global_menu.rect().w(), 40, "Начать выделение"));
+    global_menu.pushBack( mark_start_stop = mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Начать выделение"));
     mi->onReleasedSignal().connect( [this](ListMenuItem *) {
         setSelectMode(!isSelectionMode());
 
@@ -279,9 +282,9 @@ void FileViewWidget::initGlobalMenu()
         event_mngr->updateAfterEvent();
     } );
 
-    global_menu.pushBack(new GlobalMenuItem(&global_menu, global_menu.rect().w(), 40, "Информация"));
+    global_menu.pushBack(new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Информация"));
 
-    global_menu.pushBack( mi = new GlobalMenuItem(&global_menu, global_menu.rect().w(), 40, "Выход..."));
+    global_menu.pushBack( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Выход..."));
     mi->onReleasedSignal().connect( [this](ListMenuItem *) {
         __exit_signal.trigger(this);
     } );
@@ -665,10 +668,10 @@ void FileViewWidget::onItemMenu(const FSEntryInfo &f, FileViewWidgetAbstractItem
     _fsentry_menu.setUserData(abstract_item);
     _fsentry_menu.setFullScreenBlock(true);
 
+    _fsentry_menu.style().setShadow(Brush());
     _fsentry_menu.style().setBackground(Brush(&resourceManager().image("fs-menu")));
     _fsentry_menu.style().setHeaderSize(Rect(0, 0, _fsentry_menu.rect().w(), 27));
-    _fsentry_menu.style().setListSize(Rect(_fsentry_menu.rect().x(), _fsentry_menu.rect().y()+29,
-                                           _fsentry_menu.rect().w(), _fsentry_menu.rect().h()-29));
+    _fsentry_menu.style().setListSize(Rect(0, 29, _fsentry_menu.rect().w(), _fsentry_menu.rect().h()-29));
 
     ListMenuItem *it = 0;
 
@@ -704,7 +707,7 @@ void FileViewWidget::onItemMenu(const FSEntryInfo &f, FileViewWidgetAbstractItem
         global_yes_no_question = new QuestionDialog(Rect(20, 80, 240-40, 400-160), "Удалить?");
         global_yes_no_question->show();
 
-        global_yes_no_question->connectChoisPressed( [&selected_list, item, this](QuestionDialog *self, int choise) {
+        global_yes_no_question->choisPressedSignal().connect( [&selected_list, item, this](QuestionDialog *self, int choise) {
 
             if(choise == 1) {
 

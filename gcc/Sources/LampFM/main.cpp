@@ -12,7 +12,8 @@
 #include <pxeapi.h>
 #include <taskapi.h>
 #include <wchar.h>
-
+#include <unistd.h>
+#include <fcntl.h>
 
 #include <nucleus.h>
 
@@ -26,6 +27,7 @@
 #include "GlobalMenuButton.h"
 #include "ExtManager.h"
 #include "FileViewWidgetListEngine.h"
+#include "LocalFSProtocol.h"
 
 #include <Api/ApiLinkLib/ApiLink.h>
 
@@ -43,7 +45,7 @@ ExtManager *ext_manager;
 EventManager event_mngr;
 UActiveArea active_area(Rect(0, 0, 240, 400), true);
 EffectManager global_emanager(&active_area, &event_mngr);
-
+FSProtocolsContainer protocols;
 
 //GlobalMenuButton *menu_test = 0;
 FileViewWidget *main_view = 0;
@@ -79,6 +81,10 @@ UActiveArea & mainActiveArea() {
     return active_area;
 }
 
+FSProtocolsContainer & protocolsContainer() {
+    return protocols;
+}
+
 
 void Screen_OnDraw()
 {
@@ -111,12 +117,18 @@ void refresh()
 }
 
 
+
+
+
 //Действие при создании окна
 void Screen_OnInit()
 {
     GLContext *gl_context = glCreateContext(DISPLAY_WITDH, DISPLAY_HEIGHT, 16, GetScreenBuffer());
     glActivateContext(gl_context);
     glEnable(GL_ALPHA_TEST);
+
+
+    protocols.pushProtocol("local", new LocalFSProtocol);
 
 
     event_mngr.setRefreshFunc( []() {

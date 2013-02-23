@@ -4,7 +4,7 @@
 #include <Rect.h>
 #include <ActiveArea.h>
 #include <TimedTrack.h>
-#include <sigc++/sigc++.h>
+#include "signals/signal.h"
 
 
 class UActiveArea;
@@ -106,7 +106,7 @@ public:
     }
 
     virtual void paintEvent() {
-        __paint_event.emit(this);
+        __paint_event.trigger(this);
     }
 
     virtual void touchEvent(int action, int x, int y) {
@@ -114,7 +114,7 @@ public:
         ((void)x);
         ((void)y);
 
-        __touch_event.emit(this, action, x, y);
+        __touch_event.trigger(this, action, x, y);
     }
 
     inline int lastTouchedX() const {
@@ -171,9 +171,20 @@ public:
         __paint_event.connect(slot_);
     }
 
-    template <class Tp>
-    inline void connectTouchSignal(Tp slot_) {
-        __touch_event.connect(slot_);
+
+    typename signal_slot::signal <void(UActiveAreaItem<T>*)> _PaintSignal;
+    typename signal_slot::signal <void(UActiveAreaItem<T>*, int, int, int) > _TouchSignal;
+
+    typedef signal_slot::signal <void(UActiveAreaItem<T>*)> PaintSignal;
+    typedef signal_slot::signal <void(UActiveAreaItem<T>*, int, int, int) > TouchSignal;
+
+    auto paintSignal() -> decltype(_PaintSignal)
+    {
+        return __paint_event;
+    }
+
+    inline auto touchSignal() -> decltype(_TouchSignal) {
+        return __touch_event;
     }
 
     inline void setUserData(void *u) {
@@ -190,8 +201,8 @@ protected:
 
     void *_user_data;
     int current_touch_state;
-    sigc::signal <void, UActiveAreaItem<T>* > __paint_event;
-    sigc::signal <void, UActiveAreaItem<T>*, int, int, int > __touch_event;
+    PaintSignal __paint_event;
+    TouchSignal __touch_event;
 };
 
 

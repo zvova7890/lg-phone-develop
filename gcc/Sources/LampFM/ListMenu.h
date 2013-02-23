@@ -6,7 +6,6 @@
 #include "ActiveList.h"
 #include "ListMenuStyle.h"
 #include "Brush.h"
-#include <sigc++/sigc++.h>
 #include <signals/signal.h>
 #include <string>
 #include <png_ops.h>

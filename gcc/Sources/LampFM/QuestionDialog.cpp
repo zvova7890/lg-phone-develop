@@ -69,21 +69,21 @@ QuestionDialog::QuestionDialog(const Rect &r, const std::string &question) :
     } );
 
 
-    buttons[0]->connectTouchSignal( [this](UActiveAreaItem<ActiveAreaItem> *self, int action, int /*x*/, int /*y*/) {
+    buttons[0]->touchSignal().connect ( [this](UActiveAreaItem<ActiveAreaItem> *self, int action, int /*x*/, int /*y*/) {
 
 
         if(action == TOUCH_ACTION_RELEASE && self->isTouched() && !self->isMoved()) {
-            __button_pressed.emit(this, 1);
+            __button_pressed.trigger(this, 1);
             return;
         }
         eventManager().updateAfterEvent();
     } );
 
-    buttons[1]->connectTouchSignal( [this](UActiveAreaItem<ActiveAreaItem> *self, int action, int /*x*/, int /*y*/) {
+    buttons[1]->touchSignal().connect ( [this](UActiveAreaItem<ActiveAreaItem> *self, int action, int /*x*/, int /*y*/) {
 
         if(action == TOUCH_ACTION_RELEASE && self->isTouched() && !self->isMoved()) {
             printf("No pressed O_O\n");
-            __button_pressed.emit(this, 0);
+            __button_pressed.trigger(this, 0);
             return;
         }
         eventManager().updateAfterEvent();
@@ -115,7 +115,7 @@ void QuestionDialog::touchEvent(int action, int x, int y)
     if(action == TOUCH_ACTION_RELEASE && isOffRectTouch() && !isMoved()) {
         hide();
 
-        __button_pressed.emit(this, 0);
+        __button_pressed.trigger(this, 0);
         return;
     }
 

@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 #include <png_ops.h>
+
+#include <ListMenu.h>
 #include "GlobalMenuButton.h"
 #include "FSEntryInfo.h"
 #include "main.h"
@@ -134,6 +136,7 @@ private:
     QuestionDialog *global_yes_no_question;
     ListMenu::signal::slot _on_hide_it;
     Timer global_menu_timer;
+    std::vector <std::string> _current_protocol;
 
 private:
     std::string __current_dir;
@@ -149,9 +152,9 @@ public:
     UActiveArea *_parent_area;
 
     /* глобальное меню */
-    GlobalMenu global_menu;
+    ListMenu global_menu;
     GlobalMenuButton global_menu_button;
-    GlobalMenuItem *mark_start_stop;
+    ListMenuItem *mark_start_stop;
 
     bool global_menu_first_move, global_menu_showing;
     int global_menu_last_x, global_menu_last_y, global_menu_fix_y;

@@ -54,7 +54,7 @@ void EffectManager::stop()
     reset();
     _parent->pop(this);
 
-    if(_a) effectFinished.emit(this);
+    if(_a) effectFinished.trigger(this);
 }
 
 
