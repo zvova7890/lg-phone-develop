@@ -15,7 +15,7 @@
 FileViewWidgetIconItem::FileViewWidgetIconItem(FileViewWidget *parent, int w, int h, int num, const std::vector<FSEntryInfo> &entries) :
     ActiveListItem(parent, w, h),
     _fvparent(parent),
-   _touch_area(Rect(0, 0, w, h))
+   _touch_area(parent->eventManager(), Rect(0, 0, w, h))
 {
     _fsinfo = entries;
 
@@ -204,7 +204,7 @@ void FileViewWidgetIconItem::FsEntryItem::touchEvent(int action, int x, int y)
 
             if(_fvparent->isSelectionMode() && !_fs_entry_info->action) {
                 setMarked(!isMarked());
-                _fvparent->event_mngr->updateAfterEvent();
+                _fvparent->eventManager()->updateAfterEvent();
                 return;
             }
 
@@ -215,7 +215,7 @@ void FileViewWidgetIconItem::FsEntryItem::touchEvent(int action, int x, int y)
         case TOUCH_ACTION_LONG_PRESS:
 
             _is_longpress = true;
-            _item_parent->_fvparent->event_mngr->updateAfterEvent();
+            _item_parent->_fvparent->eventManager()->updateAfterEvent();
             break;
     }
 
@@ -233,7 +233,7 @@ void FileViewWidgetIconItem::FsEntryItem::touchEvent(int action, int x, int y)
 FileViewWidgetIconEngine::FileViewWidgetIconEngine(FileViewWidget *parent) :
     FileViewWidgetEngine(parent)
 {
-    event_mngr = &eventManager();
+    //event_mngr = &eventManager();
 }
 
 

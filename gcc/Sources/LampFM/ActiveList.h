@@ -29,8 +29,8 @@ private:
 public:
 
     ActiveListItem(ActiveList *parent, int w, int h) :
-        UActiveAreaItem<ScrollAreaItem>(Rect(0, 0, w, h), true),
-        _parent(parent)
+        UActiveAreaItem<ScrollAreaItem>(((UActiveAreaItem<ScrollArea>*)parent)->parent(), Rect(0, 0, w, h), true),
+        _active_list_parent(parent)
     {
 #if 0
         auto paint = [](ScrollAreaItem *item) {
@@ -56,16 +56,16 @@ public:
 
 
     inline ActiveList *parent() {
-        return _parent;
+        return _active_list_parent;
     }
 
-    inline int currentDisplayID() const {
+    inline int currentLineDisplayID() const {
         return constItem()->id;
     }
 
 
 protected:
-    ActiveList *_parent;
+    ActiveList *_active_list_parent;
 };
 
 
@@ -79,15 +79,14 @@ private:
 
     static void __needUpdate(void *user) {
         auto *self = (ActiveList*)user;
-        self->event_mngr->updateAfterEvent();
+        self->eventManager()->updateAfterEvent();
     }
 
 
 public:
-    ActiveList(const Rect &r, EventManager *e, bool blockable = true) :
-        UActiveAreaItem<ScrollArea>(r, blockable),
-        _item_step(0),
-        event_mngr(e)
+    ActiveList(UActiveArea *parent, const Rect &r, bool blockable = true) :
+        UActiveAreaItem<ScrollArea>(parent, r, blockable),
+        _item_step(0)
     {
         scrollAreaCreate(area(), _item_step, this);
         area()->need_update_user = this;
@@ -189,9 +188,6 @@ protected:
 protected:
     int _item_step;
     std::vector <ActiveListItem*> _items;
-
-public:
-    EventManager *event_mngr;
 };
 
 

@@ -13,7 +13,7 @@ class GlobalMenuButton : public UButton
 public:
     typedef signal_slot::signal <void(GlobalMenuButton *, int, int, int)> MoveSignal;
 
-    GlobalMenuButton(EventManager *e, const Rect &r, bool blockable = true);
+    GlobalMenuButton(UActiveArea *parent, const Rect &r, bool blockable = true);
     void paintEvent();
     void touchEvent(int action, int x, int y);
 

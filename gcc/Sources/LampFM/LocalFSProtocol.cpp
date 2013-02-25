@@ -13,11 +13,12 @@ LocalFSProtocol::LocalFSProtocol()
 }
 
 
-void *LocalFSProtocol::open(const char *f, FSProtocol::OpenMode mode)
+void *LocalFSProtocol::open(const char *f, int mode)
 {
     char m[4] = {0};
     int at = 0;
 
+    // FIXME
     if(mode & FSProtocol::OpenMode::Read)
         m[at++] = 'r';
 
@@ -39,27 +40,57 @@ void *LocalFSProtocol::open(const char *f, FSProtocol::OpenMode mode)
 }
 
 
+int LocalFSProtocol::read(void *f, char *data, int size)
+{
+    ::FILE *fp = (FILE*)f;
+    return fread(data, 1, size, fp);
+}
+
+
+int LocalFSProtocol::write(void *f, const char *data, int size)
+{
+    ::FILE *fp = (FILE*)f;
+    return fwrite(data, 1, size, fp);
+}
+
+
+int LocalFSProtocol::close(void *f)
+{
+    ::FILE *fp = (FILE*)f;
+
+    return fclose(fp);
+}
+
+
+long LocalFSProtocol::fsize(void *f)
+{
+    ::FILE *fp = (FILE*)f;
+
+    long off = ftell(fp);
+
+    fseek(fp, 0, SEEK_END);
+    int sz = ftell(fp);
+    fseek(fp, off, SEEK_SET);
+
+    return sz;
+}
+
+
 int LocalFSProtocol::unlink(const char *f)
 {
     return ::unlink(f);
 }
 
 
-int LocalFSProtocol::mkdir(const char *d, bool recursive)
+int LocalFSProtocol::mkdir(const char *d)
 {
-    if(!recursive)
-        return ::mkdir(d, 0777);
-
-    return -1;
+    return ::mkdir(d, 0777);
 }
 
 
-int LocalFSProtocol::rmdir(const char *d, bool recursive)
+int LocalFSProtocol::rmdir(const char *d)
 {
-    if(!recursive)
-        return ::rmdir(d);
-
-    return -1;
+    return ::rmdir(d);
 }
 
 
@@ -69,7 +100,7 @@ void *LocalFSProtocol::opendir(const char *dir, const char *mask)
 
     int d = fs_opendir(dir);
 
-    printf("LocalFSProtocol::opendir: %d\n", d);
+    //printf("LocalFSProtocol::opendir: %d\n", d);
 
     if(d > 0) {
         void **r = (void **)malloc(sizeof(void*));

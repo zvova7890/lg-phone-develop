@@ -30,6 +30,21 @@ public:
         _h = r.h();
     }
 
+    inline void setX(int c) {
+        _x = c;
+    }
+
+    inline void setY(int c) {
+        _y = c;
+    }
+
+    inline void setW(int c) {
+        _w = c;
+    }
+
+    inline void setH(int c) {
+        _h = c;
+    }
 
     inline int x() const {
         return _x;

@@ -15,7 +15,7 @@ FSProtocol::~FSProtocol()
 }
 
 
-void *FSProtocol::open(const char *f, FSProtocol::OpenMode mode)
+void *FSProtocol::open(const char *f, int mode)
 {
     UNUSED(f);
     UNUSED(mode);
@@ -39,6 +39,20 @@ int FSProtocol::write(void *, const char *, int )
 }
 
 
+long FSProtocol::fsize(void *)
+{
+    _err = -ENOTSUP;
+    return -1;
+}
+
+
+int FSProtocol::seek(void *, off_t , int )
+{
+    _err = -ENOTSUP;
+    return -1;
+}
+
+
 int FSProtocol::close(void *)
 {
     _err = -ENOTSUP;
@@ -53,14 +67,14 @@ int FSProtocol::unlink(const char *)
 }
 
 
-int FSProtocol::mkdir(const char *, bool )
+int FSProtocol::mkdir(const char *)
 {
     _err = -ENOTSUP;
     return -1;
 }
 
 
-int FSProtocol::rmdir(const char *, bool )
+int FSProtocol::rmdir(const char *)
 {
     _err = -ENOTSUP;
     return -1;

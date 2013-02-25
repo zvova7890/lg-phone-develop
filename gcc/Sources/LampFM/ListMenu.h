@@ -51,7 +51,7 @@ class ListMenu : public ActiveList
 public:
     typedef signal_slot::multi_signal<void(ListMenu*)> signal;
 
-    ListMenu(UActiveArea *parent, const Rect &r, EventManager *e, bool blockable = true);
+    ListMenu(UActiveArea *parent, const Rect &r, bool blockable = true);
     ~ListMenu();
 
     void paintEvent();
@@ -83,7 +83,6 @@ public:
 protected:
 
     signal _on_hide, _on_show, _on_offsreen_touch;
-    UActiveArea *_parent;
 
 private:
     ListMenuStyle _style;

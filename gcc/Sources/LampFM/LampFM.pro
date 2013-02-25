@@ -51,7 +51,11 @@ HEADERS += \
     Brush.h \
     ListMenuStyle.h \
     FSProtocol.h \
-    LocalFSProtocol.h
+    LocalFSProtocol.h \
+    ClipBoard.h \
+    ProgressDialog.h \
+    Thread.h \
+    ThreadWorker.h
 
 SOURCES += \
     main.cpp \
@@ -79,4 +83,10 @@ SOURCES += \
     Brush.cpp \
     ListMenuStyle.cpp \
     FSProtocol.cpp \
-    LocalFSProtocol.cpp
+    LocalFSProtocol.cpp \
+    ClipBoard.cpp \
+    ProgressDialog.cpp \
+    Thread.cpp \
+    ThreadWorker.cpp \
+    FileViewWidget_fs.cpp \
+    FileViewWidget_filecontext.cpp

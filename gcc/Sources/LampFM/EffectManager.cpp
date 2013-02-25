@@ -3,11 +3,9 @@
 
 
 
-EffectManager::EffectManager(UActiveArea *parent, EventManager *e) :
-    UActiveAreaItem<ActiveAreaItem>(Rect(0, 0, 240, 400), false),
-    is_active(false),
-    event_mngr(e),
-    _parent(parent)
+EffectManager::EffectManager(UActiveArea *parent) :
+    UActiveAreaItem<ActiveAreaItem>(parent, Rect(0, 0, 240, 400), false),
+    is_active(false)
 {
     auto event = [](TimerWrap *timer, void *user){
         ((void)timer);
@@ -72,7 +70,7 @@ void EffectManager::start(int effect, int delay)
     TimerStart(&timer, delay);
     is_active = true;
 
-    event_mngr->updateAfterEvent();
+    eventManager()->updateAfterEvent();
 }
 
 
@@ -172,7 +170,7 @@ void EffectManager::timerEvent()
     if(timer.period != 3){
         TimerResetPeriod(&timer, 3);
     }
-    event_mngr->updateAfterEvent();
+    eventManager()->updateAfterEvent();
 }
 
 
@@ -217,10 +215,10 @@ void EffectManager::scaleEffect(int t)
 
     if(start_pos > (prev_img.w)) {
         stop();
-        event_mngr->updateAfterEvent();
-        event_mngr->refresh();
+        eventManager()->updateAfterEvent();
+        eventManager()->refresh();
     } else {
-        event_mngr->refresh();
+        eventManager()->refresh();
     }
 
     start_pos += speed;
@@ -251,10 +249,10 @@ void EffectManager::moveEffect(int t)
 
     if(start_pos > (prev_img.w)) {
         stop();
-        event_mngr->updateAfterEvent();
+        eventManager()->updateAfterEvent();
         //event_mngr->refresh();
     } else {
-        event_mngr->refresh();
+        eventManager()->refresh();
     }
 
     start_pos += speed;
@@ -292,10 +290,10 @@ void EffectManager::alphaEffect(int t)
 
     if(start_pos > (prev_img.w)-speed) {
         stop();
-        event_mngr->updateAfterEvent();
+        eventManager()->updateAfterEvent();
 
     } else {
-        event_mngr->refresh();
+        eventManager()->refresh();
     }
 
     start_pos += speed;
@@ -326,10 +324,10 @@ void EffectManager::dominoEffect(int t)
 
     if(start_pos > (prev_img.w)) {
         stop();
-        event_mngr->updateAfterEvent();
+        eventManager()->updateAfterEvent();
 
     } else {
-        event_mngr->refresh();
+        eventManager()->refresh();
     }
 
     start_pos += speed;

@@ -11,10 +11,15 @@ public:
 
     LocalFSProtocol();
 
-    void *open(const char *f, FSProtocol::OpenMode mode);
+    void *open(const char *f, int mode);
+    int read(void *, char *data, int size);
+    int write(void *, const char *data, int size);
+    int close(void *);
+    long fsize(void *);
+
     int unlink(const char *f);
-    int mkdir(const char *d, bool recursive = false);
-    int rmdir(const char *d, bool recursive = false);
+    int mkdir(const char *d);
+    int rmdir(const char *d);
 
     void *opendir(const char *dir, const char *mask);
     int readdir(void *hdir, FSEntry *);

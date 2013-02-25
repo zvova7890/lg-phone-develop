@@ -11,7 +11,7 @@ public:
     typedef signal_slot::multi_signal <void(Timer *)> signal;
 
     Timer(bool system = false);
-    ~Timer();
+    virtual ~Timer();
 
     void start(int period);
     void stop();

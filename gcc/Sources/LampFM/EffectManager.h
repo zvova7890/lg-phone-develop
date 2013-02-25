@@ -24,7 +24,7 @@ enum Effects{
 class EffectManager : public UActiveAreaItem<ActiveAreaItem>
 {
 public:
-    EffectManager(UActiveArea *parent, EventManager *e);
+    EffectManager(UActiveArea *parent);
     ~EffectManager();
 
     void reset();
@@ -39,10 +39,6 @@ public:
 
     inline void pushNewScreen(image_t & img) {
         next_img = img;
-    }
-
-    inline void setPaintManager(EventManager *e) {
-        event_mngr = e;
     }
 
 
@@ -68,10 +64,7 @@ private:
     image_t prev_img, next_img;
     TimerWrap timer;
     bool is_active;
-    EventManager *event_mngr;
     int _effect;
-
-    UActiveArea *_parent;
 };
 
 #endif // EFFECTMANAGER_H

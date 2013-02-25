@@ -36,7 +36,7 @@ void ListMenuItem::paintEvent()
     glSetPen(parent()->style().separator());
     glDrawHLine(rect().x(), rect().x2()-1, rect().y());
 
-    if(currentDisplayID() == (int)parent()->itemList()->size()-1)
+    if(currentLineDisplayID() == (int)parent()->itemList()->size()-1)
         glDrawHLine(rect().x(), rect().x2()-1, rect().y2());
 
 
@@ -80,9 +80,8 @@ void ListMenuItem::touchEvent(int action, int x, int y)
 
 
 
-ListMenu::ListMenu(UActiveArea *parent, const Rect &r, EventManager *e, bool blockable) :
-    ActiveList(r, e, blockable),
-    _parent(parent)
+ListMenu::ListMenu(UActiveArea *parent, const Rect &r, bool blockable) :
+    ActiveList(parent, r, blockable)
 {
     style().setSize(r);
     style().setListSize(r);

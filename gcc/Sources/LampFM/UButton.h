@@ -15,9 +15,8 @@
 class UButton : public UActiveAreaItem<ActiveAreaItem>
 {
 public:
-    UButton(EventManager *e, const Rect & rc, bool blockable = true) :
-        UActiveAreaItem<ActiveAreaItem>(rc, blockable),
-        event_mngr(e)
+    UButton(UActiveArea *parent, const Rect & rc, bool blockable = true) :
+        UActiveAreaItem<ActiveAreaItem>(parent, rc, blockable)
     {
     }
 
