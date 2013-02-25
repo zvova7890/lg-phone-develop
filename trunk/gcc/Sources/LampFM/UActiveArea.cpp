@@ -2,8 +2,9 @@
 
 
 
-UActiveArea::UActiveArea(const Rect &r, bool long_press_support) :
-    _long_press_enabled(long_press_support)
+UActiveArea::UActiveArea(EventManager *event, const Rect &r, bool long_press_support) :
+    _long_press_enabled(long_press_support),
+    event_mgr(event)
 {
     activeAreaCreate((ActiveArea*)&aarea, r.x(), r.y(), r.w(), r.h());
 

@@ -9,6 +9,7 @@
 #include <ListMenu.h>
 #include "GlobalMenuButton.h"
 #include "FSEntryInfo.h"
+#include "ClipBoard.h"
 #include "main.h"
 #include <Timer.h>
 
@@ -16,6 +17,7 @@
 
 #include "FileViewWidgetEngine.h"
 #include "QuestionDialog.h"
+#include "ProgressDialog.h"
 
 
 
@@ -29,7 +31,7 @@ class FileViewWidget : public ActiveList
 public:
     typedef signal_slot::multi_signal <void(FileViewWidget*)> signal;
 
-    FileViewWidget(UActiveArea *parent, EffectManager *em, const Rect &r, EventManager *e);
+    FileViewWidget(UActiveArea *parent, EffectManager *em, const Rect &r);
     ~FileViewWidget();
 
     void pushBackFile(FSEntryInfo *info);
@@ -41,6 +43,14 @@ public:
 
     void unMarkAllFiles();
     void markAllFiles();
+
+
+    void pushFileToClipBoard(const std::string &dir, const FSListedEntry &info, ClipBoard::Action type);
+
+    void copy(const std::string &dir, const FSEntryInfo &info);
+    void move(const std::string &dir, const FSEntryInfo &info);
+
+    void paste(const std::string &dir);
 
     std::list <const FSEntryInfo *> getSelectedEntriesList();
     int unlinkFiles(const std::list<const FSEntryInfo *> & list);
@@ -119,6 +129,11 @@ public:
 
 
 protected:
+
+    void do_clipboard_work(const std::string &to_dir, int accepted_work);
+    void set_clipboard_files(const std::string &dir, const FSEntryInfo &info, int action);
+    int copy_file(const std::string &from, const std::string &to, unsigned int *full, unsigned int *done);
+    void recursive_flush(FSProtocol &, int base_dir, const std::string &dir, void *handle, std::list<FSListedEntry> & list);
     void initGlobalMenu();
     ScrollAreaItem *getListItem(int index);
 
@@ -139,6 +154,8 @@ private:
     std::vector <std::string> _current_protocol;
     std::list <const FSEntryInfo *> _selected_list;
 
+    ClipBoard clipboard;
+
 private:
     std::string __current_dir;
 
@@ -150,7 +167,6 @@ public:
             checkedbox_icon, checkbox_icon;
     EffectManager *effect_manager;
     image_t cd_prev_screen_image;
-    UActiveArea *_parent_area;
 
     /* глобальное меню */
     ListMenu global_menu;
@@ -161,8 +177,6 @@ public:
     int global_menu_last_x, global_menu_last_y, global_menu_fix_y;
     int global_menu_way;
     int global_menu_speed;
-
-    //int marked_files;
 
 public:
 

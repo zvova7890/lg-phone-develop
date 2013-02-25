@@ -3,6 +3,7 @@
 
 #include <map>
 #include <string>
+#include <FSEntryInfo.h>
 
 
 class FSProtocol
@@ -26,26 +27,48 @@ public:
     };
 
 
-    typedef struct {
+    struct FSEntry{
+    public:
+
+        FSEntry() :
+            flags(0),
+            size(0),
+            ctime(0) {
+        }
+
+        FSEntry(const FSEntryInfo &info) {
+            name = info.name;
+            flags = info.attr;
+            size = info.size;
+            ctime = 0;
+
+            if(flags & Dir && name[name.length()-1] == '/') {
+                name.erase(name.length()-1, 1);
+            }
+        }
+
         std::string name;
         int flags;
         unsigned int size;
-    }FSEntry;
+        unsigned ctime;
+    };
 
 
 public:
     FSProtocol();
     virtual ~FSProtocol();
 
-    virtual void *open(const char *f, OpenMode mode);
+    virtual void *open(const char *f, int mode);
     virtual int read(void *, char *data, int size);
     virtual int write(void *, const char *data, int size);
+    virtual long fsize(void *);
+    virtual int seek(void *, off_t offset, int mode);
     virtual int close(void *);
 
     virtual int unlink(const char *f);
 
-    virtual int mkdir(const char *d, bool recursive = false);
-    virtual int rmdir(const char *d, bool recursive = false);
+    virtual int mkdir(const char *d);
+    virtual int rmdir(const char *d);
 
 
     virtual void *opendir(const char *dir, const char *mask);

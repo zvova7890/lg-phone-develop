@@ -43,8 +43,8 @@ std::string elfdir;
 ResourceManager *_global_res_manager;
 ExtManager *ext_manager;
 EventManager event_mngr;
-UActiveArea active_area(Rect(0, 0, 240, 400), true);
-EffectManager global_emanager(&active_area, &event_mngr);
+UActiveArea active_area(&event_mngr, Rect(0, 0, 240, 400), true);
+EffectManager global_emanager(&active_area);
 FSProtocolsContainer protocols;
 
 //GlobalMenuButton *menu_test = 0;
@@ -139,7 +139,7 @@ void Screen_OnInit()
         Screen_OnDraw();
     });
 
-    main_view = new FileViewWidget(&active_area, &global_emanager, Rect(0, 0, 240, 400), &event_mngr);
+    main_view = new FileViewWidget(&active_area, &global_emanager, Rect(0, 0, 240, 400));
 
     main_view->onExitSignal().connect( [](FileViewWidget *) {
         TaskMngr_AppExit(0, 0, 0);

@@ -85,7 +85,6 @@ protected:
 
 protected:
     FileViewWidget *_fparent;
-    EventManager *event_mngr;
 };
 
 

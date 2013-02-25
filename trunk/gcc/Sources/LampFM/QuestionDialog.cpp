@@ -5,10 +5,10 @@
 
 
 
-QuestionDialog::QuestionDialog(const Rect &r, const std::string &question) :
-    UActiveAreaItem<ActiveAreaItem>(r),
+QuestionDialog::QuestionDialog(UActiveArea *parent, const Rect &r, const std::string &question) :
+    UActiveAreaItem<ActiveAreaItem>(parent, r),
     _question(question),
-    buttons_area(r)
+    buttons_area(parent->eventManager(), r)
 {
     setFullScreenBlock(true);
 
@@ -16,8 +16,8 @@ QuestionDialog::QuestionDialog(const Rect &r, const std::string &question) :
     int button_w = rect().w()/2-10;
     int button_h = button_w/2-10;
 
-    buttons.push_back( new UActiveAreaItem<ActiveAreaItem>(Rect(rect().x()+5, rect().h()-button_h-5, button_w, button_h)) );
-    buttons.push_back( new UActiveAreaItem<ActiveAreaItem>(Rect(rect().x2()-button_w-5, rect().h()-button_h-5, button_w, button_h)) );
+    buttons.push_back( new UActiveAreaItem<ActiveAreaItem>(parent, Rect(rect().x()+5, rect().h()-button_h-5, button_w, button_h)) );
+    buttons.push_back( new UActiveAreaItem<ActiveAreaItem>(parent, Rect(rect().x2()-button_w-5, rect().h()-button_h-5, button_w, button_h)) );
 
 
     buttons[0]->paintSignal().connect ( [this](UActiveAreaItem<ActiveAreaItem> *_i) {
@@ -76,7 +76,7 @@ QuestionDialog::QuestionDialog(const Rect &r, const std::string &question) :
             __button_pressed.trigger(this, 1);
             return;
         }
-        eventManager().updateAfterEvent();
+        eventManager()->updateAfterEvent();
     } );
 
     buttons[1]->touchSignal().connect ( [this](UActiveAreaItem<ActiveAreaItem> *self, int action, int /*x*/, int /*y*/) {
@@ -86,7 +86,7 @@ QuestionDialog::QuestionDialog(const Rect &r, const std::string &question) :
             __button_pressed.trigger(this, 0);
             return;
         }
-        eventManager().updateAfterEvent();
+        eventManager()->updateAfterEvent();
     } );
 
     buttons_area.push(buttons[0]);

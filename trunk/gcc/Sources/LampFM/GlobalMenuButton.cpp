@@ -3,8 +3,8 @@
 
 
 
-GlobalMenuButton::GlobalMenuButton(EventManager *e, const Rect &r, bool blockable) :
-    UButton(e, r, blockable),
+GlobalMenuButton::GlobalMenuButton(UActiveArea *parent, const Rect &r, bool blockable) :
+    UButton(parent, r, blockable),
     _border_img(0)
 {
 

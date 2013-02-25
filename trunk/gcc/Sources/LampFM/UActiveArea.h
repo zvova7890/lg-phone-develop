@@ -8,6 +8,7 @@
 
 
 class UActiveArea;
+class EventManager;
 
 
 #define TOUCH_ACTION_LONG_PRESS    3
@@ -18,9 +19,10 @@ class UActiveAreaItem
 {
 public:
 
-    UActiveAreaItem(const Rect &r, bool blockable = true) :
+    UActiveAreaItem(UActiveArea *parent, const Rect &r, bool blockable = true) :
         __is_longpressed(false),
-        current_touch_state(TOUCH_ACTION_RELEASE)
+        current_touch_state(TOUCH_ACTION_RELEASE),
+        _parent(parent)
     {
         memset(item(), 0, sizeof(T));
         activeAreaItemCreate(activeAreaItem(), r.x(), r.y(), r.w(), r.h(), blockable);
@@ -166,6 +168,14 @@ public:
         return current_touch_state;
     }
 
+    inline UActiveArea *parent() {
+        return _parent;
+    }
+
+    inline EventManager *eventManager() {
+        return parent()->eventManager();
+    }
+
 
     static typename signal_slot::signal <void(UActiveAreaItem<T>*)> &_PaintSignal;
     static typename signal_slot::signal <void(UActiveAreaItem<T>*, int, int, int) > &_TouchSignal;
@@ -198,15 +208,15 @@ protected:
     int current_touch_state;
     PaintSignal __paint_event;
     TouchSignal __touch_event;
+    UActiveArea *_parent;
 };
-
 
 
 
 class UActiveArea
 {
 public:
-    UActiveArea(const Rect &r, bool long_press_support = false);
+    UActiveArea(EventManager *event, const Rect &r, bool long_press_support = false);
     ~UActiveArea();
 
     inline virtual void paintEvent() {
@@ -264,6 +274,9 @@ public:
         aarea.is_front_touch = front;
     }
 
+    inline EventManager *eventManager() {
+        return event_mgr;
+    }
 
 
     /* Item iteration */
@@ -369,6 +382,7 @@ protected:
     TimedTrack __long_press;
     ActiveArea aarea;
     bool _long_press_enabled;
+    EventManager *event_mgr;
 };
 
 

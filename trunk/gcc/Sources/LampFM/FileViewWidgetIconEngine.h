@@ -15,7 +15,7 @@ public:
     {
     public:
         FsEntryItem(FileViewWidgetIconItem *parent, FSEntryInfo *fentry, const Rect &r) :
-            UActiveAreaItem<ActiveAreaItem>(r, false),
+            UActiveAreaItem<ActiveAreaItem>(parent->parent()->parent(), r, false),
             FileViewWidgetAbstractItem((FileViewWidget*)parent->parent()),
             _is_longpress(false),
             _fs_entry_info(fentry),

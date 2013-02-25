@@ -9,7 +9,7 @@
 class QuestionDialog : public UActiveAreaItem<ActiveAreaItem>
 {
 public:
-    QuestionDialog(const Rect &r, const std::string &question);
+    QuestionDialog(UActiveArea *parent, const Rect &r, const std::string &question);
     ~QuestionDialog();
 
     void touchEvent(int action, int x, int y);

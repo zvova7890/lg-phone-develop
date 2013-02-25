@@ -53,7 +53,7 @@ void FileViewWidgetListItem::paintEvent()
     glSetPen(0xFF332828);
     glDrawHLine(x, x+rect().w(), y);
 
-    if(currentDisplayID() == (int)_fvparent->viewItemsCount()-1)
+    if(currentLineDisplayID() == (int)_fvparent->viewItemsCount()-1)
         glDrawHLine(x, x+rect().w(), y + x+rect().h());
 
 
@@ -160,7 +160,7 @@ void FileViewWidgetListItem::touchEvent(int action, int x, int y)
                 if(_fvparent->isSelectionMode() && !_is_longpress) {
                     setMarked(!isMarked());
 
-                    _fvparent->event_mngr->updateAfterEvent();
+                    _fvparent->eventManager()->updateAfterEvent();
                     return;
 
                 } else if(_is_longpress) {
@@ -187,7 +187,7 @@ void FileViewWidgetListItem::touchEvent(int action, int x, int y)
 
         case TOUCH_ACTION_LONG_PRESS:
             _is_longpress = true;
-            _fvparent->event_mngr->updateAfterEvent();
+            _fvparent->eventManager()->updateAfterEvent();
             break;
     }
 }
@@ -206,7 +206,7 @@ FileViewWidgetListEngine::FileViewWidgetListEngine(FileViewWidget *parent) :
     FileViewWidgetEngine(parent),
     _is_blocked(false)
 {
-    event_mngr = &eventManager();
+
 }
 
 
