@@ -6,149 +6,137 @@
   <configuration>
     <name>SG3</name>
     <outputs>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\main.pbi</file>
       <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\star.pbi</file>
-      <file>$PROJ_DIR$\..\inc\pxeapi_timers.h</file>
-      <file>$PROJ_DIR$\..\inc\fs.h</file>
-      <file>$PROJ_DIR$\..\inc\elf.h</file>
       <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\star.s79</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\thing.r79</file>
-      <file>$TOOLKIT_DIR$\inc\stdarg.h</file>
-      <file>$PROJ_DIR$\..\inc\taskapi.h</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\elf.s79</file>
-      <file>$TOOLKIT_DIR$\inc\DLib_Product.h</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\thing.lst</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\main.lst</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\elf.r79</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\TouchTest.map</file>
-      <file>$TOOLKIT_DIR$\lib\dl5tpainl8n.h</file>
-      <file>$PROJ_DIR$\..\inc\pxeapi.h</file>
-      <file>$TOOLKIT_DIR$\inc\DLib_Defaults.h</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\unicode.s79</file>
       <file>$TOOLKIT_DIR$\inc\xencoding_limits.h</file>
-      <file>$PROJ_DIR$\..\inc\log.h</file>
-      <file>$PROJ_DIR$\BUILD\ELF\TouchTest.elf</file>
       <file>$TOOLKIT_DIR$\inc\string.h</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\unicode.lst</file>
-      <file>$PROJ_DIR$\..\inc\mem.h</file>
-      <file>$TOOLKIT_DIR$\inc\stdio.h</file>
-      <file>$PROJ_DIR$\..\inc\corelib.h</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\elf.pbi</file>
-      <file>$TOOLKIT_DIR$\lib\dl5tpainl8n.r79</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\tt.pbd</file>
-      <file>$PROJ_DIR$\elf\elf.h</file>
-      <file>$TOOLKIT_DIR$\inc\stdlib.h</file>
-      <file>$PROJ_DIR$\..\inc\const.h</file>
-      <file>$TOOLKIT_DIR$\inc\DLib_Threads.h</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\thing.pbi</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\unicode.pbi</file>
+      <file>$PROJ_DIR$\..\inc\log.h</file>
+      <file>$TOOLKIT_DIR$\inc\stdarg.h</file>
+      <file>$TOOLKIT_DIR$\inc\Dlib_Product.h</file>
+      <file>$PROJ_DIR$\..\inc\taskapi.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\main.lst</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\thing.lst</file>
       <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\thing.s79</file>
-      <file>$PROJ_DIR$\..\inc\ejapi.h</file>
+      <file>$PROJ_DIR$\..\inc\pxeapi_windows.h</file>
       <file>$PROJ_DIR$\..\inc\swi.h</file>
       <file>$PROJ_DIR$\..\inc\nucleus.h</file>
-      <file>$PROJ_DIR$\..\inc\pxeapi_windows.h</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\main.r79</file>
       <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\star.r79</file>
       <file>$PROJ_DIR$\..\inc\pxeapi_forms.h</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\elf.lst</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\main.r79</file>
       <file>$PROJ_DIR$\..\inc\pxeapi_graphics.h</file>
-      <file>$PROJ_DIR$\elf\unicode.h</file>
       <file>$PROJ_DIR$\elf\elf.xcl</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\elf.lst</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\unicode.r79</file>
+      <file>$PROJ_DIR$\elf\unicode.h</file>
       <file>$PROJ_DIR$\..\inc\pxeapi_misc.h</file>
       <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\star.lst</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\unicode.r79</file>
-      <file>$PROJ_DIR$\..\inc\pxeapi_accelsensor.h</file>
-      <file>$PROJ_DIR$\..\inc\pxeapi_macro.h</file>
       <file>$TOOLKIT_DIR$\inc\ysizet.h</file>
       <file>$PROJ_DIR$\..\inc\pxeapi_kpdctrl.h</file>
+      <file>$PROJ_DIR$\..\inc\pxeapi_macro.h</file>
+      <file>$PROJ_DIR$\..\inc\pxeapi_accelsensor.h</file>
+      <file>$PROJ_DIR$\..\inc\elf.h</file>
+      <file>$TOOLKIT_DIR$\inc\stdio.h</file>
+      <file>$PROJ_DIR$\..\inc\mem.h</file>
+      <file>$PROJ_DIR$\..\inc\corelib.h</file>
+      <file>$PROJ_DIR$\..\inc\const.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\elf.pbi</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\tt.pbd</file>
+      <file>$TOOLKIT_DIR$\inc\stdlib.h</file>
+      <file>$PROJ_DIR$\elf\elf.h</file>
+      <file>$PROJ_DIR$\..\inc\ejapi.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\unicode.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\DLib_Threads.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\thing.pbi</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\thing.r79</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\elf.s79</file>
       <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\main.s79</file>
+      <file>$PROJ_DIR$\..\inc\amem.h</file>
       <file>$TOOLKIT_DIR$\inc\yvals.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\TouchTest.map</file>
+      <file>$TOOLKIT_DIR$\lib\dl5tpainl8n.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\unicode.s79</file>
+      <file>$TOOLKIT_DIR$\inc\DLib_Defaults.h</file>
+      <file>$TOOLKIT_DIR$\lib\dl5tpainl8n.r79</file>
+      <file>$PROJ_DIR$\BUILD\ELF\TouchTest.elf</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\unicode.lst</file>
+      <file>$PROJ_DIR$\..\inc\pxeapi_timers.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\main.pbi</file>
       <file>$PROJ_DIR$\elf\elf.c</file>
-      <file>$PROJ_DIR$\thing.c</file>
       <file>$PROJ_DIR$\elf\unicode.c</file>
       <file>$PROJ_DIR$\star.c</file>
+      <file>$PROJ_DIR$\thing.c</file>
       <file>$PROJ_DIR$\main.c</file>
-      <file>$PROJ_DIR$\..\inc\amem.h</file>
+      <file>$PROJ_DIR$\..\inc\fs.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\elf.r79</file>
+      <file>$PROJ_DIR$\..\inc\pxeapi.h</file>
+      <file>$PROJ_DIR$\..\inc\lgos_timers.h</file>
     </outputs>
     <file>
-      <name>$PROJ_DIR$\BUILD\ELF\TouchTest.elf</name>
+      <name>[ROOT_NODE]</name>
       <outputs>
         <tool>
           <name>XLINK</name>
-          <file> 14</file>
+          <file> 51 46</file>
         </tool>
       </outputs>
-      <inputs>
-        <tool>
-          <name>XLINK</name>
-          <file> 47 13 41 42 6 50 28</file>
-        </tool>
-      </inputs>
     </file>
     <file>
       <name>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\tt.pbd</name>
       <inputs>
         <tool>
           <name>BILINK</name>
-          <file> 27 0 1 34 35</file>
+          <file> 33 54 0 40 38</file>
         </tool>
       </inputs>
     </file>
     <file>
-      <name>[ROOT_NODE]</name>
+      <name>$PROJ_DIR$\BUILD\ELF\TouchTest.elf</name>
       <outputs>
         <tool>
           <name>XLINK</name>
-          <file> 21 14</file>
+          <file> 46</file>
         </tool>
       </outputs>
+      <inputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 18 61 16 14 41 20 50</file>
+        </tool>
+      </inputs>
     </file>
     <file>
       <name>$PROJ_DIR$\elf\elf.c</name>
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 13 9 44</file>
+          <file> 61 42 19</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 27</file>
+          <file> 33</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 25 56 17 15 10 19 33 53 31 22 7 30 26 38 4 37 3 24 62 20 32 39 16 52 40 43 2 51 54 45 48 8 46</file>
+          <file> 29 45 49 47 6 2 39 24 35 3 5 36 31 12 28 37 60 30 44 4 32 63 13 62 26 11 15 53 27 25 17 22 7 21</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 25 56 17 10 19 33 53 31 22 7 30 26 38 4 37 3 24 62 20 32 39 16 52 40 43 2 51 54 45 48 8 46</file>
+          <file> 29 45 49 6 2 39 24 35 3 5 36 31 12 28 37 60 30 44 4 32 63 13 62 26 11 15 53 27 25 17 22 7 21</file>
         </tool>
       </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\thing.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 6 36 11</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 34</file>
-        </tool>
-      </outputs>
     </file>
     <file>
       <name>$PROJ_DIR$\elf\unicode.c</name>
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 50 18 23</file>
+          <file> 20 48 52</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 35</file>
+          <file> 38</file>
         </tool>
       </outputs>
     </file>
@@ -157,11 +145,24 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 42 5 49</file>
+          <file> 14 1 23</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 1</file>
+          <file> 0</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\thing.c</name>
+      <outputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 41 10 9</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 40</file>
         </tool>
       </outputs>
     </file>
@@ -170,27 +171,24 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 41 55 12</file>
+          <file> 16 43 8</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 0</file>
+          <file> 54</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 25 56 17 15 10 19 33 53 31 22 7 30 26 38 4 37 3 24 62 20 32 39 16 52 40 43 2 51 54 45 48 8 46</file>
+          <file> 29 45 49 47 6 2 39 24 35 3 5 36 31 12 28 37 60 30 44 4 32 63 13 62 26 11 15 53 27 25 17 22 7 21</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 25 56 17 10 19 33 53 31 22 7 30 26 38 4 37 3 24 62 20 32 39 16 52 40 43 2 51 54 45 48 8 46</file>
+          <file> 29 45 49 6 2 39 24 35 3 5 36 31 12 28 37 60 30 44 4 32 63 13 62 26 11 15 53 27 25 17 22 7 21</file>
         </tool>
       </inputs>
     </file>
-    <forcedrebuild>
-      <name>[REBUILD_ALL]</name>
-    </forcedrebuild>
   </configuration>
 </project>
 

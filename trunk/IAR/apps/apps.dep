@@ -6,66 +6,82 @@
   <configuration>
     <name>SG3</name>
     <outputs>
-      <file>$TOOLKIT_DIR$\inc\DLib_Product.h</file>
-      <file>$PROJ_DIR$\..\inc\nucleus.h</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\elf.pbi</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\unicode.pbi</file>
-      <file>$PROJ_DIR$\..\inc\const.h</file>
-      <file>$PROJ_DIR$\..\inc\pxeapi_windows.h</file>
-      <file>$TOOLKIT_DIR$\inc\stdlib.h</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\apps.pbd</file>
-      <file>$TOOLKIT_DIR$\inc\stdio.h</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\unicode.r79</file>
-      <file>$PROJ_DIR$\..\inc\taskapi.h</file>
-      <file>$PROJ_DIR$\..\inc\mem.h</file>
-      <file>$PROJ_DIR$\elf\unicode.h</file>
-      <file>$PROJ_DIR$\elf\elf.c</file>
-      <file>$TOOLKIT_DIR$\inc\stdarg.h</file>
-      <file>$PROJ_DIR$\..\inc\amem.h</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\unicode.s79</file>
-      <file>$PROJ_DIR$\..\inc\log.h</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\main.s79</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\unicode.lst</file>
-      <file>$PROJ_DIR$\..\inc\corelib.h</file>
-      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\main.lst</file>
-      <file>$PROJ_DIR$\..\inc\pxeapi_accelsensor.h</file>
-      <file>$TOOLKIT_DIR$\inc\DLib_Defaults.h</file>
-      <file>$PROJ_DIR$\..\inc\pxeapi_forms.h</file>
-      <file>$PROJ_DIR$\..\inc\pxeapi.h</file>
+      <file>$TOOLKIT_DIR$\inc\Dlib_Product.h</file>
       <file>$PROJ_DIR$\BUILD\ELF\apps.elf</file>
       <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\elf.r79</file>
-      <file>$PROJ_DIR$\main.c</file>
       <file>$TOOLKIT_DIR$\lib\dl5tpainl8n.h</file>
-      <file>$TOOLKIT_DIR$\inc\ysizet.h</file>
+      <file>$TOOLKIT_DIR$\inc\DLib_Threads.h</file>
       <file>$PROJ_DIR$\..\inc\pxeapi_graphics.h</file>
       <file>$TOOLKIT_DIR$\lib\dl5tpainl8n.r79</file>
       <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\apps.map</file>
+      <file>$TOOLKIT_DIR$\inc\yvals.h</file>
       <file>$PROJ_DIR$\..\inc\pxeapi_misc.h</file>
       <file>$PROJ_DIR$\..\inc\pxeapi_timers.h</file>
       <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\main.pbi</file>
       <file>$PROJ_DIR$\..\inc\pxeapi_kpdctrl.h</file>
       <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\elf.lst</file>
-      <file>$PROJ_DIR$\elf\unicode.c</file>
       <file>$PROJ_DIR$\elf\elf.xcl</file>
       <file>$PROJ_DIR$\..\inc\elf.h</file>
       <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\main.r79</file>
       <file>$TOOLKIT_DIR$\inc\xencoding_limits.h</file>
-      <file>$TOOLKIT_DIR$\inc\yvals.h</file>
+      <file>$PROJ_DIR$\..\inc\ejapi.h</file>
       <file>$PROJ_DIR$\..\inc\swi.h</file>
       <file>$PROJ_DIR$\..\inc\pxeapi_macro.h</file>
       <file>$PROJ_DIR$\elf\elf.h</file>
       <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\elf.s79</file>
-      <file>$TOOLKIT_DIR$\inc\DLib_Threads.h</file>
-      <file>$PROJ_DIR$\..\inc\ejapi.h</file>
       <file>$TOOLKIT_DIR$\inc\string.h</file>
       <file>$PROJ_DIR$\..\inc\fs.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\unicode.pbi</file>
+      <file>$TOOLKIT_DIR$\inc\stdlib.h</file>
+      <file>$PROJ_DIR$\elf\elf.c</file>
+      <file>$PROJ_DIR$\elf\unicode.c</file>
+      <file>$PROJ_DIR$\main.c</file>
+      <file>$PROJ_DIR$\..\inc\corelib.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\main.lst</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\main.s79</file>
+      <file>$PROJ_DIR$\..\inc\pxeapi_forms.h</file>
+      <file>$TOOLKIT_DIR$\inc\ysizet.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\elf.pbi</file>
+      <file>$PROJ_DIR$\..\inc\amem.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\unicode.s79</file>
+      <file>$PROJ_DIR$\..\inc\log.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\List\unicode.lst</file>
+      <file>$TOOLKIT_DIR$\inc\DLib_Defaults.h</file>
+      <file>$PROJ_DIR$\..\inc\pxeapi_accelsensor.h</file>
+      <file>$PROJ_DIR$\..\inc\pxeapi.h</file>
+      <file>$PROJ_DIR$\..\inc\nucleus.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\apps.pbd</file>
+      <file>$TOOLKIT_DIR$\inc\stdio.h</file>
+      <file>$PROJ_DIR$\..\inc\taskapi.h</file>
+      <file>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\unicode.r79</file>
+      <file>$PROJ_DIR$\..\inc\mem.h</file>
+      <file>$PROJ_DIR$\elf\unicode.h</file>
+      <file>$TOOLKIT_DIR$\inc\stdarg.h</file>
+      <file>$PROJ_DIR$\..\inc\const.h</file>
+      <file>$PROJ_DIR$\..\inc\pxeapi_windows.h</file>
+      <file>$PROJ_DIR$\..\inc\lgos_timers.h</file>
     </outputs>
     <file>
-      <name>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\apps.pbd</name>
+      <name>[ROOT_NODE]</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 1 7</file>
+        </tool>
+      </outputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\BUILD\ELF\apps.elf</name>
+      <outputs>
+        <tool>
+          <name>XLINK</name>
+          <file> 7</file>
+        </tool>
+      </outputs>
       <inputs>
         <tool>
-          <name>BILINK</name>
-          <file> 2 36 3</file>
+          <name>XLINK</name>
+          <file> 14 2 16 47 6</file>
         </tool>
       </inputs>
     </file>
@@ -74,59 +90,21 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 27 48 38</file>
+          <file> 2 22 13</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 2</file>
+          <file> 35</file>
         </tool>
       </outputs>
       <inputs>
         <tool>
           <name>ICCARM</name>
-          <file> 8 44 23 29 0 43 49 30 6 51 14 47 20 45 41 50 52 11 15 17 4 1 25 46 5 24 35 22 37 31 34 10 12</file>
+          <file> 45 8 40 3 0 17 4 34 26 23 50 21 30 19 15 18 24 48 36 38 51 53 43 42 20 52 33 10 41 12 5 9 46 49</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 8 44 23 0 43 49 30 6 51 14 47 20 45 41 50 52 11 15 17 4 1 25 46 5 24 35 22 37 31 34 10 12</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\BUILD\ELF\apps.elf</name>
-      <outputs>
-        <tool>
-          <name>XLINK</name>
-          <file> 33</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>XLINK</name>
-          <file> 40 27 42 9 32</file>
-        </tool>
-      </inputs>
-    </file>
-    <file>
-      <name>$PROJ_DIR$\main.c</name>
-      <outputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 42 18 21</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 36</file>
-        </tool>
-      </outputs>
-      <inputs>
-        <tool>
-          <name>ICCARM</name>
-          <file> 8 44 23 29 0 43 49 30 6 51 14 47 20 45 41 50 52 11 15 17 4 1 25 46 5 24 35 22 37 31 34 10 12</file>
-        </tool>
-        <tool>
-          <name>BICOMP</name>
-          <file> 8 44 23 0 43 49 30 6 51 14 47 20 45 41 50 52 11 15 17 4 1 25 46 5 24 35 22 37 31 34 10 12</file>
+          <file> 45 8 40 0 17 4 34 26 23 50 21 30 19 15 18 24 48 36 38 51 53 43 42 20 52 33 10 41 12 5 9 46 49</file>
         </tool>
       </inputs>
     </file>
@@ -135,22 +113,45 @@
       <outputs>
         <tool>
           <name>ICCARM</name>
-          <file> 9 16 19</file>
+          <file> 47 37 39</file>
         </tool>
         <tool>
           <name>BICOMP</name>
-          <file> 3</file>
+          <file> 25</file>
         </tool>
       </outputs>
     </file>
     <file>
-      <name>[ROOT_NODE]</name>
+      <name>$PROJ_DIR$\main.c</name>
       <outputs>
         <tool>
-          <name>XLINK</name>
-          <file> 26 33</file>
+          <name>ICCARM</name>
+          <file> 16 32 31</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 11</file>
         </tool>
       </outputs>
+      <inputs>
+        <tool>
+          <name>ICCARM</name>
+          <file> 45 8 40 3 0 17 4 34 26 23 50 21 30 19 15 18 24 48 36 38 51 53 43 42 20 52 33 10 41 12 5 9 46 49</file>
+        </tool>
+        <tool>
+          <name>BICOMP</name>
+          <file> 45 8 40 0 17 4 34 26 23 50 21 30 19 15 18 24 48 36 38 51 53 43 42 20 52 33 10 41 12 5 9 46 49</file>
+        </tool>
+      </inputs>
+    </file>
+    <file>
+      <name>$PROJ_DIR$\BUILD\OTHER\SG3\Obj\apps.pbd</name>
+      <inputs>
+        <tool>
+          <name>BILINK</name>
+          <file> 35 11 25</file>
+        </tool>
+      </inputs>
     </file>
   </configuration>
 </project>
