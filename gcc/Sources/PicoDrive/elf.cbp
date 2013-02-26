@@ -1,0 +1,199 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes" ?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6" />
+	<Project>
+		<Option title="PicoDrive" />
+		<Option pch_mode="2" />
+		<Option compiler="lg_gnu_arm_gcc_compiler" />
+		<Build>
+			<Target title="KP501v10">
+				<Option output="exe/PicoDrive.elf" prefix_auto="0" extension_auto="0" />
+				<Option working_dir="exe" />
+				<Option object_output="objects/kp501v10" />
+				<Option type="1" />
+				<Option compiler="lg_gnu_arm_gcc_compiler" />
+				<Option use_console_runner="0" />
+			</Target>
+		</Build>
+		<Compiler>
+			<Add option="-mthumb-interwork" />
+			<Add option="-std=gnu99" />
+			<Add option="-Wno-unused-value" />
+			<Add option="-funroll-loops" />
+			<Add option="-fearly-inlining" />
+			<Add option="-foptimize-register-move" />
+			<Add option="-foptimize-strlen" />
+			<Add option="-fsched-spec-load" />
+			<Add option="-fbranch-target-load-optimize" />
+			<Add option="-ftree-fre" />
+			<Add option="-fjump-tables" />
+			<Add option="-Ofast" />
+			<Add option="-D_UNZIP_SUPPORT" />
+			<Add option="-DEMU_C68K" />
+			<Add option="-D_USE_DRZ80" />
+			<Add option="-D_ASM_DRAW_C" />
+			<Add option="-D_ASM_MISC_C" />
+			<Add option="-D_ASM_MEMORY_C" />
+			<Add option="-D_USE_YM2612_ASM_HELPER" />
+			<Add directory="./" />
+		</Compiler>
+		<Linker>
+			<Add option="-s" />
+			<Add option="-Wl,--defsym,__ex=0" />
+			<Add option="-Wl,--gc-section" />
+			<Add library="scrt" />
+			<Add library="gcc" />
+			<Add library="c" />
+			<Add library="m" />
+			<Add library="gl" />
+		</Linker>
+		<Unit filename="Pico/Area.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Pico/Cart.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Pico/Draw.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Pico/Draw2.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Pico/Memory.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Pico/Misc.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Pico/Patch.h" />
+		<Unit filename="Pico/Pico.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Pico/Pico.h" />
+		<Unit filename="Pico/PicoInt.h" />
+		<Unit filename="Pico/Sek.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Pico/Utils.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Pico/VideoPort.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Pico/_Draw.S" />
+		<Unit filename="Pico/_Draw2.S" />
+		<Unit filename="Pico/_Memory.S" />
+		<Unit filename="Pico/cd/LC89510.h" />
+		<Unit filename="Pico/cd/cd_file.h" />
+		<Unit filename="Pico/cd/cd_sys.h" />
+		<Unit filename="Pico/cd/gfx_cd.h" />
+		<Unit filename="Pico/cd/pcm.h" />
+		<Unit filename="Pico/sound/mix.h" />
+		<Unit filename="Pico/sound/sn76496.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Pico/sound/sn76496.h" />
+		<Unit filename="Pico/sound/sound.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Pico/sound/ym2612.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="Pico/sound/ym2612.h" />
+		<Unit filename="bogomips.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="cpu/Cyclone/Cyclone.S" />
+		<Unit filename="cpu/DrZ80/drz80.S" />
+		<Unit filename="cpu/cpu.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="cpu/z80.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="main.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="platform/lg/940ctl_ym2612.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="platform/lg/lg.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="platform/lg/rom.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="port_config.h" />
+		<Unit filename="ui/button.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ui/button.h" />
+		<Unit filename="ui/objectmap.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="ui/objectmap.h" />
+		<Unit filename="ui/ui.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="unzip/unzip.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="unzip/unzip.h" />
+		<Unit filename="unzip/unzip_stream.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="unzip/unzip_stream.h" />
+		<Unit filename="zlib/adler32.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="zlib/compress.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="zlib/crc32.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="zlib/crc32.h" />
+		<Unit filename="zlib/deflate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="zlib/deflate.h" />
+		<Unit filename="zlib/gzio.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="zlib/gzio_symb.h" />
+		<Unit filename="zlib/infback.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="zlib/inffast.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="zlib/inffast.h" />
+		<Unit filename="zlib/inffixed.h" />
+		<Unit filename="zlib/inflate.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="zlib/inflate.h" />
+		<Unit filename="zlib/inftrees.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="zlib/inftrees.h" />
+		<Unit filename="zlib/trees.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="zlib/trees.h" />
+		<Unit filename="zlib/uncompr.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="zlib/zconf.h" />
+		<Unit filename="zlib/zlib.h" />
+		<Unit filename="zlib/zutil.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="zlib/zutil.h" />
+		<Extensions>
+			<envvars />
+			<code_completion />
+			<debugger />
+		</Extensions>
+	</Project>
+</CodeBlocks_project_file>
