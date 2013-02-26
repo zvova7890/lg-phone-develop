@@ -103,7 +103,7 @@ unsigned short u16_menu_soft3[256];
 //Действие при создании окна
 void Menu_OnInit()
 {
- printf("Menu_OnInit\r\n"); 
+ //printf("Menu_OnInit\r\n"); 
   
  //Создаём меню
  mh = Forms_Create();
@@ -169,7 +169,7 @@ void Menu_Close(int action)
 //Действие при уничтожении окна
 void Menu_OnExit()
 {
- printf("Menu_OnExit\r\n");
+ //printf("Menu_OnExit\r\n");
  ElfAppsList_Free(list);
  
  Timers_DestroyEvent(-1);
@@ -180,7 +180,7 @@ void Menu_OnExit()
 //Действие при зажатии настоящией кнопки или рабочей области тачскрина
 void Menu_OnKeyDown(int key)
 {
- printf("Menu_OnKeyDown key = %d\r\n", key); 
+ //printf("Menu_OnKeyDown key = %d\r\n", key); 
   
  switch (key)
   {
@@ -207,7 +207,7 @@ void Menu_OnKeyDown(int key)
 //Действие при отпускании настоящией кнопки
 void Menu_OnKeyUp(int key)
 {
- printf("Menu_OnKeyUp key = %d\r\n", key); 
+ //printf("Menu_OnKeyUp key = %d\r\n", key); 
 // gui_redraw();
 }
 
@@ -236,7 +236,7 @@ void Menu_OnIndicatorDraw()
 */
 void Menu_OnDraw()
 {
-  printf("Menu_OnDraw()\r\n");
+  //printf("Menu_OnDraw()\r\n");
  __pxe_api_imm_onearg(0xA4/4, 0x10/4, 1);
  __pxe_api_imm_onearg(0xA4/4, 0x38/4, 1);
  __pxe_api_imm(0x74/4, 0xB4/4, mh, 0);
@@ -246,7 +246,7 @@ void Menu_OnDraw()
 
 void Menu_OnIndicatorDraw()
 {
-  printf("Menu_OnIndicatorDraw()\r\n");
+  //printf("Menu_OnIndicatorDraw()\r\n");
  __pxe_api_imm_onearg(0xA4/4, 0x10/4, 1);
  __pxe_api_imm_onearg(0xA4/4, 0x38/4, 1);
  __pxe_api_imm(0x74/4, 0xB4/4, mh, 0);
@@ -277,13 +277,13 @@ void Menu_OnPointing(int action, int position)
 //Действие при активации
 void Menu_OnAwake()
 {
- printf("Menu_OnAwake()\r\n");
+ //printf("Menu_OnAwake()\r\n");
 }
 
 //Действие при сворачивании
 void Menu_OnSleep()
 {
- printf("Menu_OnSleep()\r\n");
+ //printf("Menu_OnSleep()\r\n");
 }
 
 //Главный обработчик окна WINDOW_ID_MAINMENU от приложения
@@ -345,23 +345,23 @@ int elf_run(int event_id, int wparam, int lparam)
      Windows_Create(WINDOW_ID_MAINMENU, Menu_EventHandler);
      //Запускаем инициализацию окна
      Windows_Init(WINDOW_ID_MAINMENU);
-     printf("PXE_RUN_CREATE_EVENT\r\n");
+     //printf("PXE_RUN_CREATE_EVENT\r\n");
      return 1;
    //Событие при создании приложения
    case PXE_RUN_DESTROY_EVENT:
      //Уничтожаем окно
      Windows_DestroyAll();
-     printf("PXE_RUN_DESTROY_EVENT\r\n");
+     //printf("PXE_RUN_DESTROY_EVENT\r\n");
      return 1;
    //Событие при активации приложения 
    case PXE_RUN_RESUME_EVENT:
-     printf("PXE_RUN_RESUME_EVENT\r\n");
+     //printf("PXE_RUN_RESUME_EVENT\r\n");
      //Отправим команду на перерисовку
      Windows_TransEvent(PXE_RUN_PAINT_EVENT, 0, 0);
      return 1;
    //Событие при сворачивании приложения 
    case PXE_RUN_SUSPEND_EVENT:
-     printf("PXE_RUN_SUSPEND_EVENT\r\n");
+     //printf("PXE_RUN_SUSPEND_EVENT\r\n");
      return 1;
    default:
      //Конвертируем остальные события приложения для окна
