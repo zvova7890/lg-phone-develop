@@ -23,9 +23,14 @@
 
 
 
+#define WINDOW_ID_SCREEN 10
+//#define ENABLE_OSD
+
+
 char elfdir[256];
 char rom_file_name[256] = "";
 int my_application = 0;
+
 NU_TASK task;
 char task_stack[0x4000];
 
@@ -41,17 +46,18 @@ unsigned int total_fps = 0, total_frame_count = 0, last_time;
 unsigned long clocks_per_second = 0, loops_per_second = 0;
 char restored_bogomips = 0;
 int multiply_fps = 30;
-
-#define WINDOW_ID_SCREEN 10
-//#define ENABLE_OSD
-#define THREAD_RENDERING
+int want_suspend = 0, resumed_state = 0;
+NU_TASK *wait_for_resume_task = 0;
 
 
-#define LockThread() NU_Suspend_Task(&task);
-#define UnLockThread() NU_Resume_Task(&task);
+
 /*===================================================================*/
 /*============================ GUI ==================================*/
 /*===================================================================*/
+
+#define LockThread() NU_Suspend_Task(&task);
+#define UnLockThread() NU_Resume_Task(&task);
+
 
 
 void *getFrameBuffer()
@@ -60,40 +66,20 @@ void *getFrameBuffer()
 }
 
 
-
-
 void Draw()
 {
-    //Graphics_DrawFillRect(0, 0, GRSYS_WIDTH, GRSYS_HEIGHT, MakeRGBColor(0xFF, 0, 0));
-
-#ifndef THREAD_RENDERING
-    int skeep = 1;
-    if(frame_cnt >= skeep_frames) {
-        skeep = 0;
-        frame_cnt = 0;
-    }
-
-    PicoDriveFrame(skeep);
-    frame_cnt++;
-#endif
-
-
     if(!frame_count && *rom_file_name)
         return;
 
     /* To avoid tearing */
-#ifdef THREAD_RENDERING
     NU_Suspend_Task(&task);
-#endif
 
     UIOnDraw();
+
 #ifdef ENABLE_OSD
     char osd[128];
     sprintf(osd, "%d,%d,%d", sleep_ticks, skeep_frames, total_fps);
-    //sprintf(osd, "%d, %d", sleep_ticks, fps*multiply_fps);
-#endif
 
-#ifdef ENABLE_OSD
     glSetPen(0xFF000000);
     glDrawFilledRectange(3, 30, 50, 45);
     glSetPen(0xFFFFFFFF);
@@ -104,29 +90,32 @@ void Draw()
         glDrawString("CAN`T LOAD ROM", 0, 0, 400, 240, 25, FT_TEXT_H_CENTER | FT_TEXT_W_CENTER, 0, 128);
     }
 
-    //GrSys_RefreshRect(0, 0, 320, 240);
     GrSys_Refresh();
 
     frame_count = 0;
-#ifdef THREAD_RENDERING
     NU_Resume_Task(&task);
-#endif
 }
 
 
 
 void PauseEmulator() {
+    want_suspend = 1;
+    frame_count = 0;
+
+    wait_for_resume_task = NU_Current_Task_Pointer();
+    NU_Suspend_Task(wait_for_resume_task);
+
     LockThread();
 }
 
 void ResumeEmulator() {
+    want_suspend = 0;
     UnLockThread();
 }
 
 
 int SaveEmulatorState()
 {
-
     PauseEmulator();
 
     char save_name[256];
@@ -162,6 +151,7 @@ void t_entry(unsigned long argc, void *argv)
 {
     unsigned int max_frames;
     unsigned long __last_ticks;
+    unsigned long time_per_frame;
 
     if(Pico.m.pal) {
         multiply_fps = 1;
@@ -172,31 +162,39 @@ void t_entry(unsigned long argc, void *argv)
         max_frames = 60*2-2;
     }
 
-    printf("%s is %s\n", rom_file_name, Pico.m.pal? "PAL" : "NTSC");
-
+    /* restore or calculate bogomips info */
     if(!restored_bogomips)
         calculate_bogomips(&clocks_per_second, &loops_per_second, 0);
 
 
-    unsigned long time_per_frame = clocks_per_second/max_frames;
-
-
-    printf("time_per_frame: %lu\n", time_per_frame);
-
+    time_per_frame = clocks_per_second/max_frames;
     start_calculate();
+
     while(1) {
 
+        if(want_suspend) {
+            resumed_state = 1;
+
+            if(wait_for_resume_task) {
+                NU_Resume_Task(wait_for_resume_task);
+                wait_for_resume_task = 0;
+            }
+            NU_Sleep(50);
+            continue;
+        }
 
         int skeep = 1;
         unsigned long clocks = 0;
 
         clocks = ticks();
         start_calculate();
+        resumed_state = 0;
 
         if(frame_cnt >= skeep_frames) {
             skeep = 0;
             frame_cnt = 0;
         }
+
 
         PicoDriveFrame(skeep);
         frame_cnt++;
@@ -204,7 +202,6 @@ void t_entry(unsigned long argc, void *argv)
         ++frame_count;
         ++total_frame_count;
 
-        //printf("clocks: %lu\n", clocks);
         /* если фрейм рендернулся за время, большее чем нужно то меньше спим */
         if(clocks > time_per_frame) {
             sleep_ticks--;
@@ -330,17 +327,11 @@ void Screen_OnInit()
         return;
     }
 
-#ifndef THREAD_RENDERING
-    CreateTimerEvent(1, 1, TIMER_TYPE_LOOP);
-    CreateTimerEvent(2, 1, TIMER_TYPE_LOOP);
-    CreateTimerEvent(3, 1, TIMER_TYPE_LOOP);
-#else
+
     CreateTimerEvent(1, 50, TIMER_TYPE_LOOP);
 
     i = NU_Create_Task(&task, "Sega", t_entry, 0, 0, task_stack, sizeof(task_stack), 100, 0xC, NU_PREEMPT, NU_START);
     printf("Started task: %d\n", i);
-#endif
-
 }
 
 
@@ -353,15 +344,9 @@ void Screen_OnExit()
         save_bogomips();
 
     if(*rom_file_name) {
-#ifdef THREAD_RENDERING
         NU_Terminate_Task(&task);
         NU_Delete_Task(&task);
         KillTimerEvent(1);
-#else
-        KillTimerEvent(1);
-        KillTimerEvent(2);
-        KillTimerEvent(3);
-#endif
         PicoDriveDeinit();
     }
 
@@ -415,12 +400,8 @@ void Screen_OnIndicatorDraw()
 //Действие при срабатывании таймеров
 void Screen_OnTimer(int timer_id, int param)
 {
-#ifdef THREAD_RENDERING
     if(timer_id == 1)
 	Draw();
-#else
-    Draw();
-#endif
 }
 
 //Действие при манипуляциях с тачскрином
