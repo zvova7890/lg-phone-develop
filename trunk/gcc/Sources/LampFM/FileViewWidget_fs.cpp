@@ -119,8 +119,8 @@ void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_w
         timer->stop();
 
         delete worker;
-        delete progress;
         delete timer;
+        delete progress;
         clipboard.clear();
     });
 
@@ -173,7 +173,7 @@ void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_w
                                 (accepted_work & ClipBoard::Action::Copy || accepted_work & ClipBoard::Action::Move))
                         {
                             worker->work_name = "Creating...";
-                            worker->cur_file = file->info.name;
+                            worker->cur_file = file->info.name.c_str();
                             worker->full_size = 1;
                             worker->done = 0;
 
@@ -188,7 +188,7 @@ void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_w
                             worker->done = 1;
                             worker->file++;
 
-                            remover_list.push_back(Remover(&dir, &file->info));
+                            remover_list.push_back(Remover(&dir, &file->info)); 
                         }
 
                     } else {
@@ -198,7 +198,7 @@ void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_w
                         {
 
                             worker->work_name = file->action == ClipBoard::Action::Copy? "Copying..." : "Moving...";
-                            worker->cur_file = file->info.name;
+                            worker->cur_file = file->info.name.c_str(); // Avoid CoW?
                             worker->done = 0;
 
 
@@ -208,11 +208,14 @@ void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_w
                                 UniLib_UTF8ToUCS2((char*)(dir+file->info.name).c_str(), old);
                                 UniLib_UTF8ToUCS2((char*)(worker->to_dir+base_dir+file->info.name).c_str(), nw);
 
-                                FileSys_MoveFile(old, nw);
+                                if(!FileSys_MoveFile(old, nw))
+                                    goto try_copy;
 
                             } else {
 
-                                int err = copy_file((dir+file->info.name).c_str(), (worker->to_dir+base_dir+file->info.name).c_str(), &worker->full_size, &worker->done);
+                                try_copy:
+                                int err = copy_file((dir+file->info.name).c_str(), (worker->to_dir+base_dir+file->info.name).c_str(),
+                                                    &worker->full_size, &worker->done, &worker->canceled);
                                 if(err)
                                     worker->cur_file = "Ошибка";
 
@@ -225,6 +228,9 @@ void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_w
                             remover_list.push_back(Remover(&dir, &file->info));
                         }
                     }
+
+                    if(worker->canceled)
+                        break;
                 }
 
                 for(const auto rl : remover_list) {
@@ -232,6 +238,9 @@ void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_w
                 }
 
                 remover_list.clear();
+
+                if(worker->canceled)
+                    break;
             }
 
             if(!last_dir.empty() && accepted_work & ClipBoard::Action::Move) {
@@ -267,7 +276,7 @@ void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_w
                         if(file->action == ClipBoard::Action::Delete && accepted_work & ClipBoard::Action::Delete) {
 
                             worker->work_name = "Deleting dir...";
-                            worker->cur_file = file->info.name;
+                            worker->cur_file = file->info.name.c_str();
                             worker->full_size = 1;
                             worker->done = 0;
 
@@ -285,7 +294,7 @@ void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_w
                         if(file->action == ClipBoard::Action::Delete && (accepted_work & ClipBoard::Action::Delete)) {
 
                             worker->work_name = "Deleting...";
-                            worker->cur_file = file->info.name;
+                            worker->cur_file = file->info.name.c_str();
                             worker->full_size = 1;
                             worker->done = 0;
 
@@ -297,6 +306,9 @@ void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_w
                             remover_list.push_back(Remover(&dir, &file->info));
                         }
                     }
+
+                    if(worker->canceled)
+                        break;
                 }
 
                 for(const Remover & rl : remover_list) {
@@ -304,6 +316,9 @@ void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_w
                 }
 
                 remover_list.clear();
+
+                if(worker->canceled)
+                    break;
             }
 
 
@@ -402,7 +417,7 @@ int FileViewWidget::unlinkFiles(const std::list<const FSEntryInfo *> & list)
 
 
 
-int FileViewWidget::copy_file(const std::string &from, const std::string &to, unsigned int *full, unsigned int *done)
+int FileViewWidget::copy_file(const std::string &from, const std::string &to, unsigned int *full, unsigned int *done, bool *cancel_flag)
 {
     if(from == to) {
         printf("copy_file: From == to\n");
@@ -444,6 +459,9 @@ int FileViewWidget::copy_file(const std::string &from, const std::string &to, un
                 err = true;
                 break;
             }
+
+            if(cancel_flag && *cancel_flag)
+                break;
         }
 
 

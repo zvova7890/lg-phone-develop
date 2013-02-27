@@ -9,11 +9,11 @@ INCLUDEPATH += actionlib
 # уберём дефолтные флаги
 QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CFLAGS_RELEASE -= -O2
-#QMAKE_LFLAGS_APP -= -s
+QMAKE_LFLAGS_APP -= -s
 
 QMAKE_CXXFLAGS += -O2 -std=c++11  -U__STRICT_ANSI__ -D__STDC_VERSION__=200001
 QMAKE_CFLAGS_RELEASE += -O2 -std=gnu99
-QMAKE_LFLAGS +=
+QMAKE_LFLAGS += -Wl,-allow-multiple-definition
 
 LIBS   += -lscrt -lgcc -lc -lpng -lz -lm -lgl -lft -lc++ -lsupc++
 

@@ -9,6 +9,7 @@ ThreadWorker::ThreadWorker()
     done = 0;
 
     work_finished = 0;
+    canceled = false;
 }
 
 

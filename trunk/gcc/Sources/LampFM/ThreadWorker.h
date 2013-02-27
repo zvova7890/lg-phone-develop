@@ -20,6 +20,7 @@ public:
     unsigned int file;
     unsigned int full_size;
     unsigned int done;
+    bool canceled;
 
     unsigned int work_finished;
     void *user;

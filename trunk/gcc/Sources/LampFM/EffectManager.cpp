@@ -80,6 +80,7 @@ void ScaleAndPaint(unsigned short *bitmap, int w, int h, int xfrom, int yfrom, i
     int width = w;
     int height = h;
 
+    GLContext *ctx = glActiveContext();
     for(int y = 0; y < newHeight; y++)
     {
         int dy = (y * height) / newHeight;
@@ -88,9 +89,8 @@ void ScaleAndPaint(unsigned short *bitmap, int w, int h, int xfrom, int yfrom, i
             int dx = (x * width) / newWidth;
             int nx = x+xfrom;
             int ny = y+yfrom;
-            GLContext *ctx = glActiveContext();
 
-            if(nx >= ctx->clip_x1 && nx < ctx->clip_x2 &&  ny >= ctx->clip_y1 && ny < ctx->clip_y2)
+            //if(nx >= ctx->clip_x1 && nx < ctx->clip_x2 &&  ny >= ctx->clip_y1 && ny < ctx->clip_y2)
                 glPutPixel16c(ctx, nx, ny, *(bitmap + dy*w+dx));
         }
     }
