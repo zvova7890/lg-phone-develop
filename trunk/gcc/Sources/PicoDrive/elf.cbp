@@ -120,6 +120,9 @@
 		<Unit filename="platform/lg/lg.c">
 			<Option compilerVar="CC" />
 		</Unit>
+		<Unit filename="platform/lg/loadsave.c">
+			<Option compilerVar="CC" />
+		</Unit>
 		<Unit filename="platform/lg/rom.c">
 			<Option compilerVar="CC" />
 		</Unit>

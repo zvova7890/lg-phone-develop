@@ -10,6 +10,8 @@ int PicoDriveDeinit();
 void PicoDriveFrame(int skeep);
 
 
+int PicoSaveLoadGame(int load, int sram, const char *file);
+
 
 
 #endif
