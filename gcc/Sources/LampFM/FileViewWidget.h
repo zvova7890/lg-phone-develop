@@ -132,7 +132,7 @@ protected:
 
     void do_clipboard_work(const std::string &to_dir, int accepted_work);
     void set_clipboard_files(const std::string &dir, const FSEntryInfo &info, int action);
-    int copy_file(const std::string &from, const std::string &to, unsigned int *full, unsigned int *done);
+    int copy_file(const std::string &from, const std::string &to, unsigned int *full, unsigned int *done, bool *cancel_flag);
     void recursive_flush(FSProtocol &, int base_dir, const std::string &dir, void *handle, std::list<FSListedEntry> & list);
     void initGlobalMenu();
     ScrollAreaItem *getListItem(int index);

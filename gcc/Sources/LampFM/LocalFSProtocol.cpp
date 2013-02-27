@@ -100,8 +100,6 @@ void *LocalFSProtocol::opendir(const char *dir, const char *mask)
 
     int d = fs_opendir(dir);
 
-    //printf("LocalFSProtocol::opendir: %d\n", d);
-
     if(d > 0) {
         void **r = (void **)malloc(sizeof(void*));
         *r = (void*)d;
