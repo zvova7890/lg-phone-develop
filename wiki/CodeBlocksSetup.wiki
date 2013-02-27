@@ -1,4 +1,4 @@
-#Настройка CodeBlocks IDE
+#summary Настройка CodeBlocks IDE
 
 
 <div font="comic">
