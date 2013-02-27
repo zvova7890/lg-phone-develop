@@ -18,7 +18,7 @@
 #include <fcntl.h>
 #include <platform/lg/rom.h>
 #include "bogomips.h"
-
+#include "Pico/PicoInt.h"
 
 
 
@@ -40,9 +40,15 @@ unsigned int total_fps = 0, total_frame_count = 0, last_time;
 
 unsigned long clocks_per_second = 0, loops_per_second = 0;
 char restored_bogomips = 0;
+int multiply_fps = 30;
 
-#define multiply_fps 30
 #define WINDOW_ID_SCREEN 10
+//#define ENABLE_OSD
+#define THREAD_RENDERING
+
+
+#define LockThread() NU_Suspend_Task(&task);
+#define UnLockThread() NU_Resume_Task(&task);
 /*===================================================================*/
 /*============================ GUI ==================================*/
 /*===================================================================*/
@@ -53,8 +59,7 @@ void *getFrameBuffer()
     return Graphics_GetScreenBuffer();
 }
 
-#define ENABLE_OSD
-#define THREAD_RENDERING
+
 
 
 void Draw()
@@ -72,17 +77,20 @@ void Draw()
     frame_cnt++;
 #endif
 
-    UIOnDraw();
 
-#ifdef ENABLE_OSD
-    char osd[128];
-    sprintf(osd, "%d,%d,%d", sleep_ticks, skeep_frames, total_fps);
-    //sprintf(osd, "%d, %d", sleep_ticks, fps*multiply_fps);
-#endif
+    if(!frame_count && *rom_file_name)
+        return;
 
     /* To avoid tearing */
 #ifdef THREAD_RENDERING
     NU_Suspend_Task(&task);
+#endif
+
+    UIOnDraw();
+#ifdef ENABLE_OSD
+    char osd[128];
+    sprintf(osd, "%d,%d,%d", sleep_ticks, skeep_frames, total_fps);
+    //sprintf(osd, "%d, %d", sleep_ticks, fps*multiply_fps);
 #endif
 
 #ifdef ENABLE_OSD
@@ -99,6 +107,7 @@ void Draw()
     //GrSys_RefreshRect(0, 0, 320, 240);
     GrSys_Refresh();
 
+    frame_count = 0;
 #ifdef THREAD_RENDERING
     NU_Resume_Task(&task);
 #endif
@@ -106,21 +115,83 @@ void Draw()
 
 
 
+void PauseEmulator() {
+    LockThread();
+}
+
+void ResumeEmulator() {
+    UnLockThread();
+}
+
+
+int SaveEmulatorState()
+{
+
+    PauseEmulator();
+
+    char save_name[256];
+
+    sprintf(save_name, "%s-save.bin", rom_file_name);
+    int r = PicoSaveLoadGame(0, 0, save_name);
+
+    ResumeEmulator();
+    return r;
+}
+
+
+int LoadEmulatorState()
+{
+
+    PauseEmulator();
+
+    char save_name[256];
+
+    sprintf(save_name, "%s-save.bin", rom_file_name);
+    int r = PicoSaveLoadGame(1, 0, save_name);
+
+    ResumeEmulator();
+    return r;
+}
+
 
 #define start_calculate() __last_ticks = get_ticks()
 #define ticks() get_ticks() - __last_ticks
 
+
 void t_entry(unsigned long argc, void *argv)
 {
-    const int max_frames = 60.0f/multiply_fps+1; // NTSC
+    unsigned int max_frames;
     unsigned long __last_ticks;
+
+    if(Pico.m.pal) {
+        multiply_fps = 1;
+        max_frames = 50*2-2;
+    }
+    else {
+        multiply_fps = 30;
+        max_frames = 60*2-2;
+    }
+
+    printf("%s is %s\n", rom_file_name, Pico.m.pal? "PAL" : "NTSC");
 
     if(!restored_bogomips)
         calculate_bogomips(&clocks_per_second, &loops_per_second, 0);
-    start_calculate();
 
+
+    unsigned long time_per_frame = clocks_per_second/max_frames;
+
+
+    printf("time_per_frame: %lu\n", time_per_frame);
+
+    start_calculate();
     while(1) {
+
+
         int skeep = 1;
+        unsigned long clocks = 0;
+
+        clocks = ticks();
+        start_calculate();
 
         if(frame_cnt >= skeep_frames) {
             skeep = 0;
@@ -130,72 +201,48 @@ void t_entry(unsigned long argc, void *argv)
         PicoDriveFrame(skeep);
         frame_cnt++;
 
-
         ++frame_count;
         ++total_frame_count;
-        if((ticks()) >= (clocks_per_second)/multiply_fps)
-        {
-            start_calculate();
 
-            fps = frame_count;
-            frame_count = 0;
-
-            if(fps > max_frames) {
-                if(skeep_frames > 0) {
-                    sleep_ticks = 0;
-                    if(fps > max_frames+(13/multiply_fps) && skeep_frames > 1)
-                        skeep_frames -= 2;
-                    else
-                        skeep_frames --;
-                } else {
-                    skeep_frames = 0;
-                    sleep_ticks += 1;
-
-                    int delay = sleep_ticks*(loops_per_second/3000);
-                    if(delay > 1)
-                        delay_loop(delay);
-                }
-
-            }
-
-            if(fps < max_frames) {
-
-                if(sleep_ticks > 0) {
-                    sleep_ticks -= 1;
-
-                    if(sleep_ticks > 0) {
-                        int delay = sleep_ticks*(loops_per_second/3000);
-                        if(delay > 1)
-                            delay_loop(delay);
-                    }
-
-                    if(sleep_ticks < 0)
-                        sleep_ticks = 0;
-
-                } else {
-                    if(skeep_frames < max_skeep_frames) {
-                        if(fps < max_frames-(13/multiply_fps))
-                            skeep_frames += 2;
-                        else
-                            skeep_frames ++;
-                    }
-                }
-            }
+        //printf("clocks: %lu\n", clocks);
+        /* если фрейм рендернулся за время, большее чем нужно то меньше спим */
+        if(clocks > time_per_frame) {
+            sleep_ticks--;
+            if(sleep_ticks < 0)
+                sleep_ticks = 0;
         }
+
+        if(clocks < time_per_frame) {
+            sleep_ticks++;
+        }
+
+
+        if(sleep_ticks > 0) {
+            skeep_frames = 0;
+            // миллисекунда
+            delay_loop(sleep_ticks*(loops_per_second/1000));
+        }
+
+        if(!sleep_ticks) {
+            skeep_frames++;
+
+            if(skeep_frames > 3)
+                skeep_frames = 3;
+        }
+
 
         if(last_time != cur_seconds()) {
             total_fps = total_frame_count;
             total_frame_count = 0;
             last_time = cur_seconds();
         }
-
     }
 }
 
 
 
 /**
- * We needs a bogomips, because we want kwon, how many ticks we have per seccond
+ * We needs a bogomips, because we want know, how many ticks we have per seccond
  * for more accurate frame-rate controll
  */
 
@@ -290,7 +337,7 @@ void Screen_OnInit()
 #else
     CreateTimerEvent(1, 50, TIMER_TYPE_LOOP);
 
-    i = NU_Create_Task(&task, "Sega", t_entry, 0, 0, task_stack, sizeof(task_stack), 100, 0, NU_PREEMPT, NU_START);
+    i = NU_Create_Task(&task, "Sega", t_entry, 0, 0, task_stack, sizeof(task_stack), 100, 0xC, NU_PREEMPT, NU_START);
     printf("Started task: %d\n", i);
 #endif
 
@@ -330,6 +377,14 @@ void Screen_OnKeyDown(int key)
     if(key == KEY_CAMERA) {
         TaskMngr_AppExit(0, 0, 0);
         return;
+    }
+
+    if(key == KEY_SIDE1) {
+        LoadEmulatorState();
+    }
+
+    if(key == KEY_SIDE2) {
+        SaveEmulatorState();
     }
 
     UIOnKey(1, key);
