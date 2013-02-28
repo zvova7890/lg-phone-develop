@@ -62,13 +62,12 @@ $ make install
  * libsupc++ - некоторые статические функции, нужные С++
 
 А так-же нужны для линковки эльфов файлы инициализации:
-{{{
-crt0.o
-crtbegin.o
-crtend.o
-crti.o
-crtn.o
-}}}
+Брать [http://code.google.com/p/lg-phone-develop/source/browse/trunk/gcc/elf-init-libs тут]
+ * crt0.o
+ * crtbegin.o
+ * crtend.o
+ * crti.o
+ * crtn.o
 
 Их нужно ложить в папку с компилятором:
  * unix: /usr/lib/gcc/arm-eabi/{версия компилятора}/
