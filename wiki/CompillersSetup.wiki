@@ -61,8 +61,7 @@ $ make install
  * libstdc++ - портированная стандарная библиотека C++(gnu stdc++)
  * libsupc++ - некоторые статические функции, нужные С++
 
-А так-же нужны для линковки эльфов файлы инициализации:
-Брать [http://code.google.com/p/lg-phone-develop/source/browse/trunk/gcc/elf-init-libs тут]
+А так-же нужны для линковки эльфов [http://code.google.com/p/lg-phone-develop/source/browse/trunk/gcc/elf-init-libs файлы] инициализации:
  * crt0.o
  * crtbegin.o
  * crtend.o
