@@ -29,18 +29,20 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
     _first_height(r.h()),
     _fsentry_menu(parent, Rect(10, 60, 240-20, 280), parent->eventManager()),
     global_yes_no_question(0),
-    __current_dir("/"),
     need_cd(false),
     effect_manager(em),
     global_menu(parent, Rect(0, 0, 240, 310), parent->eventManager()),
     global_menu_button(parent, Rect(0, 0, 240, 39), false),
-    global_menu_showing(false) /*,
-    marked_files(0)*/
+    global_menu_showing(false)
 {
     memset(&cd_prev_screen_image, 0, sizeof(cd_prev_screen_image));
 
-    _current_protocol.push_back("local");
-    _current_protocol.push_back("local");
+
+    // TODO: restoring last dir
+    m_currentWorkspaceId = 0;
+    m_workspaces.push_back( Workspace(0, "local", "/") );
+    m_workspaces.push_back( Workspace(1, "local", "/") );
+
 
     if(curent_engine)
         _main_view_engine = new FileViewWidgetIconEngine(this);
@@ -406,6 +408,7 @@ void FileViewWidget::paintEvent()
     global_menu_button.setFilesCount(viewFilesCount());
     global_menu_button.setCurrentLine(cline);
     global_menu_button.setViewLines(entries);
+    global_menu_button.setWorkspace(workspace().id);
 
     global_menu_button.paintEvent();
 }
@@ -430,7 +433,7 @@ void FileViewWidget::touchEvent(int action, int x, int y)
 }
 
 
-int FileViewWidget::refreshDir()
+int FileViewWidget::refreshDir(bool fix_scroll)
 {
     int linei = lineItem();
     clearScreen();
@@ -441,7 +444,9 @@ int FileViewWidget::refreshDir()
         linei = linesCount()-1;
 
     setLineItem(linei);
-    fixScrollPosition();
+
+    if(fix_scroll)
+        fixScrollPosition();
     return 0;
 }
 
@@ -504,9 +509,9 @@ int FileViewWidget::fillEntries()
         pushBackFile(FSEntryInfo(name, attr, size, action));
     };
 
-    FSProtocol & proto = protocolsContainer().indexOf(_current_protocol.at(0));
+    FSProtocol & proto = protocolsContainer().indexOf( workspace().protocol );
 
-    const std::string & path = __current_dir;
+    const std::string & path = directory();
 
     if(path == "/") {
 
@@ -677,11 +682,53 @@ void FileViewWidget::markAllFiles()
 
 void FileViewWidget::pushFileToClipBoard(const std::string &dir, const FSListedEntry &info, ClipBoard::Action type)
 {
-    clipboard.pushFile(_current_protocol.at(0), dir, info, type);
+    clipboard.pushFile(workspace().protocol, dir, info, type);
 }
 
 
+void FileViewWidget::switchNextWorkSpace()
+{
+    int id = m_currentWorkspaceId+1;
+    if(workspaces().size() <= id)
+        id = 0;
 
+    switchWorkSpace(id);
+}
+
+
+bool FileViewWidget::switchWorkSpace(unsigned int id)
+{
+    if(id >= workspaces().size())
+        return false;
+
+    bool bigger = false;
+
+    stopScroll();
+
+    /* save scroll state */
+    workspace().scrollState = scrollState();
+
+    cdEffectPrepare();
+
+    if(m_currentWorkspaceId < id)
+        bigger = true;
+
+    m_currentWorkspaceId = id;
+
+
+    refreshDir(false);
+
+    /* restore scroll state */
+    setScrollState( workspace().scrollState );
+
+    if(bigger) {
+        cdEffectStart(EFFECT_LEFT_MOVE);
+    } else {
+        cdEffectStart(EFFECT_RIGHT_MOVE);
+    }
+
+    return true;
+}
 
 
 /*

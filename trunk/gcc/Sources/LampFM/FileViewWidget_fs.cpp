@@ -44,7 +44,7 @@ void FileViewWidget::recursive_flush(FSProtocol & proto, int base_dir, const std
 
 void FileViewWidget::set_clipboard_files(const std::string &dir, const FSEntryInfo &info, int action)
 {
-    FSProtocol & proto = protocolsContainer().indexOf(_current_protocol.at(0));
+    FSProtocol & proto = protocolsContainer().indexOf( workspace().protocol );
     std::list<FSListedEntry> list;
 
     void *h = proto.opendir((dir+info.name).c_str(), "*.*");
@@ -60,7 +60,7 @@ void FileViewWidget::set_clipboard_files(const std::string &dir, const FSEntryIn
     for(FSListedEntry &e : list)
     {
         //printf("entry: %s%s\n", (e.dir + e.name).c_str(), e.flags & FSProtocol::Dir? "/" : "");
-        clipboard.pushFile(_current_protocol.at(0), e.dir, e, (ClipBoard::Action)action);
+        clipboard.pushFile(workspace().protocol, e.dir, e, (ClipBoard::Action)action);
     }
 }
 
@@ -234,7 +234,7 @@ void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_w
                 }
 
                 for(const auto rl : remover_list) {
-                    clipboard.popFile(_current_protocol.at(0), *rl.dir, *rl.info);
+                    clipboard.popFile( workspace().protocol, *rl.dir, *rl.info);
                 }
 
                 remover_list.clear();
@@ -312,7 +312,7 @@ void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_w
                 }
 
                 for(const Remover & rl : remover_list) {
-                    clipboard.popFile(_current_protocol.at(0), *rl.dir, *rl.info);
+                    clipboard.popFile(workspace().protocol, *rl.dir, *rl.info);
                 }
 
                 remover_list.clear();
@@ -377,7 +377,7 @@ int FileViewWidget::unlinkFiles(const std::list<const FSEntryInfo *> & list)
 {
     printf("unlinkFiles(%d)\n", list.size());
     int unlinked = 0;
-    FSProtocol & p = protocolsContainer().indexOf(_current_protocol.at(0));
+    FSProtocol & p = protocolsContainer().indexOf(workspace().protocol);
 
     for(auto entry : list)
     {
@@ -404,7 +404,7 @@ int FileViewWidget::unlinkFiles(const std::list<const FSEntryInfo *> & list)
             for(FSListedEntry &e : list)
             {
                 //printf("Push %s\n", (e.dir+e.name+(e.flags & FSProtocol::Dir? "/" : "")).c_str());
-                clipboard.pushFile(_current_protocol.at(0), e.dir, e, ClipBoard::Delete);
+                clipboard.pushFile(workspace().protocol, e.dir, e, ClipBoard::Delete);
             }
         }
     }
@@ -424,7 +424,7 @@ int FileViewWidget::copy_file(const std::string &from, const std::string &to, un
         return -1;
     }
 
-    FSProtocol & p = protocolsContainer().indexOf(_current_protocol.at(0));
+    FSProtocol & p = protocolsContainer().indexOf(workspace().protocol);
 
     void *h = p.open(from.c_str(), FSProtocol::Read);
     if(h) {

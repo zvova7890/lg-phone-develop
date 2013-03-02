@@ -1,11 +1,67 @@
 #include "Brush.h"
 
 
+typedef std::function<void(Brush &, const Rect &)> brush_func_t;
+
+
+template <typename T>
+void alloc_n_set(void *obj, T s, int pack)
+{
+    if(!pack) {
+        *(T*)obj = s;
+
+    } else {
+        T *i = new T(s);
+        *(T**)obj = i;
+    }
+}
+
+template <typename T>
+void clear_n_set(void *obj, int packed)
+{
+    if(!packed) {
+        *(void**)obj = 0;
+    } else {
+        T *t = *(T**)obj;
+        delete t;
+        *(void**)obj = 0;
+    }
+}
+
+template <typename T>
+T restore_pointer(void *obj)
+{
+    return *(T*)obj;
+}
+
+
+template <typename T>
+T restore_pointer(void * const * obj)
+{
+    return *(T*)obj;
+}
+
+
+template <typename T>
+T *restore_pointer_unpack(void *obj)
+{
+    T *t = *(T**)obj;
+    return t;
+}
+
+
+template <typename T>
+T *restore_pointer_unpack(void * const * obj)
+{
+    T *t = *(T**)obj;
+    return t;
+}
+
 
 Brush::Brush()
 {
-    _type = Type::OWN;
-    _paint_event = [](Brush &, const Rect &) {};
+    _type = 0;
+    clear_n_set<int>(&_point, 0);
 }
 
 
@@ -18,28 +74,69 @@ Brush::Brush(const Brush &b)
 Brush::Brush(GLColor color)
 {
     _type = Type::COLOR;
-    _color = color;
+    alloc_n_set(&_point, color, 0);
 }
 
 
 Brush::Brush(GLGradient *gradient)
 {
     _type = Type::GRADIENT;
-    _gradient = gradient;
+    alloc_n_set(&_point, gradient, 0);
 }
 
 
 Brush::Brush(image_t *image)
 {
     _type = Type::IMAGE;
-    _image = image;
+    alloc_n_set(&_point, image, 0);
 }
 
 
 Brush::Brush(const std::function<void(Brush &, const Rect &)> &f)
 {
     _type = Type::OWN;
-    _paint_event = f;
+    alloc_n_set(&_point, f, 1);
+}
+
+
+Brush::~Brush()
+{
+    if(_type == (char)OWN)
+        clear_n_set<brush_func_t>(&_point, 1);
+}
+
+
+Brush & Brush::operator =(const Brush &b)
+{
+    if(_type == (char)OWN)
+        clear_n_set<brush_func_t>(&_point, 1);
+
+    switch(b._type)
+    {
+        case (char)OWN:
+            alloc_n_set(&_point, *restore_pointer_unpack<brush_func_t>(&b._point), 1);
+            break;
+
+        case (char)IMAGE:
+            alloc_n_set(&_point, restore_pointer<image_t*>(&b._point), 0);
+            break;
+
+        case (char)COLOR:
+            alloc_n_set(&_point, restore_pointer<GLColor>(&b._point), 0);
+            break;
+
+        case (char)GRADIENT:
+            alloc_n_set(&_point, restore_pointer<GLGradient*>(&b._point), 0);
+            break;
+
+        default:
+            clear_n_set<int>(&_point, 0);
+            break;
+    }
+
+    _type = b._type;
+
+    return *this;
 }
 
 
@@ -53,8 +150,8 @@ void Brush::paintEvent(const Rect &r)
 {
     switch(_type)
     {
-        case Type::COLOR:
-            glSetPen(_color);
+        case (char)Type::COLOR:
+            glSetPen(restore_pointer<GLColor>(&_point));
             if(r.w() == 1) {
                 glDrawVLine(r.y(), r.y2(), r.x());
 
@@ -66,12 +163,13 @@ void Brush::paintEvent(const Rect &r)
 
             break;
 
-        case Type::GRADIENT:
+        case (char)Type::GRADIENT:
             printf("Brush::gradient is unimplemented\n");
             break;
 
-        case Type::IMAGE:
+        case (char)Type::IMAGE:
         {
+            image_t *_image = restore_pointer<image_t*>(&_point);
             int x = r.x(),
                 y = r.y();
 
@@ -91,8 +189,15 @@ void Brush::paintEvent(const Rect &r)
             break;
         }
 
-        default: case Type::OWN:
-            _paint_event(*this, r);
+        case (char)Type::OWN:
+        {
+            brush_func_t & p = *restore_pointer_unpack<brush_func_t>(&_point);
+            p(*this, r);
+            break;
+        }
+
+        default:
+
             break;
     }
 }

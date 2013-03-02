@@ -45,11 +45,16 @@ public:
         _border_img = img;
     }
 
+    inline void setWorkspace(int id) {
+        m_workpace = id;
+    }
+
 private:
     MoveSignal _move;
     const image_t *_border_img;
-    int _files_cnt, _dirs_cnt, _line, _entries;
+    int _files_cnt, _dirs_cnt, _line, _entries, m_workpace;
     std::string _directory;
+
 
 };
 

@@ -32,28 +32,16 @@ public:
     Brush(GLGradient *gradient);
     Brush(image_t *image);
     Brush(const std::function<void(Brush &, const Rect &)> &f);
+    ~Brush();
 
-
-    Brush & operator=(const Brush &b) {
-        _type = b._type;
-        _color = b._color;
-        _gradient = b._gradient;
-        _image = b._image;
-        _paint_event = b._paint_event;
-        return *this;
-    }
+    Brush & operator=(const Brush &b);
 
     void paint(const Rect &r);
-
     virtual void paintEvent(const Rect &r);
 
 private:
-    Type _type;
-
-    GLColor _color;
-    GLGradient *_gradient;
-    image_t *_image;
-    std::function<void(Brush &, const Rect &)> _paint_event;
+    char  _type;
+    void *_point;
 };
 
 #endif // BRUSH_H
