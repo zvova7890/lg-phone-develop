@@ -23,6 +23,8 @@ void GlobalMenuButton::paintEvent()
     glSetPen(0xFFFFFFFF);
     glDrawString(_directory.c_str(), x+2, y+2, x+rect().w()-2, y+35-2, 15, FT_TEXT_H_UP, 0, 100500);
 
+    sprintf(extra_info, "%d", m_workpace);
+    glDrawString(extra_info, x+2, y+2, x+rect().w()-1, y+35-2, 15, FT_TEXT_H_UP | FT_TEXT_W_RIGHT, 0, 100500);
 
     sprintf(extra_info, "Files: %d Dirs: %d", _files_cnt, _dirs_cnt);
     glDrawString(extra_info, x+2, y+2, x+rect().w()-2, y+35-2, 13, FT_TEXT_H_DOWN, 0, 100500);

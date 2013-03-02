@@ -23,35 +23,44 @@ void ListMenuItem::paintEvent()
         switch(pressed)
         {
         case 1:
-            parent()->style().linePressed().paint(Rect(rect().x(), rect().y(), rect().w()-1, rect().h()));
+            style().linePressed().paint(Rect(rect().x(), rect().y(), rect().w()-1, rect().h()));
             break;
 
         case 2:
-            parent()->style().lineLongPressed().paint(Rect(rect().x(), rect().y(), rect().w()-1, rect().h()));
+            style().lineLongPressed().paint(Rect(rect().x(), rect().y(), rect().w()-1, rect().h()));
             break;
         }
 
     }
 
-    glSetPen(parent()->style().separator());
-    glDrawHLine(rect().x(), rect().x2()-1, rect().y());
 
-    if(currentLineDisplayID() == (int)parent()->itemList()->size()-1)
-        glDrawHLine(rect().x(), rect().x2()-1, rect().y2());
+    //glSetPen(style().separator());
+    //glDrawHLine(rect().x(), rect().x2()-1, rect().y());
 
+    if(currentLineDisplayID() == (int)parent()->linesCount()) {
+        if( parent()->style().isPaintLastLine()  )
+            style().separator().paint(Rect(rect().x(), rect().y2()-1, rect().w()-1, 1));
+    }
+    else if(currentLineDisplayID() == 0) {
+        if( parent()->style().isPaintFirstLine() )
+            style().separator().paint(Rect(rect().x(), rect().y(), rect().w()-1, 1));
+    }
+    else {
+        style().separator().paint(Rect(rect().x(), rect().y(), rect().w()-1, 1));
+    }
 
     switch(pressed)
     {
     case 1:
-        glSetPen(parent()->style().linePressedText());
+        glSetPen(style().linePressedText());
         break;
 
     case 2:
-        glSetPen(parent()->style().lineLongPressedText());
+        glSetPen(style().lineLongPressedText());
         break;
 
     default:
-        glSetPen(parent()->style().lineText());
+        glSetPen(style().lineText());
         break;
     }
 

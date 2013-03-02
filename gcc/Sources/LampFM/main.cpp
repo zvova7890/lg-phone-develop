@@ -204,7 +204,7 @@ void Screen_OnKeyDown(int key)
     }
 
     case KEY_SEND:
-        main_view->switchViewType();
+        main_view->switchNextWorkSpace();
         break;
 
     case KEY_MULTI:

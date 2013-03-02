@@ -29,6 +29,32 @@ class  FileViewWidgetAbstractItem;
 class FileViewWidget : public ActiveList
 {
 public:
+
+    class Workspace {
+    public:
+
+        Workspace (int id, const std::string &protocol, const std::string &dir) {
+            this->id = id;
+            this->protocol = protocol;
+            this->dir = dir;
+        }
+
+        Workspace & operator=(const Workspace &w) {
+            id = w.id;
+            dir = w.dir;
+            protocol = w.protocol;
+            scrollState = w.scrollState;
+            return *this;
+        }
+
+        int id;
+        std::string protocol;
+        std::string dir;
+        ActiveList::ScrollState scrollState;
+    };
+
+
+public:
     typedef signal_slot::multi_signal <void(FileViewWidget*)> signal;
 
     FileViewWidget(UActiveArea *parent, EffectManager *em, const Rect &r);
@@ -55,7 +81,7 @@ public:
     std::list <const FSEntryInfo *> getSelectedEntriesList();
     int unlinkFiles(const std::list<const FSEntryInfo *> & list);
 
-    int refreshDir();
+    int refreshDir(bool fix_scroll = true);
     int cdUp(const std::string &dir, bool effect = true);
     int cdDown();
     int cdUpAfterAction(const std::string &dir);
@@ -66,7 +92,9 @@ public:
     void cdEffectStart(int effect, int delay = 3);
     void cdEffectStop();
 
-    void switchViewType();
+    void switchViewType(); // deprecated
+    bool switchWorkSpace(unsigned int id);
+    void switchNextWorkSpace();
 
     const std::string sizeToString(unsigned long bytes) const;
 
@@ -74,11 +102,11 @@ public:
     void touchEvent(int action, int x, int y);
 
     inline const std::string & directory() {
-        return __current_dir;
+        return workspace().dir;
     }
 
     void setDirectory(const std::string &dir) {
-        __current_dir = dir;
+        workspace().dir = dir;
     }
 
     inline FSEntryInfo & getFSEntry(int i) {
@@ -127,6 +155,13 @@ public:
         return _main_view_engine->viewItemsCount();
     }
 
+    inline std::vector<Workspace> & workspaces() {
+        return m_workspaces;
+    }
+
+    inline Workspace & workspace() {
+        return m_workspaces[m_currentWorkspaceId];
+    }
 
 protected:
 
@@ -151,13 +186,17 @@ private:
     QuestionDialog *global_yes_no_question;
     ListMenu::signal::slot _on_hide_it;
     Timer global_menu_timer;
-    std::vector <std::string> _current_protocol;
+
+
+    std::vector<Workspace> m_workspaces;
+    unsigned int m_currentWorkspaceId;
+
+    //std::vector <std::string> _current_protocol;
     std::list <const FSEntryInfo *> _selected_list;
 
     ClipBoard clipboard;
 
 private:
-    std::string __current_dir;
 
     bool need_cd;
     std::string __cd_to;

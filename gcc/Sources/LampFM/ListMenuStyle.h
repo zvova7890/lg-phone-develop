@@ -10,7 +10,9 @@ class ListMenuStyle
 {
 public:
     ListMenuStyle();
-    ~ListMenuStyle();
+
+    ListMenuStyle &operator =(const ListMenuStyle &s);
+
 
     void setBackground(const Brush & b) {
         _background = b;
@@ -27,42 +29,6 @@ public:
 
     Brush & shadow() {
         return _shadow;
-    }
-
-
-    void setSeparator(GLColor c) {
-        _separator = c;
-    }
-
-    GLColor separator() {
-        return _separator;
-    }
-
-
-    void setLine(const Brush & b) {
-        _line = b;
-    }
-
-    Brush & line() {
-        return _line;
-    }
-
-
-    void setLinePressed(const Brush & b) {
-        _line_selected = b;
-    }
-
-    Brush &  linePressed() {
-        return _line_selected;
-    }
-
-
-    void setLineLongPressed(const Brush & b) {
-        _line_long_selected = b;
-    }
-
-    Brush &  lineLongPressed() {
-        return _line_long_selected;
     }
 
 
@@ -93,6 +59,75 @@ public:
     }
 
 
+    void setHeaderText(GLColor c) {
+        _header_text = c;
+    }
+
+    GLColor headerText() {
+        return _header_text;
+    }
+
+
+    bool isPaintLastLine() const {
+        return _paint_last_line;
+    }
+
+    bool isPaintFirstLine() const {
+        return _paint_first_line;
+    }
+
+private:
+    Brush _background, _shadow;
+    GLColor _header_text;
+    bool _paint_first_line, _paint_last_line;
+
+    Rect _header_r, _list_r;
+    Rect _size;
+};
+
+
+
+class ListMenuItemStyle
+{
+public:
+    ListMenuItemStyle();
+
+    ListMenuItemStyle &operator =(const ListMenuItemStyle &s);
+
+    void setSeparator(const Brush &b) {
+        _separator = b;
+    }
+
+    Brush & separator() {
+        return _separator;
+    }
+
+    void setLine(const Brush & b) {
+        _line = b;
+    }
+
+    Brush & line() {
+        return _line;
+    }
+
+
+    void setLinePressed(const Brush & b) {
+        _line_selected = b;
+    }
+
+    Brush &  linePressed() {
+        return _line_selected;
+    }
+
+
+    void setLineLongPressed(const Brush & b) {
+        _line_long_selected = b;
+    }
+
+    Brush &  lineLongPressed() {
+        return _line_long_selected;
+    }
+
     void setLineText(GLColor c) {
         _list_text = c;
     }
@@ -115,27 +150,16 @@ public:
         _long_pressed_text = c;
     }
 
-    GLColor lineLongPressedText() {
+    GLColor lineLongPressedText() const {
         return _long_pressed_text;
     }
 
 
-    void setHeaderText(GLColor c) {
-        _header_text = c;
-    }
-
-    GLColor headerText() {
-        return _header_text;
-    }
 
 private:
-    Brush _background, _shadow,
-          _line, _line_selected, _line_long_selected;
-
-    GLColor _separator, _list_text, _pressed_text, _long_pressed_text, _header_text;
-
-    Rect _header_r, _list_r;
-    Rect _size;
+    Brush _separator, _line, _line_selected, _line_long_selected;
+    GLColor _list_text, _pressed_text, _long_pressed_text;
 };
+
 
 #endif // LISTMENUSTYLE_H

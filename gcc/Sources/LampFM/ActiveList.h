@@ -71,6 +71,24 @@ protected:
 
 class ActiveList : public UActiveAreaItem<ScrollArea>
 {
+public:
+    class ScrollState {
+    public:
+        ScrollState(int item = 0, int cy = 0) {
+            this->item = item;
+            this->cy = cy;
+        }
+
+        ScrollState & operator =(const ScrollState &ss) {
+            item = ss.item;
+            cy = ss.cy;
+            return *this;
+        }
+
+        int item;
+        int cy;
+    };
+
 private:
     static ScrollAreaItem *__getItem(void *_area, int index) {
         auto *self = static_cast<ActiveList*>(static_cast<ScrollArea*>(_area)->user);
@@ -165,6 +183,15 @@ public:
 
     inline int lineItem() {
         return area()->item;
+    }
+
+    ScrollState scrollState() {
+        return ScrollState(lineItem(), area()->cy);
+    }
+
+    void setScrollState(const ScrollState &s) {
+        setLineItem(s.item);
+        area()->cy = s.cy;
     }
 
     inline int setLineItem(int item) {

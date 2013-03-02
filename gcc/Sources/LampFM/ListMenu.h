@@ -39,8 +39,16 @@ public:
         return (ListMenu*)ActiveListItem::parent();
     }
 
+    ListMenuItemStyle & style() {
+        return _style;
+    }
+
+    void setStyle(const ListMenuItemStyle & style) {
+        _style = style;
+    }
+
 protected:
-    //sigc::signal <void, ListMenuItem *> _pressed, _released;
+    ListMenuItemStyle _style;
     signal_slot::multi_signal<void(ListMenuItem*)> _pressed, _released;
     std::string _text;
 };
