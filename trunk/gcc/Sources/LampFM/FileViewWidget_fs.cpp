@@ -60,7 +60,7 @@ void FileViewWidget::set_clipboard_files(const std::string &dir, const FSEntryIn
     for(FSListedEntry &e : list)
     {
         //printf("entry: %s%s\n", (e.dir + e.name).c_str(), e.flags & FSProtocol::Dir? "/" : "");
-        clipboard.pushFile(workspace().protocol, e.dir, e, (ClipBoard::Action)action);
+        m_clipboard.pushFile(workspace().protocol, e.dir, e, (ClipBoard::Action)action);
     }
 }
 
@@ -104,7 +104,7 @@ void FileViewWidget::paste(const std::string &dir)
 
 void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_work)
 {
-    if(!clipboard.size())
+    if(!m_clipboard.size())
         return;
 
     ThreadWorker *worker = new ThreadWorker;
@@ -121,17 +121,17 @@ void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_w
         delete worker;
         delete timer;
         delete progress;
-        clipboard.clear();
+        m_clipboard.clear();
     });
 
 
     progress->setFullScreenBlock(true);
-    progress->setMaxFullProgress(clipboard.size(accepted_work));
+    progress->setMaxFullProgress(m_clipboard.size(accepted_work));
 
 
     worker->thread.onRunSignal().connect( [accepted_work, worker, this](Thread *) {
 
-        for(auto proto : clipboard.protocols())
+        for(auto proto : m_clipboard.protocols())
         {
 
             struct Remover {
@@ -234,7 +234,7 @@ void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_w
                 }
 
                 for(const auto rl : remover_list) {
-                    clipboard.popFile( workspace().protocol, *rl.dir, *rl.info);
+                    m_clipboard.popFile( workspace().protocol, *rl.dir, *rl.info);
                 }
 
                 remover_list.clear();
@@ -312,7 +312,7 @@ void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_w
                 }
 
                 for(const Remover & rl : remover_list) {
-                    clipboard.popFile(workspace().protocol, *rl.dir, *rl.info);
+                    m_clipboard.popFile(workspace().protocol, *rl.dir, *rl.info);
                 }
 
                 remover_list.clear();
@@ -404,7 +404,7 @@ int FileViewWidget::unlinkFiles(const std::list<const FSEntryInfo *> & list)
             for(FSListedEntry &e : list)
             {
                 //printf("Push %s\n", (e.dir+e.name+(e.flags & FSProtocol::Dir? "/" : "")).c_str());
-                clipboard.pushFile(workspace().protocol, e.dir, e, ClipBoard::Delete);
+                m_clipboard.pushFile(workspace().protocol, e.dir, e, ClipBoard::Delete);
             }
         }
     }

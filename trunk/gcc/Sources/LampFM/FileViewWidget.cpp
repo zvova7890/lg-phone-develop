@@ -22,18 +22,17 @@ FSEntryInfo __fs_entryinfo_null_entry;
 
 FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rect &r) :
     ActiveList(parent, r),
-    _item_select_mode(false),
-    curent_engine(0),
-    _main_view_engine(0),
+    m_itemSelectMode(false),
+    m_mainViewEngine(0),
     __null_fs_entry(FSEntryInfo("=Invalid=", 0, 0)),
-    _first_height(r.h()),
-    _fsentry_menu(parent, Rect(10, 60, 240-20, 280), parent->eventManager()),
+    m_firstHeight(r.h()),
+    m_fsEntryMenu(parent, Rect(10, 60, 240-20, 280), parent->eventManager()),
     global_yes_no_question(0),
-    need_cd(false),
-    effect_manager(em),
+    m_needCd(false),
     global_menu(parent, Rect(0, 0, 240, 310), parent->eventManager()),
     global_menu_button(parent, Rect(0, 0, 240, 39), false),
-    global_menu_showing(false)
+    global_menu_showing(false),
+    effect_manager(em)
 {
     memset(&cd_prev_screen_image, 0, sizeof(cd_prev_screen_image));
 
@@ -44,10 +43,10 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
     m_workspaces.push_back( Workspace(1, "local", "/") );
 
 
-    if(curent_engine)
-        _main_view_engine = new FileViewWidgetIconEngine(this);
+    if(workspace().viewEngine)
+        m_mainViewEngine = new FileViewWidgetIconEngine(this);
     else
-        _main_view_engine = new FileViewWidgetListEngine(this);
+        m_mainViewEngine = new FileViewWidgetListEngine(this);
 
     border_img = resourceManager().image("border");
     folder_icon = resourceManager().image("folder-icon");
@@ -103,7 +102,7 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
         eventManager()->updateAfterEvent();
     };
 
-    global_menu_timer.timerEventSignal().connect( event );
+    m_menuTimer.timerEventSignal().connect( event );
 
 
     global_menu_button.touchActionSignal().connect( [this](GlobalMenuButton *mm, int action, int x, int y) {
@@ -137,7 +136,7 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
 
             case TOUCH_ACTION_RELEASE:
                 if(!global_menu_first_move && !mm->isOffRectTouch())
-                    global_menu_timer.start(5);
+                    m_menuTimer.start(5);
 
                 if(mm->isOffRectTouch() && !mm->isMoved()) {
                     global_menu.hide();
@@ -189,7 +188,7 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
 
 
     global_menu.onHideSignal().connect( [this](ListMenu *) {
-        global_menu_timer.stop();
+        m_menuTimer.stop();
 
         global_menu_button.setFullScreenBlock(false);
         global_menu_button.move( 0, 0 );
@@ -213,7 +212,7 @@ FileViewWidget::~FileViewWidget()
     cd_prev_screen_image.bitmap = 0;
 
 
-    for(ActiveListItem *i : *_fsentry_menu.itemList()) {
+    for(ActiveListItem *i : *m_fsEntryMenu.itemList()) {
         delete i;
     }
 
@@ -227,7 +226,7 @@ FileViewWidget::~FileViewWidget()
         delete global_yes_no_question;
     }
 
-    delete _main_view_engine;
+    delete m_mainViewEngine;
 }
 
 
@@ -279,6 +278,12 @@ void FileViewWidget::initGlobalMenu()
         eventManager()->updateAfterEvent();
     } );
 
+    global_menu.pushBack( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Сменить папку"));
+    mi->onReleasedSignal().connect( [this](ListMenuItem *) {
+        global_menu.hide();
+        switchNextWorkSpace();
+    } );
+
     global_menu.pushBack( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Сменить вид"));
     mi->onReleasedSignal().connect( [this](ListMenuItem *) {
         global_menu.hide();
@@ -297,11 +302,12 @@ void FileViewWidget::initGlobalMenu()
         eventManager()->updateAfterEvent();
     } );
 
-    global_menu.pushBack(new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Информация"));
+    global_menu.pushBack( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Информация"));
+    mi->style().setLineText(0xffa3a3a3);
 
     global_menu.pushBack( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Выход..."));
     mi->onReleasedSignal().connect( [this](ListMenuItem *) {
-        __exit_signal.trigger(this);
+        m_exitSignal.trigger(this);
     } );
 
 
@@ -315,7 +321,7 @@ void FileViewWidget::initGlobalMenu()
 
 ScrollAreaItem *FileViewWidget::getListItem(int index)
 {
-    return _main_view_engine->getListItem(index);
+    return m_mainViewEngine->getListItem(index);
 }
 
 
@@ -328,28 +334,28 @@ void FileViewWidget::pushBackFile(FSEntryInfo *info)
 void FileViewWidget::pushBackFile(const FSEntryInfo &info)
 {
     if(info.attr & FSProtocol::FSEntryFlags::Dir) {
-        _dir_fs_entrys.push_back(info);
+        m_DirsList.push_back(info);
     } else {
-        _file_fs_entrys.push_back(info);
+        m_FilesList.push_back(info);
     }
 }
 
 
 void FileViewWidget::setViewList()
 {
-    setLinesCount(_main_view_engine->itemsForViewList());
+    setLinesCount(m_mainViewEngine->itemsForViewList());
 }
 
 
 void FileViewWidget::clearItems()
 {
-    _main_view_engine->clearItems();
+    m_mainViewEngine->clearItems();
 }
 
 
 std::list <const FSEntryInfo *> FileViewWidget::getSelectedEntriesList()
 {
-    return _main_view_engine->getSelectedEntriesList();
+    return m_mainViewEngine->getSelectedEntriesList();
 }
 
 
@@ -358,13 +364,6 @@ void FileViewWidget::clearScreen()
     //fullResetViewList();
     clearFSEntries();
     clearItems();
-}
-
-
-void FileViewWidget::setViewEngine(FileViewWidgetEngine *engine)
-{
-    ((void)engine);
-    /* WRITE ME */
 }
 
 
@@ -377,7 +376,7 @@ void FileViewWidget::paintEvent()
     glSetClipRegion(0, 30, rect().w(), rect().y2());
 
     moveY( border_img.h );
-    setHeight( _first_height - border_img.h );
+    setHeight( m_firstHeight - border_img.h );
 
     ActiveList::paintEvent();
     glRestoreClipRegion();
@@ -388,12 +387,12 @@ void FileViewWidget::paintEvent()
 
 
     if(1) {
-        cline = (cline-1)*_main_view_engine->fsEntriesPerLine();
+        cline = (cline-1)*m_mainViewEngine->fsEntriesPerLine();
         cline++;
     }
 
     if(dirs > 0) {
-        if(_dir_fs_entrys[0].action) {
+        if(m_DirsList[0].action) {
             --dirs;
             --entries;
 
@@ -418,14 +417,14 @@ void FileViewWidget::touchEvent(int action, int x, int y)
 {
     ActiveList::touchEvent(action, x, y);
 
-    if(need_cd) {
+    if(m_needCd) {
 
-        if(__cd_to.empty()) {
+        if(m_cdLaterTo.empty()) {
             cdDown();
 
         } else {
-            cdUp(__cd_to);
-            __cd_to.clear();
+            cdUp(m_cdLaterTo);
+            m_cdLaterTo.clear();
         }
 
         eventManager()->updateAfterEvent();
@@ -457,7 +456,7 @@ int FileViewWidget::cdUp(const std::string &dir, bool effect)
         setSelectMode(false);
     }
 
-    need_cd = false;
+    m_needCd = false;
     if(effect)
         cdEffectPrepare();
 
@@ -476,7 +475,7 @@ int FileViewWidget::cdDown()
         setSelectMode(false);
     }
 
-    need_cd = false;
+    m_needCd = false;
     if(directory() == "/")
         return -1;
 
@@ -497,8 +496,8 @@ int FileViewWidget::cdDown()
 
 int FileViewWidget::cdUpAfterAction(const std::string &dir)
 {
-    need_cd = true;
-    __cd_to = dir;
+    m_needCd = true;
+    m_cdLaterTo = dir;
     return 0;
 }
 
@@ -617,27 +616,33 @@ void FileViewWidget::cdEffectStop()
 }
 
 
-void FileViewWidget::switchViewType()
+void FileViewWidget::setViewEngine(int id)
 {
-    cdEffectPrepare();
-    int fs_entry = _main_view_engine->fileSystemEntryByItem(lineItem());
+    int fs_entry = m_mainViewEngine->fileSystemEntryByItem(lineItem());
 
     fullResetViewList();
     clearItems();
 
-    curent_engine = !curent_engine;
+    workspace().viewEngine = id;
 
-    delete _main_view_engine;
+    delete m_mainViewEngine;
 
-    if(curent_engine) {
-        _main_view_engine = new FileViewWidgetIconEngine(this);
+    if(workspace().viewEngine) {
+        m_mainViewEngine = new FileViewWidgetIconEngine(this);
     } else {
-        _main_view_engine = new FileViewWidgetListEngine(this);
+        m_mainViewEngine = new FileViewWidgetListEngine(this);
     }
 
     setViewList();
-    setLineItem( _main_view_engine->itemBySystemEntryNumber(fs_entry) );
+    setLineItem( m_mainViewEngine->itemBySystemEntryNumber(fs_entry) );
+}
 
+
+void FileViewWidget::switchViewType()
+{
+    cdEffectPrepare();
+
+    setViewEngine(!workspace().viewEngine);
     fixScrollPosition();
 
     cdEffectStart(EFFECT_RIGHT_SCALE);
@@ -646,49 +651,49 @@ void FileViewWidget::switchViewType()
 
 const std::string FileViewWidget::sizeToString(unsigned long bytes) const
 {
-    char ololo[128];
+    char size[128];
 
     /*if(bytes >= (1024*1024*1024*1024)) {
-        sprintf(ololo, "%d Тиб", bytes / (1024 * 1024 * 1024 * 1024));
+        sprintf(size, "%d Тиб", bytes / (1024 * 1024 * 1024 * 1024));
 
     } else */if(bytes >= (1024*1024*1024)) {
-        sprintf(ololo, "%.02f Гиб", (float)bytes / (1024 * 1024 * 1024));
+        sprintf(size, "%.02f Гиб", (float)bytes / (1024 * 1024 * 1024));
 
     } else if(bytes >= (1024*1024)) {
-        sprintf(ololo, "%.02f Миб", (float)bytes / (1024 * 1024));
+        sprintf(size, "%.02f Миб", (float)bytes / (1024 * 1024));
 
     } else if(bytes >= (1024)) {
-        sprintf(ololo, "%.02f Киб", (float)bytes / (1024));
+        sprintf(size, "%.02f Киб", (float)bytes / (1024));
 
     } else {
-        sprintf(ololo, "%lu Байт", bytes);
+        sprintf(size, "%lu Байт", bytes);
     }
 
-    return ololo;
+    return size;
 }
 
 
 void FileViewWidget::unMarkAllFiles()
 {
-    _main_view_engine->setUnMarkedAll();
+    m_mainViewEngine->setUnMarkedAll();
 }
 
 
 void FileViewWidget::markAllFiles()
 {
-    _main_view_engine->setMarkedAll();
+    m_mainViewEngine->setMarkedAll();
 }
 
 
 void FileViewWidget::pushFileToClipBoard(const std::string &dir, const FSListedEntry &info, ClipBoard::Action type)
 {
-    clipboard.pushFile(workspace().protocol, dir, info, type);
+    m_clipboard.pushFile(workspace().protocol, dir, info, type);
 }
 
 
 void FileViewWidget::switchNextWorkSpace()
 {
-    int id = m_currentWorkspaceId+1;
+    unsigned int id = m_currentWorkspaceId+1;
     if(workspaces().size() <= id)
         id = 0;
 
@@ -715,8 +720,11 @@ bool FileViewWidget::switchWorkSpace(unsigned int id)
 
     m_currentWorkspaceId = id;
 
-
-    refreshDir(false);
+    /*  */
+    clearScreen();
+    fillEntries();
+    setViewEngine( workspace().viewEngine );
+    setViewList();
 
     /* restore scroll state */
     setScrollState( workspace().scrollState );

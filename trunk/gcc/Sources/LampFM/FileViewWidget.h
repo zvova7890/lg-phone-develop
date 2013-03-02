@@ -37,6 +37,7 @@ public:
             this->id = id;
             this->protocol = protocol;
             this->dir = dir;
+            viewEngine = 0;
         }
 
         Workspace & operator=(const Workspace &w) {
@@ -48,6 +49,7 @@ public:
         }
 
         int id;
+        int viewEngine;
         std::string protocol;
         std::string dir;
         ActiveList::ScrollState scrollState;
@@ -65,7 +67,7 @@ public:
     void setViewList();
     void clearItems();
     void clearScreen();
-    void setViewEngine(FileViewWidgetEngine *engine);
+    void setViewEngine(int id);
 
     void unMarkAllFiles();
     void markAllFiles();
@@ -111,48 +113,48 @@ public:
 
     inline FSEntryInfo & getFSEntry(int i) {
 
-        if((int)_dir_fs_entrys.size() > i)
-            return _dir_fs_entrys[i];
+        if((int)m_DirsList.size() > i)
+            return m_DirsList[i];
 
-        i -= _dir_fs_entrys.size();
-        if((int)_file_fs_entrys.size() > i)
-            return _file_fs_entrys[i];
+        i -= m_DirsList.size();
+        if((int)m_FilesList.size() > i)
+            return m_FilesList[i];
 
         return __null_fs_entry;
     }
 
     inline int fsEntriesCount() const {
-        return _file_fs_entrys.size() + _dir_fs_entrys.size();
+        return m_FilesList.size() + m_DirsList.size();
     }
 
     inline int viewFilesCount() {
-        return _file_fs_entrys.size();
+        return m_FilesList.size();
     }
 
     inline int viewDirsCount() {
-        return _dir_fs_entrys.size();
+        return m_DirsList.size();
     }
 
     inline void clearFSEntries() {
-        _file_fs_entrys.clear();
-        _dir_fs_entrys.clear();
+        m_FilesList.clear();
+        m_DirsList.clear();
     }
 
 
     inline signal & onExitSignal() {
-        return __exit_signal;
+        return m_exitSignal;
     }
 
     inline bool isSelectionMode() {
-        return _item_select_mode;
+        return m_itemSelectMode;
     }
 
     inline void setSelectMode(bool is = true) {
-        _item_select_mode = is;
+        m_itemSelectMode = is;
     }
 
     inline int viewItemsCount() {
-        return _main_view_engine->viewItemsCount();
+        return m_mainViewEngine->viewItemsCount();
     }
 
     inline std::vector<Workspace> & workspaces() {
@@ -173,19 +175,18 @@ protected:
     ScrollAreaItem *getListItem(int index);
 
 protected:
-    bool _item_select_mode;
+    bool m_itemSelectMode;
 
 private:
-    int curent_engine;
-    FileViewWidgetEngine *_main_view_engine;
+    FileViewWidgetEngine *m_mainViewEngine;
     FSEntryInfo __null_fs_entry;
-    std::vector<FSEntryInfo> _file_fs_entrys, _dir_fs_entrys;
-    int _first_height;
-    signal __exit_signal;
-    ListMenu _fsentry_menu;
+    std::vector<FSEntryInfo> m_FilesList, m_DirsList;
+    int m_firstHeight;
+    signal m_exitSignal;
+    ListMenu m_fsEntryMenu;
     QuestionDialog *global_yes_no_question;
-    ListMenu::signal::slot _on_hide_it;
-    Timer global_menu_timer;
+    ListMenu::signal::slot m_onHideSlot;
+    Timer m_menuTimer;
 
 
     std::vector<Workspace> m_workspaces;
@@ -194,18 +195,10 @@ private:
     //std::vector <std::string> _current_protocol;
     std::list <const FSEntryInfo *> _selected_list;
 
-    ClipBoard clipboard;
+    ClipBoard m_clipboard;
 
-private:
-
-    bool need_cd;
-    std::string __cd_to;
-
-public:
-    image_t border_img, folder_icon, file_icon, back_action_icon,
-            checkedbox_icon, checkbox_icon;
-    EffectManager *effect_manager;
-    image_t cd_prev_screen_image;
+    bool m_needCd;
+    std::string m_cdLaterTo;
 
     /* глобальное меню */
     ListMenu global_menu;
@@ -217,8 +210,14 @@ public:
     int global_menu_way;
     int global_menu_speed;
 
-public:
 
+public:
+    image_t border_img, folder_icon, file_icon, back_action_icon,
+            checkedbox_icon, checkbox_icon;
+    EffectManager *effect_manager;
+    image_t cd_prev_screen_image;
+
+public:
     void onItemMenu(const FSEntryInfo & f,  FileViewWidgetAbstractItem *abstract_item);
 
 };
