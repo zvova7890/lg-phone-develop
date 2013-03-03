@@ -9,6 +9,41 @@ extern int gdCosT[];
 extern int gdSinT[];
 
 
+int glArc(GLContext *ctx, GLPoints *pts, int cx, int cy, int w, int h, int s, int e, int range_check)
+{
+    int i, p_i = 0;
+    int lx = 0, ly = 0;
+    while (e < s)
+    {
+        e += 360;
+    }
+
+    for (i = s; (i <= e); i++)
+    {
+        int x, y;
+        x = ((long) gdCosT[i % 360] * (long) w / (2 * 1024)) + cx;
+        y = ((long) gdSinT[i % 360] * (long) h / (2 * 1024)) + cy;
+        if (i != s) {
+
+            if(glAbs(x-lx) == 1 && glAbs(y-ly) == 1) {
+
+                if(lx >= ctx->clip_x1 && ly >= ctx->clip_y1 && lx < ctx->clip_x2 && ly < ctx->clip_y2) {
+                    glPointsPut(pts, lx, ly);
+                    p_i++;
+                }
+
+            } else {
+                p_i += glLine(ctx, pts, lx, ly, x, y, range_check);
+            }
+
+        }
+
+        lx = x;
+        ly = y;
+    }
+
+    return p_i;
+}
 
 
 void glCtxDrawFilledArc (GLContext *ctx, int cx, int cy, int w, int h, int s, int e, int style)
@@ -81,14 +116,14 @@ void glCtxDrawFilledArc (GLContext *ctx, int cx, int cy, int w, int h, int s, in
     }
   else
     {
-      if (style & GL_NO_FILL)
-    {
-      if (style & GL_EDGED)
+        if (style & GL_NO_FILL)
         {
-          glCtxDrawLine (ctx, cx, cy, lx, ly);
-          glCtxDrawLine (ctx, cx, cy, fx, fy);
+            if (style & GL_EDGED)
+            {
+                glCtxDrawLine (ctx, cx, cy, lx, ly);
+                glCtxDrawLine (ctx, cx, cy, fx, fy);
+            }
         }
-    }
     }
 }
 
