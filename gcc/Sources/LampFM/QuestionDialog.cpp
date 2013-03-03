@@ -1,3 +1,4 @@
+
 #include "QuestionDialog.h"
 #include "main.h"
 
@@ -16,78 +17,26 @@ QuestionDialog::QuestionDialog(UActiveArea *parent, const Rect &r, const std::st
     int button_w = rect().w()/2-10;
     int button_h = button_w/2-10;
 
-    m_buttons.push_back( new UActiveAreaItem<ActiveAreaItem>(parent, Rect(rect().x()+5, rect().h()-button_h-5, button_w, button_h)) );
-    m_buttons.push_back( new UActiveAreaItem<ActiveAreaItem>(parent, Rect(rect().x2()-button_w-5, rect().h()-button_h-5, button_w, button_h)) );
+    m_buttons.push_back( new UButton(parent, Rect(5, rect().h()-button_h-5, button_w, button_h), "Yes") );
+    m_buttons.push_back( new UButton(parent, Rect(rect().w()-button_w-5, rect().h()-button_h-5, button_w, button_h), "No") );
 
 
-    m_buttons[0]->paintSignal().connect ( [this](UActiveAreaItem<ActiveAreaItem> *_i) {
+    m_buttons[0]->releasedSignal().connect ( [this](UButton *self) {
 
-        if(_i->isTouched())
-            glSetPen(0xF0FFFFFF);
-        else
-            glSetPen(0xF0370700);
-
-        int x = _i->rect().x();
-        int y = rect().y()+_i->rect().y();
-
-        glDrawFilledRectange(x+1, y+1, x+_i->rect().w()-1, y+_i->rect().h()-1);
-
-        glSetPen(0xFF001800);
-        glDrawRectange(x, y, x+_i->rect().w(), y+_i->rect().h());
-
-        if(_i->isTouched())
-            glSetPen(0xFF000000);
-        else
-            glSetPen(0xFFFFFFFF);
-
-        glDrawString("Да", x, y, x+_i->rect().w(), y+_i->rect().h(), 14, FT_TEXT_H_CENTER | FT_TEXT_W_CENTER, 0, 128);
-
-    } );
-
-
-    m_buttons[1]->paintSignal().connect( [this](UActiveAreaItem<ActiveAreaItem> *_i) {
-
-        if(_i->isTouched())
-            glSetPen(0xF0FFFFFF);
-        else
-            glSetPen(0xF0370700);
-
-        int x = _i->rect().x();
-        int y = rect().y()+_i->rect().y();
-
-        glDrawFilledRectange(x+1, y+1, x+_i->rect().w()-1, y+_i->rect().h()-1);
-
-        glSetPen(0xFF001800);
-        glDrawRectange(x, y, x+_i->rect().w(), y+_i->rect().h());
-
-        if(_i->isTouched())
-            glSetPen(0xFF000000);
-        else
-            glSetPen(0xFFFFFFFF);
-
-        glDrawString("Нет", x, y, x+_i->rect().w(), y+_i->rect().h(), 14, FT_TEXT_H_CENTER | FT_TEXT_W_CENTER, 0, 128);
-    } );
-
-
-    m_buttons[0]->touchSignal().connect ( [this](UActiveAreaItem<ActiveAreaItem> *self, int action, int /*x*/, int /*y*/) {
-
-
-        if(action == TOUCH_ACTION_RELEASE && self->isTouched() && !self->isMoved()) {
+        if(self->isTouched() && !self->isMoved()) {
             m_buttonPressed.trigger(this, 1);
             return;
         }
-        eventManager()->updateAfterEvent();
     } );
 
-    m_buttons[1]->touchSignal().connect ( [this](UActiveAreaItem<ActiveAreaItem> *self, int action, int /*x*/, int /*y*/) {
+    m_buttons[1]->releasedSignal().connect ( [this](UButton *self) {
 
-        if(action == TOUCH_ACTION_RELEASE && self->isTouched() && !self->isMoved()) {
-            printf("No pressed O_O\n");
+        if(self->isTouched() && !self->isMoved()) {
             m_buttonPressed.trigger(this, 0);
             return;
         }
-        eventManager()->updateAfterEvent();
     } );
+
 
     m_buttonsArea.push(m_buttons[0]);
     m_buttonsArea.push(m_buttons[1]);
@@ -118,6 +67,8 @@ void QuestionDialog::touchEvent(int action, int x, int y)
         return;
     }
 
+
+    m_buttonsArea.move(rect().x(), rect().y());
     m_buttonsArea.touchEvent(action, x, y);
 }
 
@@ -134,6 +85,8 @@ void QuestionDialog::paintEvent()
     glDrawString(m_question.c_str(), rect().x()+2, rect().y()+4, rect().x2()-4, rect().y2()-60, 23,
                  FT_TEXT_W_CENTER | FT_TEXT_SENTENCEBREAK | FT_TEXT_H_CENTER, 0, 256);
 
+
+    m_buttonsArea.move(rect().x(), rect().y());
     m_buttonsArea.paintEvent();
 }
 

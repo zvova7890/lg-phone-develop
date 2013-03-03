@@ -61,7 +61,7 @@ int activeAreaPopItem(ActiveArea *field, ActiveAreaItem *_item);
 void activeAreaTouchAction(ActiveArea *field, int action, int x, int y);
 void activeAreaPaintAction(ActiveArea *field);
 
-void activeAreaTouchItem(ActiveAreaItem *item, int action, int x, int y, char invoke);
+void activeAreaTouchItem(ActiveArea *field, ActiveAreaItem *item, int action, int x, int y, char invoke);
 
 #ifdef __cplusplus
 }

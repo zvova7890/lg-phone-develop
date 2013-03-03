@@ -20,7 +20,7 @@ private:
         auto self = (ActiveListItem*)item->user;
 
         /* for setup variables, call but not invoke */
-        activeAreaTouchItem((ActiveAreaItem*)item, action, x, y, 0);
+        activeAreaTouchItem(((UActiveAreaItem<ScrollArea>*)self->parent())->parent()->area(), (ActiveAreaItem*)item, action, x, y, 0);
 
         self->touchEvent(action, x, y);
     }

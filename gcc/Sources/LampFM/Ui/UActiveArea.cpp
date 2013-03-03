@@ -3,30 +3,23 @@
 
 
 UActiveArea::UActiveArea(EventManager *event, const Rect &r, bool long_press_support) :
-    _long_press_enabled(long_press_support),
-    event_mgr(event)
+    m_longPressEnabled(long_press_support),
+    m_eventMgr(event)
 {
-    activeAreaCreate((ActiveArea*)&aarea, r.x(), r.y(), r.w(), r.h());
+    activeAreaCreate((ActiveArea*)&m_aarea, r.x(), r.y(), r.w(), r.h());
 
-    memset(&__long_press, 0, sizeof(__long_press));
+    memset(&m_longPress, 0, sizeof(m_longPress));
 
     if(long_press_support)
-        timedTrackCreate(&__long_press, 0, 1, this);
+        timedTrackCreate(&m_longPress, 0, 1, this);
 }
 
 
 
 UActiveArea::~UActiveArea()
 {
-    /*for(GLQueueListItem *i = (GLQueueListItem *)aarea.item_list.first; i; i = (GLQueueListItem *)i->next)
-    {
-        ActiveAreaItem *ai = *glQueueListItemBody(i, ActiveAreaItem **);
-        auto uaa = (UActiveAreaItem<ActiveAreaItem> *)ai->user;
-        uaa->parentHasDied();
-    }*/
-
-    timedTrackDestroy(&__long_press);
-    activeAreaDestroy((ActiveArea*)&aarea);
+    timedTrackDestroy(&m_longPress);
+    activeAreaDestroy((ActiveArea*)&m_aarea);
 }
 
 
@@ -39,27 +32,27 @@ void UActiveArea::touchEvent(int action, int x, int y)
             __last_x = x;
             __last_y = y;
 
-            if(_long_press_enabled) {
-                timedTrackSetActionOnBiggerThan(&__long_press, [](TimedTrack *tt){
+            if(m_longPressEnabled) {
+                timedTrackSetActionOnBiggerThan(&m_longPress, [](TimedTrack *tt){
                     auto self = (UActiveArea*)tt->user;
-                    timedTrackStopCount(&self->__long_press);
-                    activeAreaTouchAction((ActiveArea*)&self->aarea, TOUCH_ACTION_LONG_PRESS, self->__last_x, self->__last_y);
+                    timedTrackStopCount(&self->m_longPress);
+                    activeAreaTouchAction((ActiveArea*)&self->m_aarea, TOUCH_ACTION_LONG_PRESS, self->__last_x, self->__last_y);
 
                 }, 5, 1);
 
-                timedTrackStopCount(&__long_press);
-                timedTrackReset(&__long_press, 0);
-                timedTrackStartCount(&__long_press, 5);
+                timedTrackStopCount(&m_longPress);
+                timedTrackReset(&m_longPress, 0);
+                timedTrackStartCount(&m_longPress, 5);
             }
             break;
 
         case TOUCH_ACTION_MOVE:
         case TOUCH_ACTION_RELEASE:
-            if(_long_press_enabled)
-                timedTrackStopCount(&__long_press);
+            if(m_longPressEnabled)
+                timedTrackStopCount(&m_longPress);
             break;
     }
 
-    activeAreaTouchAction((ActiveArea*)&aarea, action, x, y);
+    activeAreaTouchAction((ActiveArea*)&m_aarea, action, x, y);
 }
 

@@ -372,10 +372,11 @@ void FileViewWidget::paintEvent()
     glSaveClipRegion();
     glSetClipRegion(0, 30, rect().w(), rect().y2());
 
-    moveY( border_img.height() );
-    setHeight( m_firstHeight - border_img.height() );
 
+    moveY( global_menu_button.rect().h() );
+    setHeight( m_firstHeight - global_menu_button.rect().h() );
     ActiveList::paintEvent();
+
     glRestoreClipRegion();
 
     int cline = lineItem()+1;
@@ -725,6 +726,7 @@ bool FileViewWidget::switchWorkSpace(unsigned int id)
 
     /* restore scroll state */
     setScrollState( workspace().scrollState );
+    fixScrollPosition();
 
     if(bigger) {
         cdEffectStart(EFFECT_LEFT_MOVE);

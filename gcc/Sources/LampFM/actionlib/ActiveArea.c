@@ -39,14 +39,14 @@ void activeAreaActionHandler(ActiveArea *field, int action, int x, int y)
         }
 
         if(action == TOUCH_ACTION_RELEASE) {
-            activeAreaTouchItem(field->touched_item, action, x, y, 1);
+            activeAreaTouchItem(field, field->touched_item, action, x, y, 1);
             field->touched_item = 0;
             return;
         }
 
         field->touched_item->is_moving = 1;
 
-        activeAreaTouchItem(field->touched_item, action, x, y, 1);
+        activeAreaTouchItem(field, field->touched_item, action, x, y, 1);
         return;
     }
 
@@ -73,12 +73,12 @@ void activeAreaActionHandler(ActiveArea *field, int action, int x, int y)
 
                 field->touched_item = titem;
                 field->touched_item->is_offscreen_touch = 0;
-                activeAreaTouchItem(titem, action, x, y, 1);
+                activeAreaTouchItem(field, titem, action, x, y, 1);
 
             } else {
                 field->touched_item = titem;
                 field->touched_item->is_offscreen_touch = 1;
-                activeAreaTouchItem(titem, action, x, y, 1);
+                activeAreaTouchItem(field, titem, action, x, y, 1);
             }
 
             // полноэкранная блокировка
@@ -96,7 +96,7 @@ void activeAreaActionHandler(ActiveArea *field, int action, int x, int y)
 
                 field->touched_item = titem;
                 field->touched_item->is_offscreen_touch = 0;
-                activeAreaTouchItem(titem, action, x, y, 1);
+                activeAreaTouchItem(field, titem, action, x, y, 1);
 
                 if(titem->is_blockable)
                     break;
@@ -244,8 +244,20 @@ void activeAreaPaintAction(ActiveArea *field)
     for(GLQueueListItem *item = _fitem(&field->item_list); item; item = _nitem(item))
     {
         ActiveAreaItem *titem = *glQueueListItemBody(item, ActiveAreaItem **);
+
+        int x = titem->x;
+        int y = titem->y;
+
+        titem->x += field->x;
+        titem->y += field->y;
         if(titem->paintEvent)
             titem->paintEvent(titem);
+
+        if(titem->x-field->x == x)
+            titem->x = x;
+
+        if(titem->y-field->y == y)
+            titem->y = y;
 
         if(titem->is_fullscreen_paint_blocked)
             break;
@@ -253,7 +265,7 @@ void activeAreaPaintAction(ActiveArea *field)
 }
 
 
-void activeAreaTouchItem(ActiveAreaItem *item, int action, int x, int y, char invoke)
+void activeAreaTouchItem(ActiveArea *field, ActiveAreaItem *item, int action, int x, int y, char invoke)
 {
     switch(action)
     {
@@ -277,8 +289,19 @@ void activeAreaTouchItem(ActiveAreaItem *item, int action, int x, int y, char in
             break;
     }
 
+    int _x = item->x;
+    int _y = item->y;
+    item->x += field->x;
+    item->y += field->y;
+
     if(invoke && item->touchEvent)
         item->touchEvent(item, action, x, y);
+
+    if(item->x-field->x == _x)
+        item->x = _x;
+
+    if(item->y-field->y == _y)
+        item->y = _y;
 
     if(action == TOUCH_ACTION_RELEASE) {
         item->is_moving = 0;

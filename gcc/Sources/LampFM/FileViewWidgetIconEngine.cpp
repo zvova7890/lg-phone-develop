@@ -95,8 +95,8 @@ void FileViewWidgetIconItem::itemTouched(FSEntryInfo *fs_entry)
 void FileViewWidgetIconItem::FsEntryItem::paintEvent()
 {
     if(m_fsEntryInfo) {
-        int x = m_itemParent->rect().x() + rect().x();
-        int y = m_itemParent->rect().y() + rect().y();
+        int x = rect().x();
+        int y = rect().y();
 
         int w = rect().w();
         int h = rect().h();

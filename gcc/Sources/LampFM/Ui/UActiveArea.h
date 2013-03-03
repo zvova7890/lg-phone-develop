@@ -220,62 +220,62 @@ public:
     ~UActiveArea();
 
     inline virtual void paintEvent() {
-        activeAreaPaintAction((ActiveArea*)&aarea);
+        activeAreaPaintAction((ActiveArea*)&m_aarea);
     }
 
     virtual void touchEvent(int action, int x, int y);
 
     template <class Tm>
     inline void push(Tm *item) {
-        activeAreaPushItem((ActiveArea*)&aarea, item->activeAreaItem());
+        activeAreaPushItem((ActiveArea*)&m_aarea, item->activeAreaItem());
     }
 
     template <class Tm>
     inline void pushFront(Tm *item) {
-        activeAreaPushFrontItem((ActiveArea*)&aarea, item->activeAreaItem());
+        activeAreaPushFrontItem((ActiveArea*)&m_aarea, item->activeAreaItem());
     }
 
     template <class Tm>
     inline void pop(Tm *item) {
-        activeAreaPopItem((ActiveArea*)&aarea, item->activeAreaItem());
+        activeAreaPopItem((ActiveArea*)&m_aarea, item->activeAreaItem());
     }
 
     template <class Tm>
     inline void insert(Tm *item, int at) {
-        activeAreaInsertItem((ActiveArea*)&aarea, item->activeAreaItem(), at);
+        activeAreaInsertItem((ActiveArea*)&m_aarea, item->activeAreaItem(), at);
     }
 
     inline GLQueueList *itemsQueue() {
-        return activeAreaItemsQueue((ActiveArea*)&aarea);
+        return activeAreaItemsQueue((ActiveArea*)&m_aarea);
     }
 
     inline ActiveAreaItem *queueItem(int at) {
-        return activeAreaQueueItem((ActiveArea*)&aarea, at);
+        return activeAreaQueueItem((ActiveArea*)&m_aarea, at);
     }
 
     inline ActiveArea* area() {
-        return (ActiveArea *)&aarea;
+        return (ActiveArea *)&m_aarea;
     }
 
     inline void move(int x, int y) {
-        aarea.x = x;
-        aarea.y = y;
+        m_aarea.x = x;
+        m_aarea.y = y;
     }
 
     inline Rect rect() {
-        return Rect(aarea.x, aarea.y, aarea.w, aarea.h);
+        return Rect(m_aarea.x, m_aarea.y, m_aarea.w, m_aarea.h);
     }
 
     inline void setProntPaint(bool front) {
-        aarea.is_front_paint = front;
+        m_aarea.is_front_paint = front;
     }
 
     inline void setProntTouch(bool front) {
-        aarea.is_front_touch = front;
+        m_aarea.is_front_touch = front;
     }
 
     inline EventManager *eventManager() {
-        return event_mgr;
+        return m_eventMgr;
     }
 
 
@@ -379,10 +379,10 @@ public:
 
 protected:
     int __last_x,__last_y;
-    TimedTrack __long_press;
-    ActiveArea aarea;
-    bool _long_press_enabled;
-    EventManager *event_mgr;
+    TimedTrack m_longPress;
+    ActiveArea m_aarea;
+    bool m_longPressEnabled;
+    EventManager *m_eventMgr;
 };
 
 
