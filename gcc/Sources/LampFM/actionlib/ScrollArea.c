@@ -124,7 +124,7 @@ int scrollAreaMove(ScrollArea *area, int x, int y)
 
 void scrollAreaStopAutoScroll(ScrollArea *area)
 {
-    if(area->speed_meter.is_active) {
+    if(area->speed_meter.m_isActive) {
         timedTrackStopCount(&area->speed_meter);
         TimerStop(&area->auto_scroll.timer);
     }
@@ -296,7 +296,7 @@ void scrollAreaTouchActionHandler(ScrollArea *area, int action, int x, int y)
     {
         case TOUCH_ACTION_PRESS:
 
-            if(area->speed_meter.is_active) {
+            if(area->speed_meter.m_isActive) {
                 timedTrackStopCount(&area->speed_meter);
                 TimerStop(&area->auto_scroll.timer);
             }

@@ -1,9 +1,10 @@
 #ifndef FILEVIEWWIDGETICONENGINE_H
 #define FILEVIEWWIDGETICONENGINE_H
 
+
+#include <Ui/ActiveList.h>
 #include "FileViewWidgetEngine.h"
 #include "FileViewWidgetAbstractItem.h"
-#include "ActiveList.h"
 #include "FSEntryInfo.h"
 
 
@@ -17,9 +18,9 @@ public:
         FsEntryItem(FileViewWidgetIconItem *parent, FSEntryInfo *fentry, const Rect &r) :
             UActiveAreaItem<ActiveAreaItem>(parent->parent()->parent(), r, false),
             FileViewWidgetAbstractItem((FileViewWidget*)parent->parent()),
-            _is_longpress(false),
-            _fs_entry_info(fentry),
-            _item_parent(parent)
+            m_isLongPress(false),
+            m_fsEntryInfo(fentry),
+            m_itemParent(parent)
         {
         }
 
@@ -28,20 +29,20 @@ public:
         }
 
         const FSEntryInfo & getSelectedEntry() {
-            return *_fs_entry_info;
+            return *m_fsEntryInfo;
         }
 
         void paintEvent();
         void touchEvent(int action, int x, int y);
 
         inline void setFSEntryItem(FSEntryInfo *fs_entry) {
-            _fs_entry_info = fs_entry;
+            m_fsEntryInfo = fs_entry;
         }
 
     protected:
-        bool _is_longpress;
-        FSEntryInfo *_fs_entry_info;
-        FileViewWidgetIconItem *_item_parent;
+        bool m_isLongPress;
+        FSEntryInfo *m_fsEntryInfo;
+        FileViewWidgetIconItem *m_itemParent;
     };
 
 
@@ -53,20 +54,20 @@ public:
     void touchEvent(int action, int x, int y);
 
     UActiveArea *itemsUActiveArea() {
-        return &_touch_area;
+        return &m_touchArea;
     }
 
 protected:
     void itemTouched(FSEntryInfo *);
     FsEntryItem *entryItem(int at) {
-        return (FsEntryItem*)_touch_area.queueItem(at)->user;
+        return (FsEntryItem*)m_touchArea.queueItem(at)->user;
     }
 
 protected:
-    std::vector<FSEntryInfo> _fsinfo;
-    int max_view;
-    FileViewWidget *_fvparent;
-    UActiveArea _touch_area;
+    std::vector<FSEntryInfo> m_fsInfo;
+    int m_maxView;
+    FileViewWidget *m_widgetParent;
+    UActiveArea m_touchArea;
 };
 
 
@@ -93,8 +94,8 @@ public:
     void unblock();
 
 protected:
-    std::vector <FileViewWidgetIconItem*> _items;
-    bool _is_blocked;
+    std::vector <FileViewWidgetIconItem*> m_items;
+    bool m_isBlocked;
 };
 
 #endif // FILEVIEWWIDGETICONENGINE_H

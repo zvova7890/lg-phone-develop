@@ -1,7 +1,7 @@
 #ifndef RESOURCEMANAGER_H
 #define RESOURCEMANAGER_H
 
-#include "png_ops.h"
+#include <Graph/Image.h>
 #include <string>
 #include <map>
 
@@ -12,15 +12,14 @@ public:
     ResourceManager(const std::string & my_dir);
     ~ResourceManager();
 
-    image_t & image(const std::string & name);
+    Image & image(const std::string & name);
 
 
 
 private:
 
-    image_t _null_image_resource;
-    std::map<std::string, image_t *> _images;
-    const std::string & _my_dir;
+    std::map<std::string, Image *> m_images;
+    const std::string & m_myDir;
 };
 
 #endif // RESOURCEMANAGER_H

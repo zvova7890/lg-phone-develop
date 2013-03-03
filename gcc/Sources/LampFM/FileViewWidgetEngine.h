@@ -2,9 +2,10 @@
 #define FILEVIEWWIDGETENGINE_H
 
 
-#include "EventManager.h"
-#include "ActiveList.h"
+#include <Ui/EventManager.h>
+#include <Ui/ActiveList.h>
 #include "FSEntryInfo.h"
+
 
 class FileViewWidget;
 
@@ -76,7 +77,7 @@ public:
 
     /* parent widget */
     inline FileViewWidget *fileViewParent() {
-        return _fparent;
+        return m_widgetParent;
     }
 
 
@@ -84,7 +85,7 @@ protected:
 
 
 protected:
-    FileViewWidget *_fparent;
+    FileViewWidget *m_widgetParent;
 };
 
 

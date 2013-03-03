@@ -18,75 +18,77 @@ QMAKE_LFLAGS += -Wl,-allow-multiple-definition
 LIBS   += -lscrt -lgcc -lc -lpng -lz -lm -lgl -lft -lc++ -lsupc++
 
 HEADERS += \
-    Rect.h \
-    png_ops.h \
+    signals/signal.h \
     actionlib/TimerWrap.h \
     actionlib/TimedTrack.h \
     actionlib/ScrollArea.h \
+    actionlib/ActiveArea.h \
+    Ui/UActiveArea.h \
+    Ui/ActiveList.h \
+    Ui/UButton.h \
+    Ui/ListMenu.h \
+    Ui/EventManager.h \
+    Ui/ListMenuStyle.h \
+    Sys/Timer.h \
+    Sys/Thread.h \
+    Graph/Brush.h \
+    Rect.h \
+    png_ops.h \
     XTouchFiled.h \
     ExtManager.h \
     TouchListViewWidget.h \
     EffectManager.h \
     ViewControl.h \
-    actionlib/ActiveArea.h \
-    UActiveArea.h \
     ViewEngine.h \
-    ActiveList.h \
-    UButton.h \
     FileViewWidget.h \
     GlobalMenuButton.h \
     ResourceManager.h \
     main.h \
-    ListMenu.h \
-    EventManager.h \
     FSEntryInfo.h \
     FileViewWidgetEngine.h \
     FileViewWidgetListEngine.h \
     FileViewWidgetAbstractItem.h \
     FileViewWidgetIconEngine.h \
     QuestionDialog.h \
-    signals/signal.h \
     Notify.h \
-    Timer.h \
-    Brush.h \
-    ListMenuStyle.h \
     FSProtocol.h \
     LocalFSProtocol.h \
     ClipBoard.h \
     ProgressDialog.h \
-    Thread.h \
-    ThreadWorker.h
+    ThreadWorker.h \
+    Graph/Image.h
 
 SOURCES += \
     main.cpp \
     actionlib/TimerWrap.c \
     actionlib/TimedTrack.c \
     actionlib/ScrollArea.c \
+    actionlib/ActiveArea.c \
+    Ui/UActiveArea.cpp \
+    Ui/ActiveList.cpp \
+    Ui/UButton.cpp \
+    Ui/ListMenu.cpp \
+    Ui/EventManager.cpp \
+    Ui/ListMenuStyle.cpp \
+    Sys/Timer.cpp \
+    Sys/Thread.cpp \
+    Graph/Brush.cpp \
     ExtManager.cpp \
     png.c \
-    actionlib/ActiveArea.c \
-    UActiveArea.cpp \
-    ActiveList.cpp \
-    UButton.cpp \
     FileViewWidget.cpp \
     EffectManager.cpp \
     GlobalMenuButton.cpp \
     ResourceManager.cpp \
-    ListMenu.cpp \
-    EventManager.cpp \
     FileViewWidgetListEngine.cpp \
     FileViewWidgetEngine.cpp \
     FileViewWidgetIconEngine.cpp \
     QuestionDialog.cpp \
     Notify.cpp \
-    Timer.cpp \
-    Brush.cpp \
-    ListMenuStyle.cpp \
     FSProtocol.cpp \
     LocalFSProtocol.cpp \
     ClipBoard.cpp \
     ProgressDialog.cpp \
-    Thread.cpp \
     ThreadWorker.cpp \
     FileViewWidget_fs.cpp \
-    FileViewWidget_filecontext.cpp
+    FileViewWidget_filecontext.cpp \
+    Graph/Image.cpp

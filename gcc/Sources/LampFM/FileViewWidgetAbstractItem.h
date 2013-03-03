@@ -2,7 +2,7 @@
 #define FILEVIEWWIDGETABSTRACTITEM_H
 
 
-#include "ActiveList.h"
+#include <Ui/ActiveList.h>
 #include "FSEntryInfo.h"
 #include "FileViewWidget.h"
 
@@ -13,9 +13,9 @@ class FileViewWidgetAbstractItem
 public:
 
     FileViewWidgetAbstractItem(FileViewWidget *parent) :
-        _fvparent(parent),
-        _is_marked(false),
-        _not_file(false)
+        m_widgetParent(parent),
+        m_isMarked(false),
+        m_notFile(false)
     {
     }
 
@@ -24,36 +24,35 @@ public:
     }
 
     virtual const FSEntryInfo & getSelectedEntry() {
-        extern FSEntryInfo __fs_entryinfo_null_entry;
-        return __fs_entryinfo_null_entry;
+        return FSEntryInfo::null;
     }
 
 
     bool isMarked() const {
-        return _is_marked;
+        return m_isMarked;
     }
 
     void setMarked(bool is = true) {
 
-        if(_is_marked != is) {
-            if(!_not_file) {
+        if(m_isMarked != is) {
+            if(!m_notFile) {
                 /*if(is)
                     _fvparent->marked_files++;
                 else
                     _fvparent->marked_files--;*/
             }
-            _is_marked = is;
+            m_isMarked = is;
         }
     }
 
     FileViewWidget *parentWidget() {
-        return _fvparent;
+        return m_widgetParent;
     }
 
 protected:
-    FileViewWidget *_fvparent;
-    bool _is_marked;
-    bool _not_file;
+    FileViewWidget *m_widgetParent;
+    bool m_isMarked;
+    bool m_notFile;
 
 };
 

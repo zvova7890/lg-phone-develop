@@ -1,7 +1,8 @@
 #ifndef GLOBALMENUBUTTON_H
 #define GLOBALMENUBUTTON_H
 
-#include "UButton.h"
+#include <Ui/UButton.h>
+#include <Graph/Image.h>
 #include "png_ops.h"
 #include <TimerWrap.h>
 #include <signals/signal.h>
@@ -18,31 +19,31 @@ public:
     void touchEvent(int action, int x, int y);
 
     inline MoveSignal & touchActionSignal() {
-        return _move;
+        return m_move;
     }
 
     inline void setFilesCount(int c) {
-        _files_cnt = c;
+        m_filesCount = c;
     }
 
     inline void setDirectoriesCount(int c) {
-        _dirs_cnt = c;
+        m_dirsCount = c;
     }
 
     inline void setCurrentLine(int c) {
-        _line = c;
+        m_line = c;
     }
 
     inline void setViewLines(int c) {
-        _entries = c;
+        m_entries = c;
     }
 
     inline void setDirecory(const std::string & d) {
-        _directory = d;
+        m_directory = d;
     }
 
-    inline void setBackround(const image_t *img) {
-        _border_img = img;
+    inline void setBackround(const Image *img) {
+        m_borderImg = img;
     }
 
     inline void setWorkspace(int id) {
@@ -50,10 +51,10 @@ public:
     }
 
 private:
-    MoveSignal _move;
-    const image_t *_border_img;
-    int _files_cnt, _dirs_cnt, _line, _entries, m_workpace;
-    std::string _directory;
+    MoveSignal m_move;
+    const Image *m_borderImg;
+    int m_filesCount, m_dirsCount, m_line, m_entries, m_workpace;
+    std::string m_directory;
 
 
 };

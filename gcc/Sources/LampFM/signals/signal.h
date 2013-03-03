@@ -16,12 +16,6 @@ class simple_object
 
 
 
-
-template <typename Proto>
-static inline void *lambda_expr( Proto p ) {
-    return (void*)(Proto)p;
-}
-
 template <class Object, typename FuncDecl>
 class signal_container
 {
@@ -189,8 +183,7 @@ public:
 };
 
 
+} // signal_slot
 
-
-}
 
 #endif // SIGNAL_H

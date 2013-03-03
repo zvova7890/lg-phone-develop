@@ -7,8 +7,8 @@
 
 QuestionDialog::QuestionDialog(UActiveArea *parent, const Rect &r, const std::string &question) :
     UActiveAreaItem<ActiveAreaItem>(parent, r),
-    _question(question),
-    buttons_area(parent->eventManager(), r)
+    m_question(question),
+    m_buttonsArea(parent->eventManager(), r)
 {
     setFullScreenBlock(true);
 
@@ -16,11 +16,11 @@ QuestionDialog::QuestionDialog(UActiveArea *parent, const Rect &r, const std::st
     int button_w = rect().w()/2-10;
     int button_h = button_w/2-10;
 
-    buttons.push_back( new UActiveAreaItem<ActiveAreaItem>(parent, Rect(rect().x()+5, rect().h()-button_h-5, button_w, button_h)) );
-    buttons.push_back( new UActiveAreaItem<ActiveAreaItem>(parent, Rect(rect().x2()-button_w-5, rect().h()-button_h-5, button_w, button_h)) );
+    m_buttons.push_back( new UActiveAreaItem<ActiveAreaItem>(parent, Rect(rect().x()+5, rect().h()-button_h-5, button_w, button_h)) );
+    m_buttons.push_back( new UActiveAreaItem<ActiveAreaItem>(parent, Rect(rect().x2()-button_w-5, rect().h()-button_h-5, button_w, button_h)) );
 
 
-    buttons[0]->paintSignal().connect ( [this](UActiveAreaItem<ActiveAreaItem> *_i) {
+    m_buttons[0]->paintSignal().connect ( [this](UActiveAreaItem<ActiveAreaItem> *_i) {
 
         if(_i->isTouched())
             glSetPen(0xF0FFFFFF);
@@ -45,7 +45,7 @@ QuestionDialog::QuestionDialog(UActiveArea *parent, const Rect &r, const std::st
     } );
 
 
-    buttons[1]->paintSignal().connect( [this](UActiveAreaItem<ActiveAreaItem> *_i) {
+    m_buttons[1]->paintSignal().connect( [this](UActiveAreaItem<ActiveAreaItem> *_i) {
 
         if(_i->isTouched())
             glSetPen(0xF0FFFFFF);
@@ -69,38 +69,38 @@ QuestionDialog::QuestionDialog(UActiveArea *parent, const Rect &r, const std::st
     } );
 
 
-    buttons[0]->touchSignal().connect ( [this](UActiveAreaItem<ActiveAreaItem> *self, int action, int /*x*/, int /*y*/) {
+    m_buttons[0]->touchSignal().connect ( [this](UActiveAreaItem<ActiveAreaItem> *self, int action, int /*x*/, int /*y*/) {
 
 
         if(action == TOUCH_ACTION_RELEASE && self->isTouched() && !self->isMoved()) {
-            __button_pressed.trigger(this, 1);
+            m_buttonPressed.trigger(this, 1);
             return;
         }
         eventManager()->updateAfterEvent();
     } );
 
-    buttons[1]->touchSignal().connect ( [this](UActiveAreaItem<ActiveAreaItem> *self, int action, int /*x*/, int /*y*/) {
+    m_buttons[1]->touchSignal().connect ( [this](UActiveAreaItem<ActiveAreaItem> *self, int action, int /*x*/, int /*y*/) {
 
         if(action == TOUCH_ACTION_RELEASE && self->isTouched() && !self->isMoved()) {
             printf("No pressed O_O\n");
-            __button_pressed.trigger(this, 0);
+            m_buttonPressed.trigger(this, 0);
             return;
         }
         eventManager()->updateAfterEvent();
     } );
 
-    buttons_area.push(buttons[0]);
-    buttons_area.push(buttons[1]);
+    m_buttonsArea.push(m_buttons[0]);
+    m_buttonsArea.push(m_buttons[1]);
 }
 
 
 
 QuestionDialog::~QuestionDialog()
 {
-    for(UActiveAreaItem<ActiveAreaItem> *i: buttons)
+    for(UActiveAreaItem<ActiveAreaItem> *i: m_buttons)
         delete i;
 
-    buttons.clear();
+    m_buttons.clear();
 }
 
 
@@ -114,11 +114,11 @@ void QuestionDialog::touchEvent(int action, int x, int y)
 {
     if(action == TOUCH_ACTION_RELEASE && isOffRectTouch() && !isMoved()) {
         hide();
-        __button_pressed.trigger(this, 0);
+        m_buttonPressed.trigger(this, 0);
         return;
     }
 
-    buttons_area.touchEvent(action, x, y);
+    m_buttonsArea.touchEvent(action, x, y);
 }
 
 
@@ -131,10 +131,10 @@ void QuestionDialog::paintEvent()
     glDrawRectange(rect().x(), rect().y(), rect().x2(), rect().y2());
 
     glSetPen(0xFFFFFFFF);
-    glDrawString(_question.c_str(), rect().x()+2, rect().y()+4, rect().x2()-4, rect().y2()-60, 23,
+    glDrawString(m_question.c_str(), rect().x()+2, rect().y()+4, rect().x2()-4, rect().y2()-60, 23,
                  FT_TEXT_W_CENTER | FT_TEXT_SENTENCEBREAK | FT_TEXT_H_CENTER, 0, 256);
 
-    buttons_area.paintEvent();
+    m_buttonsArea.paintEvent();
 }
 
 

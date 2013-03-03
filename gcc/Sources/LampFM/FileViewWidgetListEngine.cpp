@@ -17,7 +17,7 @@ FileViewWidgetListItem::FileViewWidgetListItem(FileViewWidget *parent, int w, in
     _is_longpress(false),
     _fsinfo(entry)
 {
-    _not_file = _fsinfo.action;
+    m_notFile = _fsinfo.action;
 }
 
 
@@ -35,7 +35,7 @@ const FSEntryInfo &FileViewWidgetListItem::getSelectedEntry()
 
 void FileViewWidgetListItem::paintEvent()
 {
-    if(!_fvparent->isSelectionMode())
+    if(!m_widgetParent->isSelectionMode())
         setMarked(false);
 
     int x = rect().x();
@@ -53,7 +53,7 @@ void FileViewWidgetListItem::paintEvent()
     glSetPen(0xFF332828);
     glDrawHLine(x, x+rect().w(), y);
 
-    if(currentLineDisplayID() == (int)_fvparent->viewItemsCount()-1)
+    if(currentLineDisplayID() == (int)m_widgetParent->viewItemsCount()-1)
         glDrawHLine(x, x+rect().w(), y + x+rect().h());
 
 
@@ -63,18 +63,18 @@ void FileViewWidgetListItem::paintEvent()
 
         if(_fsinfo.attr & FSProtocol::FSEntryFlags::Dir) {
 
-            image_t *img = &_fvparent->folder_icon;
+            Image *img = &m_widgetParent->folder_icon;
 
-            if(img->bitmap) {
+            if(!img->isEmpty()) {
                 drawImage(x+1, y+2, img);
-                x_offset += img->w;
+                x_offset += img->width();
             }
         } else {
-            image_t *img = &_fvparent->file_icon;
+            Image *img = &m_widgetParent->file_icon;
 
-            if(img->bitmap) {
+            if(!img->isEmpty()) {
                 drawImage(x+1, y+2, img);
-                x_offset += img->w;
+                x_offset += img->width();
             }
         }
     } else {
@@ -87,19 +87,19 @@ void FileViewWidgetListItem::paintEvent()
     }
 
 
-    if(_fvparent->isSelectionMode() && !_fsinfo.action && _fsinfo.name != "..") {
-        if( !isMarked() && _fvparent->checkbox_icon.bitmap)
+    if(m_widgetParent->isSelectionMode() && !_fsinfo.action && _fsinfo.name != "..") {
+        if( !isMarked() && !m_widgetParent->checkbox_icon.isEmpty())
         {
-            drawImage(x+1, rect().y2()-_fvparent->checkbox_icon.h, &_fvparent->checkbox_icon);
-            if(x_offset < _fvparent->checkbox_icon.w)
-                x_offset = _fvparent->checkbox_icon.w+2;
+            drawImage(x+1, rect().y2()-m_widgetParent->checkbox_icon.height(), &m_widgetParent->checkbox_icon);
+            if(x_offset < m_widgetParent->checkbox_icon.width())
+                x_offset = m_widgetParent->checkbox_icon.width()+2;
         }
 
-        if( isMarked() && _fvparent->checkedbox_icon.bitmap )
+        if( isMarked() && !m_widgetParent->checkedbox_icon.isEmpty() )
         {
-            drawImage(x+1, rect().y2()-_fvparent->checkedbox_icon.h, &_fvparent->checkedbox_icon);
-            if(x_offset < _fvparent->checkedbox_icon.w)
-                x_offset = _fvparent->checkedbox_icon.w+2;
+            drawImage(x+1, rect().y2()-m_widgetParent->checkedbox_icon.height(), &m_widgetParent->checkedbox_icon);
+            if(x_offset < m_widgetParent->checkedbox_icon.width())
+                x_offset = m_widgetParent->checkedbox_icon.width()+2;
         }
 
     }
@@ -130,7 +130,7 @@ void FileViewWidgetListItem::paintEvent()
             }
 
         } else {
-            sprintf(ext, "%s, 0", _fvparent->sizeToString(_fsinfo.size).c_str());
+            sprintf(ext, "%s, 0", m_widgetParent->sizeToString(_fsinfo.size).c_str());
         }
 
         glDrawString(ext, x_offset+x+2, y, x_offset+x+rect().w(), y+rect().h()-2, 14, FT_TEXT_H_DOWN, 0, 56);
@@ -157,14 +157,14 @@ void FileViewWidgetListItem::touchEvent(int action, int x, int y)
 
             if(!_fsinfo.action && _fsinfo.name != "..") {
 
-                if(_fvparent->isSelectionMode() && !_is_longpress) {
+                if(m_widgetParent->isSelectionMode() && !_is_longpress) {
                     setMarked(!isMarked());
 
-                    _fvparent->eventManager()->updateAfterEvent();
+                    m_widgetParent->eventManager()->updateAfterEvent();
                     return;
 
                 } else if(_is_longpress) {
-                    _fvparent->onItemMenu(_fsinfo, this);
+                    m_widgetParent->onItemMenu(_fsinfo, this);
                     _is_longpress = false;
                     return;
                 }
@@ -174,9 +174,9 @@ void FileViewWidgetListItem::touchEvent(int action, int x, int y)
             if(_fsinfo.attr & FSProtocol::FSEntryFlags::Dir) {
 
                 if(_fsinfo.name == ".." && _fsinfo.action) {
-                    _fvparent->cdUpAfterAction(std::string());
+                    m_widgetParent->cdUpAfterAction(std::string());
                 } else {
-                    _fvparent->cdUpAfterAction(_fsinfo.name);
+                    m_widgetParent->cdUpAfterAction(_fsinfo.name);
                 }
             } else {
                 extensionManager().run(parentWidget()->directory() + _fsinfo.name);
@@ -187,7 +187,7 @@ void FileViewWidgetListItem::touchEvent(int action, int x, int y)
 
         case TOUCH_ACTION_LONG_PRESS:
             _is_longpress = true;
-            _fvparent->eventManager()->updateAfterEvent();
+            m_widgetParent->eventManager()->updateAfterEvent();
             break;
     }
 }
@@ -204,7 +204,7 @@ void FileViewWidgetListItem::touchEvent(int action, int x, int y)
 
 FileViewWidgetListEngine::FileViewWidgetListEngine(FileViewWidget *parent) :
     FileViewWidgetEngine(parent),
-    _is_blocked(false)
+    m_isBlocked(false)
 {
 
 }
@@ -220,7 +220,7 @@ FileViewWidgetListEngine::~FileViewWidgetListEngine()
 
 ScrollAreaItem *FileViewWidgetListEngine::getListItem(int index)
 {
-    if(_is_blocked)
+    if(m_isBlocked)
         return 0;
 
     if(index < 0) {
@@ -234,24 +234,24 @@ ScrollAreaItem *FileViewWidgetListEngine::getListItem(int index)
     }
 
     FileViewWidgetListItem *fi = 0;
-    if((int)_items.size() <= index || !_items[index]) {
-        int old_size = _items.size();
+    if((int)m_items.size() <= index || !m_items[index]) {
+        int old_size = m_items.size();
 
-        if((int)_items.size() <= index)
-            _items.resize(index+1);
+        if((int)m_items.size() <= index)
+            m_items.resize(index+1);
 
-        for(unsigned int i = old_size; i<_items.size(); ++i)
-            _items[i] = 0;
+        for(unsigned int i = old_size; i<m_items.size(); ++i)
+            m_items[i] = 0;
 
 
-        if(!_items[index]) {
-            _items[index] = new FileViewWidgetListItem(fileViewParent(), fileViewParent()->rect().w(), 45, fileViewParent()->getFSEntry(index));
+        if(!m_items[index]) {
+            m_items[index] = new FileViewWidgetListItem(fileViewParent(), fileViewParent()->rect().w(), 45, fileViewParent()->getFSEntry(index));
         }
 
-        fi = (FileViewWidgetListItem*)_items[index];
+        fi = (FileViewWidgetListItem*)m_items[index];
 
     } else
-        fi = (FileViewWidgetListItem*)_items[index];
+        fi = (FileViewWidgetListItem*)m_items[index];
 
 
     return fi->item();
@@ -260,13 +260,13 @@ ScrollAreaItem *FileViewWidgetListEngine::getListItem(int index)
 
 void FileViewWidgetListEngine::clearItems()
 {
-    for(FileViewWidgetListItem * i : _items)
+    for(FileViewWidgetListItem * i : m_items)
     {
         if(i)
             delete i;
     }
 
-    _items.clear();
+    m_items.clear();
 }
 
 
@@ -282,7 +282,7 @@ int  FileViewWidgetListEngine::itemBySystemEntryNumber(int n)
 
 int  FileViewWidgetListEngine::fileSystemEntryByItem(int n)
 {
-    if(n < 0 && n >= (int)_items.size()) {
+    if(n < 0 && n >= (int)m_items.size()) {
         return 0;
     }
 
@@ -304,30 +304,30 @@ int FileViewWidgetListEngine::fsEntriesPerLine()
 
 int FileViewWidgetListEngine::viewItemsCount()
 {
-    return _items.size();
+    return m_items.size();
 }
 
 
 void FileViewWidgetListEngine::setMarkedAll()
 {
-    if(_items.size() < (unsigned int)itemsForViewList())
-        _items.reserve(itemsForViewList());
+    if(m_items.size() < (unsigned int)itemsForViewList())
+        m_items.reserve(itemsForViewList());
 
     for(int i=0; i<itemsForViewList(); ++i)
     {
         FileViewWidgetListItem * item = 0;
 
-        if((unsigned int)i >= _items.size())
+        if((unsigned int)i >= m_items.size())
         {
             getListItem(i);
-            item = _items[i];
+            item = m_items[i];
         }
         else
-            item = _items[i];
+            item = m_items[i];
 
         if(!item) {
             getListItem(i);
-            item = _items[i];
+            item = m_items[i];
         }
 
         if(item)
@@ -338,7 +338,7 @@ void FileViewWidgetListEngine::setMarkedAll()
 
 void FileViewWidgetListEngine::setUnMarkedAll()
 {
-    for(FileViewWidgetListItem * i : _items)
+    for(FileViewWidgetListItem * i : m_items)
     {
         if(i)
             i->setMarked(false);
@@ -350,7 +350,7 @@ std::list<const FSEntryInfo *> FileViewWidgetListEngine::getSelectedEntriesList(
 {
     std::list<const FSEntryInfo *> list;
 
-    for(FileViewWidgetListItem * i : _items)
+    for(FileViewWidgetListItem * i : m_items)
     {
         if(i && i->isMarked() && !i->getSelectedEntry().action) {
             list.push_back(&i->getSelectedEntry());
@@ -363,11 +363,11 @@ std::list<const FSEntryInfo *> FileViewWidgetListEngine::getSelectedEntriesList(
 
 void FileViewWidgetListEngine::block()
 {
-    _is_blocked = true;
+    m_isBlocked = true;
 }
 
 
 void FileViewWidgetListEngine::unblock()
 {
-    _is_blocked = false;
+    m_isBlocked = false;
 }

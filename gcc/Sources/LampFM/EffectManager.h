@@ -1,11 +1,13 @@
 #ifndef EFFECTMANAGER_H
 #define EFFECTMANAGER_H
 
-#include "png_ops.h"
-#include <TimerWrap.h>
-#include "EventManager.h"
-#include "UActiveArea.h"
+
+#include <Ui/EventManager.h>
+#include <Ui/UActiveArea.h>
 #include <signals/signal.h>
+#include <TimerWrap.h>
+#include "png_ops.h"
+
 
 
 enum Effects{
@@ -46,8 +48,8 @@ public:
     static typename signal_slot::multi_signal <void(EffectManager *)> &_sig;
 
 
-    auto effectFinishedSignal() -> decltype(_sig) {
-        return effectFinished;
+    signal & effectFinishedSignal() {
+        return m_effectFinished;
     }
 
 private:
@@ -59,12 +61,12 @@ private:
     void dominoEffect(int t);
 
 private:
-    signal effectFinished;
+    signal m_effectFinished;
     int speed, start_pos, end_pos;
     image_t prev_img, next_img;
     TimerWrap timer;
-    bool is_active;
-    int _effect;
+    bool m_isActive;
+    int m_effect;
 };
 
 #endif // EFFECTMANAGER_H

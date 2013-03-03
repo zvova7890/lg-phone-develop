@@ -90,17 +90,17 @@ public:
     bool actions(const std::string &dir, int *cp, int *mv, int *del);
 
     void setProtocol(FSProtocol *p) {
-        protocol = p;
+        m_protocol = p;
     }
 
 
     std::map<std::string, ClipBoardFilesGroup> & files() {
-        return _files;
+        return m_files;
     }
 
 private:
-    std::map<std::string, ClipBoardFilesGroup> _files;
-    FSProtocol *protocol;
+    std::map<std::string, ClipBoardFilesGroup> m_files;
+    FSProtocol *m_protocol;
 };
 
 
@@ -123,30 +123,31 @@ public:
     void clear();
 
     std::map <std::string, ClipBoardProtocolGroup> &protocols() {
-        return _clip_protocols;
+        return m_clipProtocols;
     }
 
     unsigned int size() {
-        return files_count_for_copy+files_count_for_move+files_count_for_delete;
+        return m_filesCountForCopy+m_filesCountForMove+m_filesCountForDelete;
     }
 
     unsigned int size(int accepted_works);
 
     unsigned int filesForCopy() {
-        return files_count_for_copy;
+        return m_filesCountForCopy;
     }
 
     unsigned int filesForMove() {
-        return files_count_for_move;
+        return m_filesCountForMove;
     }
 
     unsigned int filesForDelete() {
-        return files_count_for_delete;
+        return m_filesCountForDelete;
     }
 
 private:
-    unsigned int files_count_for_copy, files_count_for_move, files_count_for_delete;
-    std::map <std::string, ClipBoardProtocolGroup> _clip_protocols;
+    unsigned int m_filesCountForCopy, m_filesCountForMove, m_filesCountForDelete;
+    std::map <std::string, ClipBoardProtocolGroup> m_clipProtocols;
 };
+
 
 #endif // CLIPBOARD_H

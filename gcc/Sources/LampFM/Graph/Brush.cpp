@@ -85,7 +85,7 @@ Brush::Brush(GLGradient *gradient)
 }
 
 
-Brush::Brush(image_t *image)
+Brush::Brush(Image *image)
 {
     _type = Type::IMAGE;
     alloc_n_set(&_point, image, 0);
@@ -118,7 +118,7 @@ Brush & Brush::operator =(const Brush &b)
             break;
 
         case (char)IMAGE:
-            alloc_n_set(&_point, restore_pointer<image_t*>(&b._point), 0);
+            alloc_n_set(&_point, restore_pointer<Image*>(&b._point), 0);
             break;
 
         case (char)COLOR:
@@ -169,7 +169,7 @@ void Brush::paintEvent(const Rect &r)
 
         case (char)Type::IMAGE:
         {
-            image_t *_image = restore_pointer<image_t*>(&_point);
+            Image *_image = restore_pointer<Image*>(&_point);
             int x = r.x(),
                 y = r.y();
 
@@ -179,13 +179,14 @@ void Brush::paintEvent(const Rect &r)
             int last_x = 0;
             int last_y = 0;
 
-            if(_image->w > r.w())
-                last_x = (_image->w-w)/2;
+            if(_image->width() > r.w())
+                last_x = (_image->width()-w)/2;
 
-            if(_image->h > r.h())
-                last_y = (_image->h-h)/2;
+            if(_image->height() > r.h())
+                last_y = (_image->height()-h)/2;
 
-            glDrawOptionalBitmap(x-last_x, y-last_y, 0, 0, x+w+last_x, y+h+last_y, 0, _image->w, _image->h, _image->bit, _image->bitmap);
+            glDrawOptionalBitmap(x-last_x, y-last_y, 0, 0, x+w+last_x, y+h+last_y, 0,
+                                 _image->width(), _image->height(), _image->depth(), (void*)_image->constBitmap());
             break;
         }
 

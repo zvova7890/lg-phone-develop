@@ -39,6 +39,8 @@ void FileViewWidget::onItemMenu(const FSEntryInfo &f, FileViewWidgetAbstractItem
 
     m_fsEntryMenu.style().setShadow(Brush());
     m_fsEntryMenu.style().setBackground(Brush(&resourceManager().image("fs-menu")));
+    //m_fsEntryMenu.style().setBackground(Brush(0xFF000000));
+
     m_fsEntryMenu.style().setHeaderSize(Rect(0, 0, m_fsEntryMenu.rect().w(), 27));
     m_fsEntryMenu.style().setListSize(Rect(0, 29, m_fsEntryMenu.rect().w(), m_fsEntryMenu.rect().h()-29));
 

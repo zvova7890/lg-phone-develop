@@ -3,14 +3,14 @@
 
 
 ClipBoardProtocolGroup::ClipBoardProtocolGroup() :
-    protocol(0)
+    m_protocol(0)
 {
 }
 
 
 bool ClipBoardProtocolGroup::pushFile(const std::string &dir, const FSListedEntry &info, int action)
 {
-    ClipBoardFilesGroup & f = _files[dir];
+    ClipBoardFilesGroup & f = m_files[dir];
 
     // exist?
     for(const ClipBoardFilesGroup::File & file : f.filesList()) {
@@ -29,9 +29,9 @@ bool ClipBoardProtocolGroup::popFile(const std::string &dir, const FSListedEntry
     if(action)
         *action = 0;
 
-    auto iter = _files.find(dir);
+    auto iter = m_files.find(dir);
 
-    if(iter == _files.end())
+    if(iter == m_files.end())
         return false;
 
     ClipBoardFilesGroup & f = iter->second;
@@ -50,7 +50,7 @@ bool ClipBoardProtocolGroup::popFile(const std::string &dir, const FSListedEntry
     }
 
     if(f.filesList().empty()) {
-        _files.erase(iter);
+        m_files.erase(iter);
     }
 
 
@@ -60,20 +60,20 @@ bool ClipBoardProtocolGroup::popFile(const std::string &dir, const FSListedEntry
 
 int ClipBoardProtocolGroup::popDir(const std::string &dir)
 {
-    auto it = _files.find(dir);
+    auto it = m_files.find(dir);
 
-    if(it == _files.end())
+    if(it == m_files.end())
         return 0;
 
     int r = it->second.filesList().size();
-    _files.erase(it);
+    m_files.erase(it);
     return r;
 }
 
 
 bool ClipBoardProtocolGroup::actions(const std::string &dir, int *cp, int *mv, int *del)
 {
-    ClipBoardFilesGroup & f = _files[dir];
+    ClipBoardFilesGroup & f = m_files[dir];
 
 
     if(cp)
@@ -102,27 +102,27 @@ bool ClipBoardProtocolGroup::actions(const std::string &dir, int *cp, int *mv, i
 
 ClipBoard::ClipBoard()
 {
-    files_count_for_copy = files_count_for_move = files_count_for_delete = 0;
+    m_filesCountForCopy = m_filesCountForMove = m_filesCountForDelete = 0;
 }
 
 
 bool ClipBoard::pushFile(const std::string &protocol, const std::string &dir, const FSListedEntry &info, ClipBoard::Action action)
 {
     FSProtocol &p = protocolsContainer().indexOf(protocol);
-    ClipBoardProtocolGroup &pgroup = _clip_protocols[protocol];
+    ClipBoardProtocolGroup &pgroup = m_clipProtocols[protocol];
 
     pgroup.setProtocol(&p);
     bool r = pgroup.pushFile(dir, info, action);
 
     if(r) {
         if(action & Copy)
-            ++files_count_for_copy;
+            ++m_filesCountForCopy;
 
         if(action & Move)
-            ++files_count_for_move;
+            ++m_filesCountForMove;
 
         if(action & Delete)
-            ++files_count_for_move;
+            ++m_filesCountForMove;
     }
     return r;
 }
@@ -130,20 +130,20 @@ bool ClipBoard::pushFile(const std::string &protocol, const std::string &dir, co
 
 bool ClipBoard::popFile(const std::string &protocol, const std::string &dir, const FSListedEntry &info)
 {
-    ClipBoardProtocolGroup &pgroup = _clip_protocols[protocol];
+    ClipBoardProtocolGroup &pgroup = m_clipProtocols[protocol];
 
     int action;
     bool r = pgroup.popFile(dir, info, &action);
 
     if(r) {
         if(action & Copy)
-            --files_count_for_copy;
+            --m_filesCountForCopy;
 
         if(action & Move)
-            --files_count_for_move;
+            --m_filesCountForMove;
 
         if(action & Delete)
-            --files_count_for_move;
+            --m_filesCountForMove;
     }
 
     if(!size())
@@ -155,15 +155,15 @@ bool ClipBoard::popFile(const std::string &protocol, const std::string &dir, con
 
 bool ClipBoard::popDir(const std::string &protocol, const std::string &dir)
 {
-    ClipBoardProtocolGroup &pgroup = _clip_protocols[protocol];
+    ClipBoardProtocolGroup &pgroup = m_clipProtocols[protocol];
 
     int mv, cp, del;
 
     pgroup.actions(dir, &cp, &mv, &del);
 
-    files_count_for_copy -= cp;
-    files_count_for_move -= mv;
-    files_count_for_delete -= del;
+    m_filesCountForCopy -= cp;
+    m_filesCountForMove -= mv;
+    m_filesCountForDelete -= del;
 
     int r = pgroup.popDir(dir);
 
@@ -175,13 +175,13 @@ unsigned int ClipBoard::size(int accepted_works)
 {
     unsigned int r = 0;
     if(accepted_works & Copy)
-        r += files_count_for_copy;
+        r += m_filesCountForCopy;
 
     if(accepted_works & Move)
-        r += files_count_for_move;
+        r += m_filesCountForMove;
 
     if(accepted_works & Delete)
-        r += files_count_for_move;
+        r += m_filesCountForMove;
 
     return r;
 }
@@ -189,7 +189,7 @@ unsigned int ClipBoard::size(int accepted_works)
 
 void ClipBoard::clear()
 {
-    files_count_for_copy = files_count_for_move = files_count_for_delete = 0;
-    _clip_protocols.clear();
+    m_filesCountForCopy = m_filesCountForMove = m_filesCountForDelete = 0;
+    m_clipProtocols.clear();
 }
 

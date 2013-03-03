@@ -5,7 +5,7 @@
 
 EffectManager::EffectManager(UActiveArea *parent) :
     UActiveAreaItem<ActiveAreaItem>(parent, Rect(0, 0, 240, 400), false),
-    is_active(false)
+    m_isActive(false)
 {
     auto event = [](TimerWrap *timer, void *user){
         ((void)timer);
@@ -21,7 +21,7 @@ EffectManager::EffectManager(UActiveArea *parent) :
 
 EffectManager::~EffectManager()
 {
-    is_active = false;
+    m_isActive = false;
     TimerDestroy(&timer);
 
     if(next_img.bitmap)
@@ -33,10 +33,10 @@ EffectManager::~EffectManager()
 
 void EffectManager::reset()
 {
-    if(is_active) {
+    if(m_isActive) {
         memset(&prev_img, 0, sizeof(prev_img));
         TimerStop(&timer);
-        is_active = false;
+        m_isActive = false;
 
         if(next_img.bitmap)
             free(next_img.bitmap);
@@ -47,12 +47,12 @@ void EffectManager::reset()
 
 void EffectManager::stop()
 {
-    bool _a = is_active;
+    bool _a = m_isActive;
 
     reset();
     _parent->pop(this);
 
-    if(_a) effectFinished.trigger(this);
+    if(_a) m_effectFinished.trigger(this);
 }
 
 
@@ -60,7 +60,7 @@ void EffectManager::start(int effect, int delay)
 {
     reset();
 
-    _effect = effect;
+    m_effect = effect;
     start_pos = 0;
     end_pos = prev_img.w;
     speed = 20;
@@ -68,7 +68,7 @@ void EffectManager::start(int effect, int delay)
     _parent->pushFront(this);
 
     TimerStart(&timer, delay);
-    is_active = true;
+    m_isActive = true;
 
     eventManager()->updateAfterEvent();
 }
@@ -101,7 +101,7 @@ void EffectManager::paintEvent()
 {
     //printf("void EffectManager::paintEvent()\n");
 
-    if(!is_active)
+    if(!m_isActive)
         return;
 
     if(!prev_img.bitmap) {
@@ -119,17 +119,17 @@ void EffectManager::paintEvent()
         memcpy(prev_img.bitmap, &glGetPixel16(ctx, 0, 0), sz);
     }
 
-    if(_effect >= EFFECT_CENTER_SCALE && _effect <= EFFECT_RIGHT_SCALE)
-        scaleEffect(_effect - EFFECT_CENTER_SCALE);
+    if(m_effect >= EFFECT_CENTER_SCALE && m_effect <= EFFECT_RIGHT_SCALE)
+        scaleEffect(m_effect - EFFECT_CENTER_SCALE);
 
-    else if(_effect >= EFFECT_LEFT_MOVE && _effect <= EFFECT_RIGHT_MOVE)
-        moveEffect(_effect - EFFECT_LEFT_MOVE);
+    else if(m_effect >= EFFECT_LEFT_MOVE && m_effect <= EFFECT_RIGHT_MOVE)
+        moveEffect(m_effect - EFFECT_LEFT_MOVE);
 
-    else if(_effect >= EFFECT_SUB_ALPHA && _effect <= EFFECT_ADD_ALPHA)
-        alphaEffect(_effect - EFFECT_SUB_ALPHA);
+    else if(m_effect >= EFFECT_SUB_ALPHA && m_effect <= EFFECT_ADD_ALPHA)
+        alphaEffect(m_effect - EFFECT_SUB_ALPHA);
 
-    else if(_effect >= EFFECT_SUB_DOMINO && _effect <= EFFECT_ADD_DOMINO)
-        dominoEffect(_effect - EFFECT_SUB_DOMINO);
+    else if(m_effect >= EFFECT_SUB_DOMINO && m_effect <= EFFECT_ADD_DOMINO)
+        dominoEffect(m_effect - EFFECT_SUB_DOMINO);
 
     else {
 

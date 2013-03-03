@@ -1,19 +1,21 @@
 #ifndef FILEVIEWWIDGET_H
 #define FILEVIEWWIDGET_H
 
-#include <ActiveList.h>
+
+#include <Ui/ListMenu.h>
+#include <Sys/Timer.h>
+#include <signals/signal.h>
 #include <string>
 #include <vector>
 #include <png_ops.h>
 
-#include <ListMenu.h>
+
 #include "GlobalMenuButton.h"
 #include "FSEntryInfo.h"
 #include "ClipBoard.h"
 #include "main.h"
-#include <Timer.h>
 
-#include <signals/signal.h>
+
 
 #include "FileViewWidgetEngine.h"
 #include "QuestionDialog.h"
@@ -120,7 +122,7 @@ public:
         if((int)m_FilesList.size() > i)
             return m_FilesList[i];
 
-        return __null_fs_entry;
+        return FSEntryInfo::null;
     }
 
     inline int fsEntriesCount() const {
@@ -179,7 +181,6 @@ protected:
 
 private:
     FileViewWidgetEngine *m_mainViewEngine;
-    FSEntryInfo __null_fs_entry;
     std::vector<FSEntryInfo> m_FilesList, m_DirsList;
     int m_firstHeight;
     signal m_exitSignal;
@@ -212,10 +213,10 @@ private:
 
 
 public:
-    image_t border_img, folder_icon, file_icon, back_action_icon,
+    Image border_img, folder_icon, file_icon, back_action_icon,
             checkedbox_icon, checkbox_icon;
-    EffectManager *effect_manager;
-    image_t cd_prev_screen_image;
+    EffectManager *m_effectManager;
+    image_t m_prevScreenShoot;
 
 public:
     void onItemMenu(const FSEntryInfo & f,  FileViewWidgetAbstractItem *abstract_item);

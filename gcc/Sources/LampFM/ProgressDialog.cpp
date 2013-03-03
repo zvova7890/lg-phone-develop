@@ -6,39 +6,39 @@
 
 ProgressDialog::ProgressDialog(UActiveArea *parent, const Rect &r, bool blockable) :
     UActiveAreaItem<ActiveAreaItem>(parent, r, blockable),
-    _full_progress(0),
-    _progress(0),
-    _max_full_progress(0),
-    _max_progress(0)
+    m_fullProgress(0),
+    m_progress(0),
+    m_maxFullProgress(0),
+    m_maxProgress(0)
 {
-    background = &resourceManager().image("progress");
+    m_background = &resourceManager().image("progress");
 }
 
 
 void ProgressDialog::paintEvent()
 {
-    if(background->bitmap) {
-        drawImage(rect().x(), rect().y(), background);
+    if(!m_background->isEmpty()) {
+        drawImage(rect().x(), rect().y(), m_background);
     }
 
-    glDrawString(_progress_name.c_str(), rect().x()+2, rect().y()+1, rect().x2()-2, rect().y()+20,
+    glDrawString(m_progressName.c_str(), rect().x()+2, rect().y()+1, rect().x2()-2, rect().y()+20,
                  15, FT_TEXT_H_CENTER, 0, 128);
 
 
     char info[56];
-    sprintf(info, "%d/%d", _full_progress, _max_full_progress);
+    sprintf(info, "%d/%d", m_fullProgress, m_maxFullProgress);
 
     glDrawString(info, rect().x()+2, rect().y()+1, rect().x2()-2, rect().y()+20,
                  15, FT_TEXT_H_CENTER | FT_TEXT_W_RIGHT, 0, 128);
 
     glSetPen(0xFFFFFFFF);
-    glDrawString(_what_doing.c_str(), rect().x()+2, rect().y()+23, rect().x2()-2, rect().y()+23+22,
+    glDrawString(m_whatDoing.c_str(), rect().x()+2, rect().y()+23, rect().x2()-2, rect().y()+23+22,
                  15, FT_TEXT_W_CENTER | FT_TEXT_H_DOWN | FT_TEXT_CENTER_BY_XSTART, 0, 128);
 
     int y = rect().y()+60;
 
-    int percent_full = _full_progress*100/_max_full_progress;
-    int percent = _progress*100/_max_progress;
+    int percent_full = m_fullProgress*100/m_maxFullProgress;
+    int percent = m_progress*100/m_maxProgress;
 
     int max_w = rect().w()-10;
     int full_x = max_w*percent_full/100;

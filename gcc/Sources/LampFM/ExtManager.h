@@ -24,8 +24,8 @@ private:
         std::string b_icon;
     };
 
-    std::map <std::string, std::vector<ExtInfo> > _ext_map;
-    const std::string &_dir;
+    std::map <std::string, std::vector<ExtInfo> > m_extMap;
+    const std::string &m_dir;
 };
 
 #endif // EXTMANAGER_H

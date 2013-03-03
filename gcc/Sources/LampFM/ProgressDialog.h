@@ -2,7 +2,8 @@
 #define PROGRESSDIALOG_H
 
 
-#include <UActiveArea.h>
+#include <Ui/UActiveArea.h>
+#include <Graph/Image.h>
 #include <string>
 #include <png_ops.h>
 
@@ -19,45 +20,45 @@ public:
     void hide();
 
     void setProgressName(const std::string &n) {
-        _progress_name = n;
+        m_progressName = n;
     }
 
     void setCurrentWorkStatus(const std::string &s) {
-        _what_doing = s;
+        m_whatDoing = s;
     }
 
 
     void setMaxFullProgress(unsigned int c) {
-        _max_full_progress = c;
+        m_maxFullProgress = c;
     }
 
     void setMaxProgress(unsigned int c) {
-        _max_progress = c;
+        m_maxProgress = c;
     }
 
     void setFullProgress(unsigned int c) {
-        _full_progress = c;
+        m_fullProgress = c;
     }
 
     unsigned int fullProgress() {
-        return _full_progress;
+        return m_fullProgress;
     }
 
     void setProgress(unsigned int c) {
-        _progress = c;
+        m_progress = c;
     }
 
     unsigned int progress() {
-        return _progress;
+        return m_progress;
     }
 
 
 private:
-    std::string _progress_name;
-    std::string _what_doing;
-    image_t *background;
+    std::string m_progressName;
+    std::string m_whatDoing;
+    Image *m_background;
 
-    unsigned int _full_progress, _progress, _max_full_progress, _max_progress;
+    unsigned int m_fullProgress, m_progress, m_maxFullProgress, m_maxProgress;
 };
 
 #endif // PROGRESSDIALOG_H

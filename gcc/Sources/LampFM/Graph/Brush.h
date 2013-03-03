@@ -2,8 +2,8 @@
 #define BRUSH_H
 
 #include <gl.h>
-#include <png_ops.h>
-#include <Rect.h>
+#include <Graph/Image.h>
+#include <Graph/Rect.h>
 #include <functional>
 
 
@@ -30,7 +30,7 @@ public:
     Brush(const Brush &b);
     Brush(GLColor color);
     Brush(GLGradient *gradient);
-    Brush(image_t *image);
+    Brush(Image *image);
     Brush(const std::function<void(Brush &, const Rect &)> &f);
     ~Brush();
 

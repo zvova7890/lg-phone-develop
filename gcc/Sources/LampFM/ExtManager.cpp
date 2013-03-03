@@ -5,7 +5,7 @@
 
 
 ExtManager::ExtManager(const std::string &dir) :
-    _dir(dir)
+    m_dir(dir)
 {
     loadConfig(dir+"conf/extension.cfg");
 }
@@ -29,7 +29,7 @@ int ExtManager::run(const std::string &path)
 
     } else {
 
-        const std::vector<ExtInfo> & v = _ext_map[s];
+        const std::vector<ExtInfo> & v = m_extMap[s];
 
         for(const ExtInfo &extinfo : v)
         {
@@ -208,7 +208,7 @@ int ExtManager::loadConfig(const std::string &conf)
                 break;
         }
 
-        _ext_map[ext].push_back(extinfo);
+        m_extMap[ext].push_back(extinfo);
         //printf(" ====== %s ======\naction: %s\nsmall_icon: %s\nbig_icon: %s\n",
           //     ext.c_str(), extinfo.action.c_str(), extinfo.s_icon.c_str(), extinfo.b_icon.c_str());
 
