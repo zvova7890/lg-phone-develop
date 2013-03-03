@@ -93,7 +93,9 @@ enum
     FT_TEXT_H_DOWN       = (1 << 5),
 
     FT_TEXT_CENTER_BY_XSTART  = (1 << 6),
-    FT_TEXT_CENTER_BY_YSTART  = (1 << 6),
+    FT_TEXT_CENTER_BY_YSTART  = (1 << 7),
+    FT_TEXT_WORDBREAK      = (1 << 8),
+    FT_TEXT_SENTENCEBREAK  = (1 << 9)
 };
 
 
