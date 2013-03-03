@@ -93,6 +93,52 @@ void glCtxDrawVLine(GLContext *ctx, int y1, int y2, int x)
 #include <stdlib.h>
 
 
+int glLine(GLContext *ctx, GLPoints *pts, int x1, int y1, int x2, int y2, int range_check)
+{
+    int p_i = 0;
+    int deltaX = glAbs(x2 - x1);
+    int deltaY = glAbs(y2 - y1);
+    int signX = x1 < x2 ? 1 : -1;
+    int signY = y1 < y2 ? 1 : -1;
+    int error = deltaX - deltaY;
+
+    //printf("Line %dx%d %dx%d\n", x1, y1, x2, y2);
+    for (;;)
+    {
+        if(range_check) {
+            if(x1 >= ctx->clip_x1 && y1 >= ctx->clip_y1 && x1 < ctx->clip_x2 && y1 < ctx->clip_y2) {
+                glPointsPut(pts, x1, y1);
+                p_i++;
+            } else {
+                //printf("Lol wut? %dx%d\n", x1, y1);
+            }
+        } else {
+            glPointsPut(pts, x1, y1);
+            p_i++;
+        }
+
+        if(x1 == x2 && y1 == y2)
+            break;
+
+        int error2 = error * 2;
+
+        if(error2 > -deltaY)
+        {
+            error -= deltaY;
+            x1 += signX;
+        }
+
+        if(error2 < deltaX)
+        {
+            error += deltaX;
+            y1 += signY;
+        }
+    }
+
+    return p_i;
+}
+
+
 void glCtxDrawLine(GLContext *ctx, int x1, int y1, int x2, int y2)
 {
     if(y1 == y2) {
