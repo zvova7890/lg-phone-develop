@@ -49,7 +49,7 @@ void glCtxDrawRoundedRect(GLContext *ctx, int x1, int y1, int w, int h, int roun
         if(glTestRange(ctx, x, y))
            glDrawPixel16(ctx, x, y);
 
-	
+
         x = _x2-l_diff_x;
         y = _y2+l_diff_y-1;
 
@@ -63,7 +63,7 @@ void glCtxDrawRoundedRect(GLContext *ctx, int x1, int y1, int w, int h, int roun
         if(glTestRange(ctx, x, y))
             glDrawPixel16(ctx, pts.pts[i].x, _y2+l_diff_y-1);
 
-	
+
         x = _x2-l_diff_x;
         y = pts.pts[i].y+l_diff_y;
 
@@ -123,12 +123,12 @@ void glCtxFillRoundedRect(GLContext *ctx, int x1, int y1, int w, int h, int roun
         _y2 = pts.pts[i].y+h-(diffy*2);
 
         if(last_y != pts.pts[i].y || i == 0)
-            glDrawHLine(pts.pts[i].x, _x2-l_diff_x, pts.pts[i].y+l_diff_y);
+            glCtxDrawHLine(ctx, pts.pts[i].x, _x2-l_diff_x, pts.pts[i].y+l_diff_y);
         last_y = pts.pts[i].y;
 
 
         if(dlast_y != _y2 || i == 0)
-           glDrawHLine(pts.pts[i].x, _x2-l_diff_x, _y2+l_diff_y-1);
+           glCtxDrawHLine(ctx, pts.pts[i].x, _x2-l_diff_x, _y2+l_diff_y-1);
         dlast_y = _y2;
     }
 
