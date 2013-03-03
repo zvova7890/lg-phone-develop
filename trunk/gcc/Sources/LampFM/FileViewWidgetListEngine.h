@@ -2,9 +2,9 @@
 #define FILEVIEWWIDGETLISTENGINE_H
 
 
+#include <Ui/ActiveList.h>
 #include "FileViewWidgetEngine.h"
 #include "FileViewWidgetAbstractItem.h"
-#include "ActiveList.h"
 #include "FSEntryInfo.h"
 
 
@@ -52,8 +52,8 @@ public:
     void unblock();
 
 protected:
-    std::vector <FileViewWidgetListItem*> _items;
-    bool _is_blocked;
+    std::vector <FileViewWidgetListItem*> m_items;
+    bool m_isBlocked;
 };
 
 

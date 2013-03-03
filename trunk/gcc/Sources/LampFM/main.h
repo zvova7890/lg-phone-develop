@@ -1,8 +1,8 @@
 #ifndef __MAIN_H__
 #define __MAIN_H__
 
-#include "EventManager.h"
-#include "ActiveList.h"
+#include <Ui/EventManager.h>
+#include <Ui/ActiveList.h>
 #include "ResourceManager.h"
 #include "EffectManager.h"
 #include "ExtManager.h"

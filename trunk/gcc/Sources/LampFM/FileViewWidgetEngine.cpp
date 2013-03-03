@@ -8,7 +8,7 @@
 
 
 FileViewWidgetEngine::FileViewWidgetEngine(FileViewWidget *parent) :
-    _fparent(parent)
+    m_widgetParent(parent)
 {
 
 }

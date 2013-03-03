@@ -3,42 +3,44 @@
 
 
 ResourceManager::ResourceManager(const std::string &my_dir) :
-    _my_dir(my_dir)
+    m_myDir(my_dir)
 {
-    memset(&_null_image_resource, 0, sizeof(_null_image_resource));
-    _images.clear();
+    m_images.clear();
 }
 
 
 ResourceManager::~ResourceManager()
 {
-    for( std::pair<std::string, image_t *> p : _images)
+    for( std::pair<std::string, Image *> p : m_images)
     {
         if(p.second) {
-            if(p.second->bitmap)
-                delete (char *)p.second->bitmap;
             delete p.second;
         }
     }
 
-    _images.clear();
+    m_images.clear();
 }
 
 
-image_t & ResourceManager::image(const std::string & name)
+Image &ResourceManager::image(const std::string & name)
 {
-    image_t *i = _images[name];
+    Image *i = m_images[name];
 
     if(!i) {
 
-        i = load_png((_my_dir+"images/"+name+".png").c_str(), 0);
+        i = new Image((m_myDir+"images/"+name+".png").c_str());
         if(i) {
-            _images[name] = i;
+            if(!i->isEmpty())
+                m_images[name] = i;
+            else {
+                delete i;
+                i = 0;
+            }
         }
     }
 
     if(!i) {
-        return _null_image_resource;
+        return Image::null;
     }
 
     return *i;

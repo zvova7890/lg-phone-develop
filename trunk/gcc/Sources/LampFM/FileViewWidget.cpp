@@ -17,14 +17,11 @@
 #include "ThreadWorker.h"
 
 
-FSEntryInfo __fs_entryinfo_null_entry;
-
 
 FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rect &r) :
     ActiveList(parent, r),
     m_itemSelectMode(false),
     m_mainViewEngine(0),
-    __null_fs_entry(FSEntryInfo("=Invalid=", 0, 0)),
     m_firstHeight(r.h()),
     m_fsEntryMenu(parent, Rect(10, 60, 240-20, 280), parent->eventManager()),
     global_yes_no_question(0),
@@ -32,9 +29,9 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
     global_menu(parent, Rect(0, 0, 240, 310), parent->eventManager()),
     global_menu_button(parent, Rect(0, 0, 240, 39), false),
     global_menu_showing(false),
-    effect_manager(em)
+    m_effectManager(em)
 {
-    memset(&cd_prev_screen_image, 0, sizeof(cd_prev_screen_image));
+    memset(&m_prevScreenShoot, 0, sizeof(m_prevScreenShoot));
 
 
     // TODO: restoring last dir
@@ -57,8 +54,8 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
 
     initGlobalMenu();
 
-    global_menu_button.setHeight(border_img.h);
-    global_menu_button.setWidth(border_img.w);
+    global_menu_button.setHeight(border_img.height());
+    global_menu_button.setWidth(border_img.width());
     global_menu_button.setBackround(&border_img);
     global_menu_button.setFullScreenBlock(false);
     global_menu_button.setBlockable(true);
@@ -207,9 +204,9 @@ FileViewWidget::~FileViewWidget()
     setViewList();
     clearItems();
 
-    if(cd_prev_screen_image.bitmap)
-        free(cd_prev_screen_image.bitmap);
-    cd_prev_screen_image.bitmap = 0;
+    if(m_prevScreenShoot.bitmap)
+        free(m_prevScreenShoot.bitmap);
+    m_prevScreenShoot.bitmap = 0;
 
 
     for(ActiveListItem *i : *m_fsEntryMenu.itemList()) {
@@ -375,8 +372,8 @@ void FileViewWidget::paintEvent()
     glSaveClipRegion();
     glSetClipRegion(0, 30, rect().w(), rect().y2());
 
-    moveY( border_img.h );
-    setHeight( m_firstHeight - border_img.h );
+    moveY( border_img.height() );
+    setHeight( m_firstHeight - border_img.height() );
 
     ActiveList::paintEvent();
     glRestoreClipRegion();
@@ -589,30 +586,30 @@ void FileViewWidget::cdEffectPrepare(bool paint_fresh_screen)
     GLContext *ctx = glActiveContext();
     int sz = ctx->width *ctx->height *(ctx->depth/8);
 
-    if(cd_prev_screen_image.bitmap)
-        free(cd_prev_screen_image.bitmap);
+    if(m_prevScreenShoot.bitmap)
+        free(m_prevScreenShoot.bitmap);
 
-    cd_prev_screen_image.bitmap = malloc(sz);
-    cd_prev_screen_image.w = ctx->width;
-    cd_prev_screen_image.h = ctx->height;
-    cd_prev_screen_image.bit = ctx->depth;
-    memcpy(cd_prev_screen_image.bitmap, &glGetPixel16(ctx, 0, 0), sz);
+    m_prevScreenShoot.bitmap = malloc(sz);
+    m_prevScreenShoot.w = ctx->width;
+    m_prevScreenShoot.h = ctx->height;
+    m_prevScreenShoot.bit = ctx->depth;
+    memcpy(m_prevScreenShoot.bitmap, &glGetPixel16(ctx, 0, 0), sz);
 
     /* толкаем в еффект менеджер */
-    effect_manager->pushPrevScreen(cd_prev_screen_image);
+    m_effectManager->pushPrevScreen(m_prevScreenShoot);
 }
 
 
 void FileViewWidget::cdEffectStart(int effect, int delay)
 {
-    effect_manager->start(effect, delay);
+    m_effectManager->start(effect, delay);
 }
 
 
 
 void FileViewWidget::cdEffectStop()
 {
-    effect_manager->stop();
+    m_effectManager->stop();
 }
 
 

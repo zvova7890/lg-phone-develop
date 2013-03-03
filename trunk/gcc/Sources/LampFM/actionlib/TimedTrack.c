@@ -14,13 +14,13 @@ void timedTrackEventHandler(TimerWrap *t, void *user)
 
     if(tt->add > 0) {
         if(tt->count >= tt->stop_val) {
-            tt->is_active = 0;
+            tt->m_isActive = 0;
             TimerStop(t);
         }
 
     } else if(tt->add < 0) {
         if(tt->count <= tt->stop_val) {
-            tt->is_active = 0;
+            tt->m_isActive = 0;
             TimerStop(t);
         }
     }
@@ -47,7 +47,7 @@ void timedTrackEventHandler(TimerWrap *t, void *user)
 int timedTrackCreate(TimedTrack *t, int initial_count, int timer_type, void *user)
 {
     t->count = initial_count;
-    t->is_active = 0;
+    t->m_isActive = 0;
     t->add = 1;
     t->stop_val = INT_MAX;
     t->action = 0;
@@ -61,7 +61,7 @@ int timedTrackCreate(TimedTrack *t, int initial_count, int timer_type, void *use
 int timedTrackDestroy(TimedTrack *t)
 {
     if(t->magic == 0xFFAF33CD) {
-        t->is_active = 0;
+        t->m_isActive = 0;
         return TimerDestroy(&t->timer);
     }
 
@@ -87,11 +87,11 @@ int timedTrackStartCount(TimedTrack *t, int period)
     if(t->magic != 0xFFAF33CD)
         return -1;
 
-    if(t->is_active)
+    if(t->m_isActive)
         TimerStop(&t->timer);
 
     //NU_Sleep(10);
-    t->is_active = 1;
+    t->m_isActive = 1;
     return TimerStart(&t->timer, period);
 }
 
@@ -107,7 +107,7 @@ int timedTrackStopCount(TimedTrack *t)
     if(t->magic != 0xFFAF33CD)
         return -1;
 
-    t->is_active = 0;
+    t->m_isActive = 0;
     return TimerStop(&t->timer);
 }
 

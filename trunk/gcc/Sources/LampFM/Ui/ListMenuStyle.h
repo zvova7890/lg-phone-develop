@@ -2,7 +2,7 @@
 #define LISTMENUSTYLE_H
 
 
-#include "Brush.h"
+#include <Graph/Brush.h>
 
 
 

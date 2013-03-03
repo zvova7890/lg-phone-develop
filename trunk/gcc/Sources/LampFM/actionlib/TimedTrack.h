@@ -13,7 +13,7 @@ typedef struct
     TimerWrap timer;
     int count;
     int add, stop_val;
-    char is_active;
+    char m_isActive;
 
     void (*action)(void *);
     int action_on_than;

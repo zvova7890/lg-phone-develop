@@ -76,11 +76,14 @@ public:
     virtual int closedir(void *hdir);
 
     int error() {
-        return _err;
+        return m_err;
     }
 
 private:
-    int _err;
+    int m_err;
+    
+public:
+    static FSProtocol null;
 };
 
 
@@ -93,27 +96,26 @@ class FSProtocolsContainer
 public:
 
     ~FSProtocolsContainer() {
-        for(auto c : _protocols)
+        for(auto c : m_protocols)
         {
             delete c.second;
         }
     }
 
     void pushProtocol(const std::string &name, FSProtocol *p) {
-        _protocols[name] = p;
+        m_protocols[name] = p;
     }
 
 
     FSProtocol & indexOf(const std::string &name) {
-        auto p = _protocols[name];
-        return p? *p : __null_protocol;
+        auto p = m_protocols[name];
+        return p? *p : FSProtocol::null;
     }
 
 
 
 private:
-    FSProtocol __null_protocol;
-    std::map <std::string, FSProtocol *> _protocols;
+    std::map <std::string, FSProtocol *> m_protocols;
 };
 
 

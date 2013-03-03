@@ -4,7 +4,7 @@
 #define __REDRAWMANAGER_H__
 
 
-#include "Rect.h"
+#include <Graph/Rect.h>
 #include <vector>
 #include <list>
 

@@ -1,8 +1,9 @@
 #ifndef THREADWORKER_H
 #define THREADWORKER_H
 
-#include <Thread.h>
+#include <Sys/Thread.h>
 #include <string>
+
 
 class FileViewWidget;
 

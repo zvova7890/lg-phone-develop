@@ -27,6 +27,7 @@ static void *__next_item_front(GLQueueListItem *q) {
 
 void activeAreaActionHandler(ActiveArea *field, int action, int x, int y)
 {
+    // FIXME
     if(action == TOUCH_ACTION_PRESS && field->touched_item) {
         printf("BUGON: %s[%d]\n", __FILE__, __LINE__);
         field->touched_item = 0;

@@ -1,7 +1,7 @@
 #ifndef QUESTIONDIALOG_H
 #define QUESTIONDIALOG_H
 
-#include <UActiveArea.h>
+#include <Ui/UActiveArea.h>
 #include <string>
 #include <vector>
 
@@ -22,14 +22,14 @@ public:
 
 
     signal_slot::multi_signal <void(QuestionDialog *, int)> & choisPressedSignal() {
-        return __button_pressed;
+        return m_buttonPressed;
     }
 
 private:
-    std::string _question;
-    std::vector< UActiveAreaItem<ActiveAreaItem>* > buttons;
-    signal_slot::multi_signal <void(QuestionDialog *, int)> __button_pressed;
-    UActiveArea buttons_area;
+    std::string m_question;
+    std::vector< UActiveAreaItem<ActiveAreaItem>* > m_buttons;
+    signal_slot::multi_signal <void(QuestionDialog *, int)> m_buttonPressed;
+    UActiveArea m_buttonsArea;
 };
 
 #endif // QUESTIONDIALOG_H

@@ -21,7 +21,7 @@
 
 #include <gl.h>
 
-#include <UActiveArea.h>
+#include <Ui/UActiveArea.h>
 #include <ScrollArea.h>
 #include "FileViewWidget.h"
 #include "GlobalMenuButton.h"

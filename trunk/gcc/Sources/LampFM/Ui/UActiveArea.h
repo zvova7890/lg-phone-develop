@@ -1,7 +1,7 @@
 #ifndef UACTIVEAREA_H
 #define UACTIVEAREA_H
 
-#include <Rect.h>
+#include <Graph/Rect.h>
 #include <ActiveArea.h>
 #include <TimedTrack.h>
 #include "signals/signal.h"
