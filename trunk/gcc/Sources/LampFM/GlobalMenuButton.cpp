@@ -4,7 +4,7 @@
 
 
 GlobalMenuButton::GlobalMenuButton(UActiveArea *parent, const Rect &r, bool blockable) :
-    UButton(parent, r, blockable),
+    UActiveAreaItem<ActiveAreaItem>(parent, r, blockable),
     m_borderImg(0)
 {
 

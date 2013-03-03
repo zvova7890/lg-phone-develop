@@ -9,7 +9,7 @@
 
 
 
-class GlobalMenuButton : public UButton
+class GlobalMenuButton : public UActiveAreaItem<ActiveAreaItem>
 {
 public:
     typedef signal_slot::signal <void(GlobalMenuButton *, int, int, int)> MoveSignal;

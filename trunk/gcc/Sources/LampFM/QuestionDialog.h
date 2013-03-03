@@ -2,6 +2,7 @@
 #define QUESTIONDIALOG_H
 
 #include <Ui/UActiveArea.h>
+#include <Ui/UButton.h>
 #include <string>
 #include <vector>
 
@@ -27,7 +28,7 @@ public:
 
 private:
     std::string m_question;
-    std::vector< UActiveAreaItem<ActiveAreaItem>* > m_buttons;
+    std::vector< UButton* > m_buttons;
     signal_slot::multi_signal <void(QuestionDialog *, int)> m_buttonPressed;
     UActiveArea m_buttonsArea;
 };

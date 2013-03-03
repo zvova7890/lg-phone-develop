@@ -56,7 +56,8 @@ HEADERS += \
     ClipBoard.h \
     ProgressDialog.h \
     ThreadWorker.h \
-    Graph/Image.h
+    Graph/Image.h \
+    Ui/UButtonStyle.h
 
 SOURCES += \
     main.cpp \
@@ -91,4 +92,5 @@ SOURCES += \
     ThreadWorker.cpp \
     FileViewWidget_fs.cpp \
     FileViewWidget_filecontext.cpp \
-    Graph/Image.cpp
+    Graph/Image.cpp \
+    Ui/UButtonStyle.cpp

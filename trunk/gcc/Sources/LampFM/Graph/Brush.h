@@ -7,14 +7,6 @@
 #include <functional>
 
 
-typedef struct
-{
-    GLColor *colors;
-    int count;
-}GLGradient;
-
-
-
 class Brush
 {
 public:

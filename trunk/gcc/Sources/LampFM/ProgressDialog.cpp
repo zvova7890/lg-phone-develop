@@ -6,12 +6,22 @@
 
 ProgressDialog::ProgressDialog(UActiveArea *parent, const Rect &r, bool blockable) :
     UActiveAreaItem<ActiveAreaItem>(parent, r, blockable),
+    m_cancelButton(parent, Rect(rect().w()/2-95/2, 95, 100, 40), "Cancel"),
+    m_activeArea(parent->eventManager(), r),
     m_fullProgress(0),
     m_progress(0),
     m_maxFullProgress(0),
     m_maxProgress(0)
 {
     m_background = &resourceManager().image("progress");
+
+    m_cancelButton.releasedSignal().connect( [this](UButton *self) {
+
+        if(self->isTouched() && !self->isMoved())
+            m_onCancelPressed.trigger(self);
+    });
+
+    m_activeArea.push(&m_cancelButton);
 }
 
 
@@ -69,12 +79,16 @@ void ProgressDialog::paintEvent()
 
     glSetPen(0xFFFFFFFF);
     glDrawFilledRectange(rect().x()+5, y+1, rect().x()+5-1+cur_x, y+4);
+
+    m_activeArea.move(rect().x(), rect().y());
+    m_activeArea.paintEvent();
 }
 
 
 void ProgressDialog::touchEvent(int action, int x, int y)
 {
-
+    m_activeArea.move(rect().x(), rect().y());
+    m_activeArea.touchEvent(action, x, y);
 }
 
 

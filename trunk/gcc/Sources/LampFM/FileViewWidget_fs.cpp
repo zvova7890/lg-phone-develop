@@ -129,10 +129,16 @@ void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_w
     progress->setMaxFullProgress(m_clipboard.size(accepted_work));
 
 
+    progress->onCancelPressedSignal().connect( [worker](UButton *){
+        worker->canceled = true;
+    });
+
     worker->thread.onRunSignal().connect( [accepted_work, worker, this](Thread *) {
 
         for(auto proto : m_clipboard.protocols())
         {
+            if(worker->canceled)
+                break;
 
             struct Remover {
                 Remover(const std::string *_dir, const FSListedEntry *_e) {
@@ -155,6 +161,9 @@ void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_w
 
             for(auto files = proto.second.files().begin(); files != proto.second.files().end(); ++files)
             {
+                if(worker->canceled)
+                    break;
+
                 const std::string &dir = files->first;
                 std::string base_dir;
                 ClipBoardFilesGroup &group = files->second;
@@ -253,7 +262,8 @@ void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_w
             }
 
 
-
+            if(worker->canceled)
+                goto __end;
 
             __next1:
 
@@ -271,6 +281,9 @@ void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_w
 
                 for(auto file = group.filesList().rbegin(); file != group.filesList().rend(); ++file)
                 {
+                    if(worker->canceled)
+                        break;
+
                     if(file->info.flags & FSProtocol::FSEntryFlags::Dir) {
 
                         if(file->action == ClipBoard::Action::Delete && accepted_work & ClipBoard::Action::Delete) {
@@ -325,6 +338,11 @@ void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_w
 __end:;
         }
 
+
+        if(worker->canceled) {
+            m_clipboard.clear();
+            worker->work_name = "Canceled";
+        }
 
         onExitSignal().disconnect(worker->slot);
         worker->work_finished = 1;

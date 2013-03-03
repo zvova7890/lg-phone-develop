@@ -3,6 +3,7 @@
 
 
 #include <Ui/UActiveArea.h>
+#include <Ui/UButton.h>
 #include <Graph/Image.h>
 #include <string>
 #include <png_ops.h>
@@ -53,10 +54,18 @@ public:
     }
 
 
+    UButton::signal & onCancelPressedSignal() {
+        return m_onCancelPressed;
+    }
+
+
 private:
     std::string m_progressName;
     std::string m_whatDoing;
+    UButton m_cancelButton;
     Image *m_background;
+    UButton::signal m_onCancelPressed;
+    UActiveArea m_activeArea;
 
     unsigned int m_fullProgress, m_progress, m_maxFullProgress, m_maxProgress;
 };
