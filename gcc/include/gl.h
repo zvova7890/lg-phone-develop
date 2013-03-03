@@ -54,6 +54,31 @@ typedef struct
     int x, y;
 }GLPoint;
 
+typedef struct
+{
+    int x1, y1;
+    int x2, y2;
+}GLRect;
+
+typedef struct
+{
+    short size;
+    short at;
+    char can_realloc;
+    GLPoint *pts;
+}GLPoints;
+
+typedef struct
+{
+    GLColor color;
+    unsigned char pixels;
+}GLGradientCell;
+
+typedef struct
+{
+    GLGradientCell *colors;
+    int count;
+}GLGradient;
 
 typedef struct
 {
@@ -109,9 +134,9 @@ static inline GLColor rgb16ToRgb32(GLColor c) {
 #define glColorBlue16(c) ((c << 3) & 0xF8)
 
 
-#define glColorAlpha(color32) (color32 >> 24)
-#define glColorRed(color32) (color32 >> 16 & 0xFF)
-#define glColorGreen(color32) (color32 >> 8 & 0xFF)
+#define glColorAlpha(color32) ((color32 >> 24) & 0xff)
+#define glColorRed(color32) ((color32 >> 16) & 0xFF)
+#define glColorGreen(color32) ((color32 >> 8) & 0xFF)
 #define glColorBlue(color32) (color32 & 0xFF)
 
 #define glPutPixel32(ctx, x, y) __glPixelPoint32(ctx->framebuffer, ctx->width, x, y) = ctx->depth_dep_pen
@@ -138,6 +163,7 @@ static inline GLColor rgb16ToRgb32(GLColor c) {
 #define glDrawPixel32_16c(ctx, x, y, c, a) glPutPixel32c(ctx, x, y, glAlphaBlend32_16(c, glGetPixel32(ctx, x, y),  a))
 
 #define glTestAlphaBlend(ctx) (ctx->alpha < 0xff && ctx->attr & GL_ALPHA_TEST)
+#define glTestRange(ctx, x, y) (x >= ctx->clip_x1 && y >= ctx->clip_y1 && x < ctx->clip_x2 && y < ctx->clip_y2)
 
 #ifdef __cplusplus
 extern "C" {
@@ -224,8 +250,26 @@ static inline void glCtxSetPen(GLContext *ctx, GLColor color) {
 }
 
 
+static inline void glPointsPut(GLPoints *pts, int x, int y) {
+    if(pts->at+1 < pts->size) {
+        __set:
+        pts->pts[pts->at].x = x;
+        pts->pts[pts->at++].y = y;
+    } else if(pts->can_realloc) {
+        pts->size += 56;
+        pts->pts = (GLPoint*)realloc(pts->pts, pts->size*sizeof(GLPoint));
+        goto __set;
+    }
+}
+
+
+
 glPixelSetProc glGetPixelProc(GLContext *ctx);
 glCPixelSetProc glGetCPixelProc(GLContext *ctx);
+
+
+int glLine(GLContext *ctx, GLPoints *pts, int x1, int y1, int x2, int y2, int range_check);
+int glArc(GLContext *ctx, GLPoints *pts, int cx, int cy, int w, int h, int s, int e, int range_check);
 
 void glCtxEnable(GLContext *ctx, int mode);
 #define glEnable(mode) glCtxEnable(DefaultGLContext, mode)
@@ -262,6 +306,11 @@ void glCtxDrawRectange(GLContext *ctx, int x1, int y1, int x2, int y2);
 #define glDrawRectange(x1, y1, x2, y2) glCtxDrawRectange(DefaultGLContext, x1, y1, x2, y2)
 void glCtxDrawFilledRectange(GLContext *ctx, int x1, int y1, int x2, int y2);
 #define glDrawFilledRectange(x1, y1, x2, y2) glCtxDrawFilledRectange(DefaultGLContext, x1, y1, x2, y2)
+
+void glCtxDrawRoundedRect(GLContext *ctx, int x, int y, int w, int h, int round_x, int round_y);
+#define glDrawRoundedRect(x, y, w, h, round_x, round_y) glCtxDrawRoundedRect(DefaultGLContext, x, y, w, h, round_x, round_y)
+void glCtxFillRoundedRect(GLContext *ctx, int x, int y, int w, int h, int round_x, int round_y);
+#define glFillRoundedRect(x, y, w, h, round_x, round_y) glCtxFillRoundedRect(DefaultGLContext, x, y, w, h, round_x, round_y)
 
 void glCtxDrawCircle(GLContext *ctx, int x, int y, int r);
 #define glDrawCircle(x, y, r) glCtxDrawCircle(DefaultGLContext, x, y, r)
@@ -321,12 +370,12 @@ unsigned int glUTF8DrawString(GLContext *ctx, int font, const char *str, int x1,
 
 #endif
 
-unsigned int glCtxDrawString(GLContext *ctx, const char *str, int x1, int y1, int x2, int y2, int font, int align, uint8_t leter_step, int32_t max_leter_cnt);
-#define glDrawString(str, x1, y1, x2, y2, font, align, leter_step, max_leter_cnt) \
-            glCtxDrawString(DefaultGLContext, str, x1, y1, x2, y2, font, align, leter_step, max_leter_cnt)
-unsigned int glCtxDrawUString(GLContext *ctx, const wchar_t *str, int x1, int y1, int x2, int y2, int font, int align, uint8_t leter_step, int32_t max_leter_cnt);
-#define glDrawUString(str, x1, y1, x2, y2, font, align, leter_step, max_leter_cnt) \
-            glCtxDrawUString(DefaultGLContext, str, x1, y1, x2, y2, font, align, leter_step, max_leter_cnt)
+unsigned int glCtxDrawString(GLContext *ctx, const char *str, int x1, int y1, int x2, int y2, int font, int flags, uint8_t leter_step, int32_t max_leter_cnt);
+#define glDrawString(str, x1, y1, x2, y2, font, flags, leter_step, max_leter_cnt) \
+            glCtxDrawString(DefaultGLContext, str, x1, y1, x2, y2, font, flags, leter_step, max_leter_cnt)
+unsigned int glCtxDrawUString(GLContext *ctx, const wchar_t *str, int x1, int y1, int x2, int y2, int font, int flags, uint8_t leter_step, int32_t max_leter_cnt);
+#define glDrawUString(str, x1, y1, x2, y2, font, flags, leter_step, max_leter_cnt) \
+            glCtxDrawUString(DefaultGLContext, str, x1, y1, x2, y2, font, flags, leter_step, max_leter_cnt)
 
 
 int glStringMetrics(int font, const char *str, uint32_t *height, uint32_t *top, int32_t max_leter_cnt);
