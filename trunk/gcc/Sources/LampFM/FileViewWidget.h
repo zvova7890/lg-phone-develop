@@ -2,10 +2,10 @@
 #define FILEVIEWWIDGET_H
 
 
-#include <Ui/ListMenu.h>
-#include <Sys/Timer.h>
+#include <ListMenu.h>
 #include <signals/signal.h>
 #include <string>
+#include <functional>
 #include <vector>
 #include <png_ops.h>
 
@@ -28,7 +28,7 @@ class  FileViewWidgetAbstractItem;
 
 
 
-class FileViewWidget : public ActiveList
+class FileViewWidget : public Widget/*VScrollArea*/
 {
 public:
 
@@ -54,15 +54,33 @@ public:
         int viewEngine;
         std::string protocol;
         std::string dir;
-        ActiveList::ScrollState scrollState;
+        VScrollArea::ScrollState scrollState;
+    };
+
+
+    class FileScrollView : public VScrollArea
+    {
+    public:
+        FileScrollView(const Rect &, FileViewWidget *parent);
+        virtual ~FileScrollView();
+
+        void paintEvent();
+
+
+        FileViewWidget *parent() {
+            return (FileViewWidget*)VScrollArea::parent();
+        }
+
+    //protected:
+        Widget *widgetItem(int index);
     };
 
 
 public:
-    typedef signal_slot::multi_signal <void(FileViewWidget*)> signal;
+    typedef signal_slot::multi_signal <FileViewWidget*> signal;
 
-    FileViewWidget(UActiveArea *parent, EffectManager *em, const Rect &r);
-    ~FileViewWidget();
+    FileViewWidget(Widget *parent, EffectManager *em, const Rect &r);
+    virtual ~FileViewWidget();
 
     void pushBackFile(FSEntryInfo *info);
     void pushBackFile(const FSEntryInfo &info);
@@ -74,8 +92,6 @@ public:
     void unMarkAllFiles();
     void markAllFiles();
 
-
-    void pushFileToClipBoard(const std::string &dir, const FSListedEntry &info, ClipBoard::Action type);
 
     void copy(const std::string &dir, const FSEntryInfo &info);
     void move(const std::string &dir, const FSEntryInfo &info);
@@ -93,8 +109,10 @@ public:
     int fillEntries();
 
     void cdEffectPrepare(bool paint_fresh_screen = true);
-    void cdEffectStart(int effect, int delay = 3);
+    void cdEffectStart(int effect, int delay = 40);
     void cdEffectStop();
+
+    void clearAndReset();
 
     void switchViewType(); // deprecated
     bool switchWorkSpace(unsigned int id);
@@ -167,19 +185,35 @@ public:
         return m_workspaces[m_currentWorkspaceId];
     }
 
+    inline FileScrollView & fileViewArea() {
+        return m_fileViewList;
+    }
+
+    inline bool isClipboardsEmpty() const {
+        return (m_copyMoveClipboard.size() == 0);
+    }
+
 protected:
 
-    void do_clipboard_work(const std::string &to_dir, int accepted_work);
+    //void do_clipboard_work(const std::string &to_dir, int accepted_work);
+
     void set_clipboard_files(const std::string &dir, const FSEntryInfo &info, int action);
-    int copy_file(const std::string &from, const std::string &to, unsigned int *full, unsigned int *done, bool *cancel_flag);
+    int copy_file(const std::string &from, const std::string &to,
+                  std::function<void(int)> setFullSize,
+                  std::function<void(int)> setProcessedSize,
+                  std::function<bool()> isCanceled);
+
     void recursive_flush(FSProtocol &, int base_dir, const std::string &dir, void *handle, std::list<FSListedEntry> & list);
     void initGlobalMenu();
-    ScrollAreaItem *getListItem(int index);
+    void showEntryInformationDialog();
+
 
 protected:
     bool m_itemSelectMode;
 
+
 private:
+    FileScrollView m_fileViewList;
     FileViewWidgetEngine *m_mainViewEngine;
     std::vector<FSEntryInfo> m_FilesList, m_DirsList;
     int m_firstHeight;
@@ -194,23 +228,25 @@ private:
     unsigned int m_currentWorkspaceId;
 
     //std::vector <std::string> _current_protocol;
-    std::list <const FSEntryInfo *> _selected_list;
+    std::list <const FSEntryInfo *> m_selectedList;
 
-    ClipBoard m_clipboard;
+    ClipBoard m_copyMoveClipboard,
+              m_deleteClipboard;
 
     bool m_needCd;
     std::string m_cdLaterTo;
 
     /* глобальное меню */
     ListMenu global_menu;
-    GlobalMenuButton global_menu_button;
-    ListMenuItem *mark_start_stop;
+    GlobalMenuButton m_headMenuButton;
+    ListMenuItem *m_menuMarkOptionsItem;
+    ListMenuItem *m_menuPasteItem;
 
     bool global_menu_first_move, global_menu_showing;
     int global_menu_last_x, global_menu_last_y, global_menu_fix_y;
     int global_menu_way;
     int global_menu_speed;
-
+    int last_ololo;
 
 public:
     Image border_img, folder_icon, file_icon, back_action_icon,
@@ -220,6 +256,7 @@ public:
 
 public:
     void onItemMenu(const FSEntryInfo & f,  FileViewWidgetAbstractItem *abstract_item);
+    void showRenameDialog(const std::string &name);
 
 };
 

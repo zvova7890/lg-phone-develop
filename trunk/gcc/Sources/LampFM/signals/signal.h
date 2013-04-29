@@ -4,186 +4,167 @@
 
 #include <functional>
 #include <list>
-
+#include <assert.h>
 
 namespace signal_slot {
 
+    
+    
 
-class simple_object
-{
-    void func();
-};
-
-
-
-template <class Object, typename FuncDecl>
-class signal_container
+template <typename... Arguments>
+class signal_base
 {
 public:
 
-    signal_container() {
-        object = 0;
-        obj_function = 0;
-        function = 0;
+    signal_base() {
+        _caller = [](Arguments...) {};
     }
 
-    template<typename T>
-    signal_container(Object *obj, T func) {
-        object = obj;
-        obj_function = (decltype(obj_function))func;
+    signal_base(const std::function<void(Arguments...)> &f) {
+        _caller = f;
     }
 
 
-    template<typename T>
-    signal_container(T func) {
-        object = 0;
-        function = func;
+    template <class Object, typename Func, typename... PlaceHolders>
+    signal_base(Object obj, Func func, PlaceHolders... place) {
+        _caller = std::bind(func, obj, place...);
+    }
+
+
+    template <typename... Args>
+    void trigger(Args... args) {
+        _caller(args...);
+    }
+
+    void erase() {
+        _caller = [](Arguments...) {};
+    }
+
+    signal_base & operator =(const signal_base<Arguments...> & s) {
+        _caller = s._caller;
+        return *this;
+    }
+
+
+private:
+    std::function<void(Arguments...)> _caller;
+};
+
+
+template <typename... Arguments>
+class signal
+{
+
+public:
+
+    void connect(const std::function<void(Arguments...)> &f) {
+        sig = f;
+    }
+
+
+    template <class Object, typename Func, typename... PlaceHolders>
+    void connect(Object obj, Func func, PlaceHolders... place) {
+        sig = std::function<void(Arguments...)>(std::bind(func, obj, place...));
+    }
+
+
+    void disconnect() {
+        sig.erase();
+    }
+
+    template <typename... Args>
+    void trigger(Args... args) {
+        sig.trigger(args...);
+    }
+
+
+
+private:
+    signal_base<Arguments...> sig;
+};
+
+
+template <typename... Arguments>
+class multi_signal
+{
+    typedef std::list <signal_base<Arguments...> > _slots;
+
+public:
+
+    multi_signal() : blocked(false) {
+
+    }
+
+    typename std::list <signal_base<Arguments...> >::iterator _iterator;
+    typedef typename std::list <signal_base<Arguments...> >::iterator slot;
+
+    auto connect(const std::function<void(Arguments...)> &f) -> decltype(_iterator)
+    {
+        assert(blocked == false);
+        list.push_back( f );
+        return (--list.end());
+    }
+
+
+    template <class Object, typename Func, typename... PlaceHolders>
+    auto connect(Object obj, Func func, PlaceHolders... place) -> decltype(_iterator)
+    {
+        list.push_back( std::function<void(Arguments...)>(std::bind(func, obj, place...)) );
+        return (--list.end());
+    }
+
+
+    void disconnect(const multi_signal::slot & it) {
+        if(blocked)
+            need_disconnect.push_back(it);
+        else
+            list.erase(it);
     }
 
     template <typename... Args>
     void trigger(Args... args) {
 
-        if(object) {
-            auto call = (void (simple_object::*)(Args...))obj_function;
-            simple_object *o = (simple_object *)object;
-            (o->*call)(args...);
+        /* on triggering, calients can disconnecting signals, it`s may provide a carsh, when remove on iterating
+         * so, we make another list of disconnecters, and after iterating, we disconnect it
+        */
+        blockDisconnecting();
+        for(signal_base<Arguments...> & c : list)
+            c.trigger(args...);
 
-        } else {
-            function(args...);
-        }
+        unblockDisconnecting();
     }
 
-    bool operator==(const signal_container<simple_object, FuncDecl> &c) {
-        if(c.object) {
-            if(c.object == object && c.obj_function == obj_function)
-                return true;
-        } else {
-            if(c.function == function)
-                return true;
-        }
 
-        return false;
+    multi_signal & operator = (const multi_signal<Arguments...> & s) {
+        list = s.list;
+    }
+
+
+    void clear() {
+        list.clear();
+        need_disconnect.clear();
     }
 
 private:
-    Object *object;
-    void (simple_object::*obj_function)();
-    std::function<FuncDecl> function;
-    //void (*function)();
+    inline void blockDisconnecting() {
+        blocked = true;
+    }
+
+    void unblockDisconnecting() {
+        blocked = false;
+        for(const slot &s : need_disconnect)
+            list.erase(s);
+
+        need_disconnect.clear();
+    }
+
+private:
+    _slots list;
+    bool blocked;
+    std::list <slot> need_disconnect;
 };
 
 
-
-template <typename FuncDecl>
-class signal
-{
-public:
-
-    signal() :
-        _slot(0) {
-
-    }
-
-    ~signal() {
-        if(_slot)
-            delete _slot;
-    }
-
-    template <typename t>
-    void connect( t func )
-    {
-        if(_slot)
-            delete _slot;
-
-        _slot = new signal_container<simple_object, FuncDecl>(func);
-    }
-
-    template <class ObjType, class Obj, typename Func>
-    void connect(Obj obj, Func func )
-    {
-        if(_slot)
-            delete _slot;
-
-        _slot = (signal_container<simple_object, FuncDecl> *)new signal_container<ObjType, FuncDecl>(obj, func);
-    }
-
-    void disconnect()
-    {
-        if(_slot)
-            delete _slot;
-
-        _slot = 0;
-    }
-
-    template <typename... Args>
-    void trigger(Args... args) {
-        if(_slot)
-            _slot->trigger(args...);
-    }
-
-    signal_container<simple_object, FuncDecl> *_slot;
-};
-
-
-
-template <typename FuncDecl>
-class multi_signal
-{
-public:
-
-
-    typedef signal_container<simple_object, FuncDecl> template_container;
-    typename std::list<signal_container<simple_object, FuncDecl>*>::iterator iterator;
-
-    typedef decltype(iterator) slot;
-
-    ~multi_signal() {
-        clear();
-    }
-
-    void clear()
-    {
-        for(template_container * _slot : _slots )
-            delete _slot;
-
-        _slots.clear();
-    }
-
-
-
-    template <typename t>
-    auto connect( t func ) -> decltype(iterator)
-    {
-        _slots.push_back( new template_container(func) );
-        return (--_slots.end());
-    }
-
-    template <class ObjType, class Obj, typename Func>
-    auto connect(Obj obj, Func func ) -> decltype(iterator)
-    {
-        _slots.push_back((template_container *)new signal_container<ObjType, FuncDecl>(obj, func));
-        return (--_slots.end());
-    }
-
-    template <class Iterator>
-    void disconnect(Iterator it) {
-        signal_container<simple_object, FuncDecl> *obj = (*it);
-        _slots.erase(it);
-        delete obj;
-    }
-
-    template <typename... Args>
-    void trigger(Args... args) {
-
-        for(template_container * slot : _slots )
-            slot->trigger(args...);
-    }
-
-    std::list<signal_container<simple_object, FuncDecl> *> _slots;
-};
-
-
-} // signal_slot
-
+} // signals
 
 #endif // SIGNAL_H

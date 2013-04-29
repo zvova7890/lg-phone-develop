@@ -2,7 +2,7 @@
 #define FILEVIEWWIDGETABSTRACTITEM_H
 
 
-#include <Ui/ActiveList.h>
+
 #include "FSEntryInfo.h"
 #include "FileViewWidget.h"
 

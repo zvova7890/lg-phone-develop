@@ -21,13 +21,14 @@
 
 #include <gl.h>
 
-#include <Ui/UActiveArea.h>
-#include <ScrollArea.h>
+#include <Widget.h>
 #include "FileViewWidget.h"
 #include "GlobalMenuButton.h"
 #include "ExtManager.h"
 #include "FileViewWidgetListEngine.h"
 #include "LocalFSProtocol.h"
+#include "Keyboard/Keyboard.h"
+
 
 #include <Api/ApiLinkLib/ApiLink.h>
 
@@ -43,13 +44,13 @@ std::string elfdir;
 ResourceManager *_global_res_manager;
 ExtManager *ext_manager;
 EventManager event_mngr;
-UActiveArea active_area(&event_mngr, Rect(0, 0, 240, 400), true);
+Widget active_area(Rect(0, 0, 240, 400), &event_mngr);
 EffectManager global_emanager(&active_area);
 FSProtocolsContainer protocols;
 
 //GlobalMenuButton *menu_test = 0;
 FileViewWidget *main_view = 0;
-
+Keyboard *kbd;
 
 unsigned int last_time, fps, fps_count;
 bool _inited = false;
@@ -77,7 +78,7 @@ ExtManager & extensionManager() {
     return *ext_manager;
 }
 
-UActiveArea & mainActiveArea() {
+Widget & mainWidget() {
     return active_area;
 }
 
@@ -86,12 +87,16 @@ FSProtocolsContainer & protocolsContainer() {
 }
 
 
+Keyboard *mainKeyboard() {
+    return kbd;
+}
+
 void Screen_OnDraw()
 {
     if(!_inited)
         return;
 
-    active_area.paintEvent();
+    active_area.paint();
 
     ++fps_count;
     if(last_time != cur_sec())
@@ -105,6 +110,7 @@ void Screen_OnDraw()
     sprintf(f, "fps: %d", fps);
     glSetPen(0xAFFF0000);
     glDrawString(f, 0, 0, 240, 30, 13, FT_TEXT_W_RIGHT | FT_TEXT_H_CENTER, 0, 128);
+
 
     event_mngr.update();
 }
@@ -127,31 +133,35 @@ void Screen_OnInit()
     glActivateContext(gl_context);
     glEnable(GL_ALPHA_TEST);
 
+    active_area.activateLongPress(true);
 
     protocols.pushProtocol("local", new LocalFSProtocol);
 
 
-    event_mngr.setRefreshFunc( []() {
+    event_mngr.setRefreshFunc( [](void *) {
         GrSys_Refresh();
     });
 
-    event_mngr.setPaintFunc( []() {
+    event_mngr.setPaintFunc( [](void *) {
         Screen_OnDraw();
     });
 
     main_view = new FileViewWidget(&active_area, &global_emanager, Rect(0, 0, 240, 400));
 
-    main_view->onExitSignal().connect( [](FileViewWidget *) {
+    main_view->onExitSignal().connect( std::function<void(FileViewWidget*)>([](FileViewWidget *) {
         TaskMngr_AppExit(0, 0, 0);
-    } );
+    }) );
 
-    active_area.push(main_view);
+    active_area.add(main_view);
 
     main_view->cdEffectPrepare(false);
     main_view->cdUp("/", false);
 
     _inited = true;
     main_view->cdEffectStart(EFFECT_CENTER_SCALE);
+
+    kbd = new Keyboard(Rect(0, 250, 240, 150), &active_area);
+
 }
 
 
@@ -159,15 +169,12 @@ void Screen_OnInit()
 //Действие при уничтожении окна
 void Screen_OnExit()
 {
-    main_view->setLinesCount(0);
-
-    active_area.pop(main_view);
+    delete kbd;
     delete main_view;
-
-    glDestroyContext( glActiveContext() );
-
     delete _global_res_manager;
     delete ext_manager;
+
+    glDestroyContext( glActiveContext() );
 }
 
 
@@ -210,6 +217,7 @@ void Screen_OnKeyDown(int key)
     case KEY_MULTI:
         TaskMngr_Show();
         break;
+
     case KEY_END:
         TaskMngr_AppExit(0, 0, 0);
         break;
@@ -272,9 +280,8 @@ void Screen_OnPointing(int action, int position)
         SetUP_SetTouchpadSensitivity(setup_h, TOUCHPAD_SENSITIVITY_SET, 9);
     }
 
-    active_area.touchEvent(action, x, y);
+    active_area.touch(action, x, y);
     event_mngr.update();
-    //refresh();
 }
 
 

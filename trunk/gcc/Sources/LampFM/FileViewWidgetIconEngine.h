@@ -2,21 +2,21 @@
 #define FILEVIEWWIDGETICONENGINE_H
 
 
-#include <Ui/ActiveList.h>
+#include <Widget.h>
 #include "FileViewWidgetEngine.h"
 #include "FileViewWidgetAbstractItem.h"
 #include "FSEntryInfo.h"
 
 
 
-class FileViewWidgetIconItem : public ActiveListItem
+class FileViewWidgetIconItem : public Widget
 {
 public:
-    class FsEntryItem : public UActiveAreaItem<ActiveAreaItem>, public FileViewWidgetAbstractItem
+    class FsEntryItem : public Widget, public FileViewWidgetAbstractItem
     {
     public:
         FsEntryItem(FileViewWidgetIconItem *parent, FSEntryInfo *fentry, const Rect &r) :
-            UActiveAreaItem<ActiveAreaItem>(parent->parent()->parent(), r, false),
+            Widget(r, parent),
             FileViewWidgetAbstractItem((FileViewWidget*)parent->parent()),
             m_isLongPress(false),
             m_fsEntryInfo(fentry),
@@ -53,21 +53,16 @@ public:
     void paintEvent();
     void touchEvent(int action, int x, int y);
 
-    UActiveArea *itemsUActiveArea() {
-        return &m_touchArea;
-    }
-
 protected:
     void itemTouched(FSEntryInfo *);
-    FsEntryItem *entryItem(int at) {
+    /*FsEntryItem *entryItem(int at) {
         return (FsEntryItem*)m_touchArea.queueItem(at)->user;
-    }
+    }*/
 
 protected:
     std::vector<FSEntryInfo> m_fsInfo;
     int m_maxView;
     FileViewWidget *m_widgetParent;
-    UActiveArea m_touchArea;
 };
 
 
@@ -78,7 +73,7 @@ public:
     FileViewWidgetIconEngine(FileViewWidget *parent);
     virtual ~FileViewWidgetIconEngine();
 
-    ScrollAreaItem *getListItem(int index);
+    Widget *getListItem(int index);
     int  itemBySystemEntryNumber(int n);
     int  fileSystemEntryByItem(int n);
     void clearItems();

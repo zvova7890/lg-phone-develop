@@ -111,7 +111,7 @@ int ExtManager::loadConfig(const std::string &conf)
     int sz = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    char *buf = new char[sz];
+    char *buf = new char[sz+1];
     fread(buf, sz, 1, fp);
     buf[sz] = 0;
     fclose(fp);

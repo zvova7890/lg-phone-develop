@@ -2,7 +2,7 @@
 #define FILEVIEWWIDGETLISTENGINE_H
 
 
-#include <Ui/ActiveList.h>
+#include <Widget.h>
 #include "FileViewWidgetEngine.h"
 #include "FileViewWidgetAbstractItem.h"
 #include "FSEntryInfo.h"
@@ -11,7 +11,7 @@
 class FileViewWidget;
 
 
-class FileViewWidgetListItem : public FileViewWidgetAbstractItem, public ActiveListItem
+class FileViewWidgetListItem : public FileViewWidgetAbstractItem, public Widget
 {
 public:
     FileViewWidgetListItem(FileViewWidget *parent, int w, int h, const FSEntryInfo &entry);
@@ -36,7 +36,7 @@ public:
     FileViewWidgetListEngine(FileViewWidget *parent);
     virtual ~FileViewWidgetListEngine();
 
-    ScrollAreaItem *getListItem(int index);
+    Widget *getListItem(int index);
     int  itemBySystemEntryNumber(int n);
     int  fileSystemEntryByItem(int n);
     void clearItems();
@@ -50,10 +50,12 @@ public:
 
     void block();
     void unblock();
+    int fullListHeight() const;
 
 protected:
     std::vector <FileViewWidgetListItem*> m_items;
     bool m_isBlocked;
+    int m_fullHeight;
 };
 
 

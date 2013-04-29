@@ -13,7 +13,7 @@
 
 FileViewWidgetListItem::FileViewWidgetListItem(FileViewWidget *parent, int w, int h, const FSEntryInfo & entry) :
     FileViewWidgetAbstractItem(parent),
-    ActiveListItem(parent, w, h),
+    Widget(Rect(Point(), Point(w, h)), parent),
     _is_longpress(false),
     _fsinfo(entry)
 {
@@ -38,8 +38,8 @@ void FileViewWidgetListItem::paintEvent()
     if(!m_widgetParent->isSelectionMode())
         setMarked(false);
 
-    int x = rect().x();
-    int y = rect().y();
+    int x = realRect().x();
+    int y = realRect().y();
 
     if(isTouched() && !isMoved()) {
 
@@ -53,7 +53,7 @@ void FileViewWidgetListItem::paintEvent()
     glSetPen(0xFF332828);
     glDrawHLine(x, x+rect().w(), y);
 
-    if(currentLineDisplayID() == (int)m_widgetParent->viewItemsCount()-1)
+    if(Widget::id() == (int)m_widgetParent->viewItemsCount()-1)
         glDrawHLine(x, x+rect().w(), y + x+rect().h());
 
 
@@ -90,14 +90,14 @@ void FileViewWidgetListItem::paintEvent()
     if(m_widgetParent->isSelectionMode() && !_fsinfo.action && _fsinfo.name != "..") {
         if( !isMarked() && !m_widgetParent->checkbox_icon.isEmpty())
         {
-            drawImage(x+1, rect().y2()-m_widgetParent->checkbox_icon.height(), &m_widgetParent->checkbox_icon);
+            drawImage(x+1, realRect().y2()-m_widgetParent->checkbox_icon.height(), &m_widgetParent->checkbox_icon);
             if(x_offset < m_widgetParent->checkbox_icon.width())
                 x_offset = m_widgetParent->checkbox_icon.width()+2;
         }
 
         if( isMarked() && !m_widgetParent->checkedbox_icon.isEmpty() )
         {
-            drawImage(x+1, rect().y2()-m_widgetParent->checkedbox_icon.height(), &m_widgetParent->checkedbox_icon);
+            drawImage(x+1, realRect().y2()-m_widgetParent->checkedbox_icon.height(), &m_widgetParent->checkedbox_icon);
             if(x_offset < m_widgetParent->checkedbox_icon.width())
                 x_offset = m_widgetParent->checkedbox_icon.width()+2;
         }
@@ -185,7 +185,7 @@ void FileViewWidgetListItem::touchEvent(int action, int x, int y)
             _is_longpress = false;
             break;
 
-        case TOUCH_ACTION_LONG_PRESS:
+        case TOUCH_ACTION_LONGPRESS:
             _is_longpress = true;
             m_widgetParent->eventManager()->updateAfterEvent();
             break;
@@ -218,19 +218,23 @@ FileViewWidgetListEngine::~FileViewWidgetListEngine()
 
 
 
-ScrollAreaItem *FileViewWidgetListEngine::getListItem(int index)
+Widget *FileViewWidgetListEngine::getListItem(int index)
 {
     if(m_isBlocked)
         return 0;
 
     if(index < 0) {
-        printf("Warning: index must be >= 0. item: %d, index: %d\n ", fileViewParent()->item()->item, index);
+        printf("Warning: index must be >= 0. item: %d, index: %d\n ", fileViewParent()->fileViewArea().item(), index);
         return 0;
     }
 
     if(index >= (int)fileSystemEntriesCount()) {
         printf("Warning: index value is bigger than have items\n ");
         return 0;
+    }
+
+    if(!m_fullHeight) {
+        m_fullHeight = fileSystemEntriesCount() * 45;
     }
 
     FileViewWidgetListItem *fi = 0;
@@ -254,7 +258,7 @@ ScrollAreaItem *FileViewWidgetListEngine::getListItem(int index)
         fi = (FileViewWidgetListItem*)m_items[index];
 
 
-    return fi->item();
+    return fi;
 }
 
 
@@ -267,6 +271,7 @@ void FileViewWidgetListEngine::clearItems()
     }
 
     m_items.clear();
+    m_fullHeight = 0;
 }
 
 
@@ -370,4 +375,10 @@ void FileViewWidgetListEngine::block()
 void FileViewWidgetListEngine::unblock()
 {
     m_isBlocked = false;
+}
+
+
+int FileViewWidgetListEngine::fullListHeight() const
+{
+    return m_fullHeight;
 }

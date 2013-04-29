@@ -3,8 +3,8 @@
 
 
 
-GlobalMenuButton::GlobalMenuButton(UActiveArea *parent, const Rect &r, bool blockable) :
-    UActiveAreaItem<ActiveAreaItem>(parent, r, blockable),
+GlobalMenuButton::GlobalMenuButton(Widget *parent, const Rect &r) :
+    Widget(r, parent),
     m_borderImg(0)
 {
 

@@ -12,7 +12,8 @@ class Brush
 public:
     typedef enum {
         OWN = -1,
-        COLOR = 0x01,
+        RECT = 0x01,
+        FILLRECT = 0x02,
         IMAGE,
         GRADIENT
     }Type;
@@ -20,7 +21,7 @@ public:
 public:
     Brush();
     Brush(const Brush &b);
-    Brush(GLColor color);
+    Brush(GLColor color, bool fill = true);
     Brush(GLGradient *gradient);
     Brush(Image *image);
     Brush(const std::function<void(Brush &, const Rect &)> &f);
@@ -29,11 +30,12 @@ public:
     Brush & operator=(const Brush &b);
 
     void paint(const Rect &r);
-    virtual void paintEvent(const Rect &r);
+    void paint(const Rect &r, int round_x, int round_y);
+    virtual void paintEvent(const Rect &r, int round_x = 0, int round_y = 0);
 
 private:
-    char  _type;
-    void *_point;
+    char  m_type;
+    void *m_point;
 };
 
 #endif // BRUSH_H
