@@ -117,16 +117,16 @@ public:
 public:
     ClipBoard();
 
-    bool pushFile(const std::string &protocol, const std::string &dir, const FSListedEntry &info, Action );
+    bool pushFile(const std::string &protocol, const std::string &dir, const FSListedEntry &info, int );
     bool popFile(const std::string &protocol, const std::string &dir, const FSListedEntry &info);
     bool popDir(const std::string &protocol, const std::string &dir);
     void clear();
 
-    std::map <std::string, ClipBoardProtocolGroup> &protocols() {
+    std::unordered_map <std::string, ClipBoardProtocolGroup> &protocols() {
         return m_clipProtocols;
     }
 
-    unsigned int size() {
+    unsigned int size() const {
         return m_filesCountForCopy+m_filesCountForMove+m_filesCountForDelete;
     }
 
@@ -146,7 +146,7 @@ public:
 
 private:
     unsigned int m_filesCountForCopy, m_filesCountForMove, m_filesCountForDelete;
-    std::map <std::string, ClipBoardProtocolGroup> m_clipProtocols;
+    std::unordered_map <std::string, ClipBoardProtocolGroup> m_clipProtocols;
 };
 
 

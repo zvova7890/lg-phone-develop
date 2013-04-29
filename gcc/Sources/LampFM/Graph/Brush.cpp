@@ -60,8 +60,8 @@ T *restore_pointer_unpack(void * const * obj)
 
 Brush::Brush()
 {
-    _type = 0;
-    clear_n_set<int>(&_point, 0);
+    m_type = 0;
+    clear_n_set<int>(&m_point, 0);
 }
 
 
@@ -71,70 +71,74 @@ Brush::Brush(const Brush &b)
 }
 
 
-Brush::Brush(GLColor color)
+Brush::Brush(GLColor color, bool fill)
 {
-    _type = Type::COLOR;
-    alloc_n_set(&_point, color, 0);
+    m_type = fill? Type::FILLRECT : Type::RECT;
+    alloc_n_set(&m_point, color, 0);
 }
 
 
 Brush::Brush(GLGradient *gradient)
 {
-    _type = Type::GRADIENT;
-    alloc_n_set(&_point, gradient, 0);
+    m_type = Type::GRADIENT;
+    alloc_n_set(&m_point, gradient, 0);
 }
 
 
 Brush::Brush(Image *image)
 {
-    _type = Type::IMAGE;
-    alloc_n_set(&_point, image, 0);
+    m_type = Type::IMAGE;
+    alloc_n_set(&m_point, image, 0);
 }
 
 
 Brush::Brush(const std::function<void(Brush &, const Rect &)> &f)
 {
-    _type = Type::OWN;
-    alloc_n_set(&_point, f, 1);
+    m_type = Type::OWN;
+    alloc_n_set(&m_point, f, 1);
 }
 
 
 Brush::~Brush()
 {
-    if(_type == (char)OWN)
-        clear_n_set<brush_func_t>(&_point, 1);
+    if(m_type == (char)OWN)
+        clear_n_set<brush_func_t>(&m_point, 1);
 }
 
 
 Brush & Brush::operator =(const Brush &b)
 {
-    if(_type == (char)OWN)
-        clear_n_set<brush_func_t>(&_point, 1);
+    if(m_type == (char)OWN)
+        clear_n_set<brush_func_t>(&m_point, 1);
 
-    switch(b._type)
+    switch(b.m_type)
     {
         case (char)OWN:
-            alloc_n_set(&_point, *restore_pointer_unpack<brush_func_t>(&b._point), 1);
+            alloc_n_set(&m_point, *restore_pointer_unpack<brush_func_t>(&b.m_point), 1);
             break;
 
         case (char)IMAGE:
-            alloc_n_set(&_point, restore_pointer<Image*>(&b._point), 0);
+            alloc_n_set(&m_point, restore_pointer<Image*>(&b.m_point), 0);
             break;
 
-        case (char)COLOR:
-            alloc_n_set(&_point, restore_pointer<GLColor>(&b._point), 0);
+        case (char)RECT:
+            alloc_n_set(&m_point, restore_pointer<GLColor>(&b.m_point), 0);
+            break;
+
+        case (char)FILLRECT:
+            alloc_n_set(&m_point, restore_pointer<GLColor>(&b.m_point), 0);
             break;
 
         case (char)GRADIENT:
-            alloc_n_set(&_point, restore_pointer<GLGradient*>(&b._point), 0);
+            alloc_n_set(&m_point, restore_pointer<GLGradient*>(&b.m_point), 0);
             break;
 
         default:
-            clear_n_set<int>(&_point, 0);
+            clear_n_set<int>(&m_point, 0);
             break;
     }
 
-    _type = b._type;
+    m_type = b.m_type;
 
     return *this;
 }
@@ -146,21 +150,40 @@ void Brush::paint(const Rect &r)
 }
 
 
-void Brush::paintEvent(const Rect &r)
+void Brush::paint(const Rect &r, int round_x, int round_y)
 {
-    switch(_type)
+    paintEvent(r, round_x, round_y);
+}
+
+
+void Brush::paintEvent(const Rect &r, int round_x, int round_y)
+{
+    switch(m_type)
     {
-        case (char)Type::COLOR:
-            glSetPen(restore_pointer<GLColor>(&_point));
+        case (char)Type::FILLRECT:
+            glSetPen(restore_pointer<GLColor>(&m_point));
+
             if(r.w() == 1) {
                 glDrawVLine(r.y(), r.y2(), r.x());
 
             } else if(r.h() == 1) {
                 glDrawHLine(r.x(), r.x2(), r.y());
 
-            } else
-                glDrawFilledRectange(r.x(), r.y(), r.x2(), r.y2());
+            } else {
+                if(round_x > 0 || round_y > 0)
+                    glFillRoundedRect(r.x(), r.y(), r.w(), r.h(), round_x, round_y);
+                else
+                    glDrawFilledRectange(r.x(), r.y(), r.x2(), r.y2());
+            }
+            break;
 
+        case (char)Type::RECT:
+            glSetPen(restore_pointer<GLColor>(&m_point));
+
+            if(round_x > 0 || round_y > 0)
+                glDrawRoundedRect(r.x(), r.y(), r.w(), r.h(), round_x, round_y);
+            else
+                glDrawRectange(r.x(), r.y(), r.x2(), r.y2());
             break;
 
         case (char)Type::GRADIENT:
@@ -169,7 +192,7 @@ void Brush::paintEvent(const Rect &r)
 
         case (char)Type::IMAGE:
         {
-            Image *_image = restore_pointer<Image*>(&_point);
+            Image *_image = restore_pointer<Image*>(&m_point);
             int x = r.x(),
                 y = r.y();
 
@@ -192,7 +215,7 @@ void Brush::paintEvent(const Rect &r)
 
         case (char)Type::OWN:
         {
-            brush_func_t & p = *restore_pointer_unpack<brush_func_t>(&_point);
+            brush_func_t & p = *restore_pointer_unpack<brush_func_t>(&m_point);
             p(*this, r);
             break;
         }

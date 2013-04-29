@@ -1,9 +1,8 @@
 #ifndef FILEVIEWWIDGETENGINE_H
 #define FILEVIEWWIDGETENGINE_H
 
-
-#include <Ui/EventManager.h>
-#include <Ui/ActiveList.h>
+#include <Widget.h>
+#include <EventManager.h>
 #include "FSEntryInfo.h"
 
 
@@ -16,7 +15,7 @@ public:
     virtual ~FileViewWidgetEngine();
 
     /* must return a ScrollAreaItem for SrollArea engine */
-    virtual ScrollAreaItem *getListItem(int /*index*/) {
+    virtual Widget *getListItem(int /*index*/) {
         return 0;
     }
 
@@ -68,6 +67,10 @@ public:
 
     virtual void unblock() {
 
+    }
+
+    virtual int fullListHeight() const {
+        return 0;
     }
 
     /* ATENTION: KEP in thread! ;) */

@@ -106,7 +106,7 @@ ClipBoard::ClipBoard()
 }
 
 
-bool ClipBoard::pushFile(const std::string &protocol, const std::string &dir, const FSListedEntry &info, ClipBoard::Action action)
+bool ClipBoard::pushFile(const std::string &protocol, const std::string &dir, const FSListedEntry &info, int action)
 {
     FSProtocol &p = protocolsContainer().indexOf(protocol);
     ClipBoardProtocolGroup &pgroup = m_clipProtocols[protocol];

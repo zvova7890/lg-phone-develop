@@ -3,6 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <fcntl.h>
+#include <sys/stat.h>
 #include <fs.h>
 
 
@@ -98,7 +99,7 @@ void *LocalFSProtocol::opendir(const char *dir, const char *mask)
 {
     ((void)mask);
 
-    int d = fs_opendir(dir);
+    long d = fs_opendir(dir);
 
     if(d > 0) {
         void **r = (void **)malloc(sizeof(void*));

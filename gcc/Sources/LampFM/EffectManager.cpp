@@ -1,19 +1,23 @@
+#include <pxeapi.h>
 #include "EffectManager.h"
 #include <gl.h>
 
 
 
-EffectManager::EffectManager(UActiveArea *parent) :
-    UActiveAreaItem<ActiveAreaItem>(parent, Rect(0, 0, 240, 400), false),
+EffectManager::EffectManager(Widget *parent) :
+    Widget(Rect(0, 0, 240, 400), parent),
     m_isActive(false)
 {
-    auto event = [](TimerWrap *timer, void *user){
-        ((void)timer);
-        EffectManager *self = (EffectManager*)user;
+    auto event = [](Timer *timer) {
+        EffectManager *self = (EffectManager*)timer->userData();
         self->timerEvent();
     };
 
-    TimerCreate(&timer, 1, event, this);
+    setFullScreenBlock(false);
+    setBlockable(false);
+
+    timer.setUserData(this);
+    timer.timerEventSignal().connect( event );
     memset(&prev_img, 0, sizeof(prev_img));
     memset(&next_img, 0, sizeof(next_img));
 }
@@ -22,7 +26,6 @@ EffectManager::EffectManager(UActiveArea *parent) :
 EffectManager::~EffectManager()
 {
     m_isActive = false;
-    TimerDestroy(&timer);
 
     if(next_img.bitmap)
         free(next_img.bitmap);
@@ -35,7 +38,7 @@ void EffectManager::reset()
 {
     if(m_isActive) {
         memset(&prev_img, 0, sizeof(prev_img));
-        TimerStop(&timer);
+        timer.stop();
         m_isActive = false;
 
         if(next_img.bitmap)
@@ -49,8 +52,16 @@ void EffectManager::stop()
 {
     bool _a = m_isActive;
 
-    reset();
-    _parent->pop(this);
+    if(m_isActive) {
+        reset();
+
+        //eventManager()->notifyAfterEvent( [this](){
+        //    close();
+        //} );
+
+        hide();
+    }
+
 
     if(_a) m_effectFinished.trigger(this);
 }
@@ -65,9 +76,10 @@ void EffectManager::start(int effect, int delay)
     end_pos = prev_img.w;
     speed = 20;
 
-    _parent->pushFront(this);
+    //printf("Show delay %d\n", delay);
+    show();
 
-    TimerStart(&timer, delay);
+    timer.start(delay);
     m_isActive = true;
 
     eventManager()->updateAfterEvent();
@@ -167,8 +179,8 @@ void EffectManager::paintEvent()
 
 void EffectManager::timerEvent()
 {
-    if(timer.period != 3){
-        TimerResetPeriod(&timer, 3);
+    if(timer.period() != 40){
+        timer.resetPeriod(40);
     }
     eventManager()->updateAfterEvent();
 }
@@ -273,7 +285,7 @@ void EffectManager::alphaEffect(int t)
                     if(!next_img.bitmap) {
                         next_img.bitmap = malloc(240*400*2);
                     }
-                    memcpy(next_img.bitmap, GetScreenBuffer(), 240*400*2);
+                    memcpy(next_img.bitmap, Graphics_GetScreenBuffer(), 240*400*2);
 
                     glDrawBitmap(0, 0, prev_img.w, prev_img.h, prev_img.bit, prev_img.bitmap);
 

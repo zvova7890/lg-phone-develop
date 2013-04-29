@@ -1,7 +1,7 @@
 #ifndef THREADWORKER_H
 #define THREADWORKER_H
 
-#include <Sys/Thread.h>
+#include <Core/Thread.h>
 #include <string>
 
 
@@ -27,7 +27,7 @@ public:
     void *user;
     Thread thread;
 
-    signal_slot::multi_signal <void(FileViewWidget*)>::slot slot;
+    signal_slot::multi_signal <FileViewWidget*>::slot slot;
 };
 
 #endif // THREADWORKER_H

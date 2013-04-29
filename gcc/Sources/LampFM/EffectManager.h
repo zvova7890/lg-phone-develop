@@ -2,10 +2,10 @@
 #define EFFECTMANAGER_H
 
 
-#include <Ui/EventManager.h>
-#include <Ui/UActiveArea.h>
+#include <EventManager.h>
+#include <Widget.h>
 #include <signals/signal.h>
-#include <TimerWrap.h>
+#include <Timer.h>
 #include "png_ops.h"
 
 
@@ -23,11 +23,11 @@ enum Effects{
 };
 
 
-class EffectManager : public UActiveAreaItem<ActiveAreaItem>
+class EffectManager : public Widget
 {
 public:
-    EffectManager(UActiveArea *parent);
-    ~EffectManager();
+    EffectManager(Widget *parent);
+    virtual ~EffectManager();
 
     void reset();
     void start(int effect, int delay = 3);
@@ -44,8 +44,8 @@ public:
     }
 
 
-    typedef signal_slot::multi_signal <void(EffectManager *)> signal;
-    static typename signal_slot::multi_signal <void(EffectManager *)> &_sig;
+    typedef signal_slot::multi_signal <EffectManager *> signal;
+    static typename signal_slot::multi_signal <EffectManager *> &_sig;
 
 
     signal & effectFinishedSignal() {
@@ -61,10 +61,12 @@ private:
     void dominoEffect(int t);
 
 private:
+    Widget::wid my_wid;
+
     signal m_effectFinished;
     int speed, start_pos, end_pos;
     image_t prev_img, next_img;
-    TimerWrap timer;
+    Timer timer;
     bool m_isActive;
     int m_effect;
 };

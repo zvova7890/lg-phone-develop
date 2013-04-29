@@ -2,23 +2,21 @@
 #define PROGRESSDIALOG_H
 
 
-#include <Ui/UActiveArea.h>
-#include <Ui/UButton.h>
+#include <Widget.h>
+#include <Button.h>
 #include <Graph/Image.h>
 #include <string>
 #include <png_ops.h>
 
 
-class ProgressDialog : public UActiveAreaItem<ActiveAreaItem>
+class ProgressDialog : public Widget
 {
 public:
-    ProgressDialog(UActiveArea *parent, const Rect &r, bool blockable = true);
-
+    ProgressDialog(Widget *parent, const Rect &r);
+    virtual ~ProgressDialog();
 
     void paintEvent();
     void touchEvent(int action, int x, int y);
-    void show();
-    void hide();
 
     void setProgressName(const std::string &n) {
         m_progressName = n;
@@ -54,7 +52,7 @@ public:
     }
 
 
-    UButton::signal & onCancelPressedSignal() {
+    Button::signal & onCancelPressedSignal() {
         return m_onCancelPressed;
     }
 
@@ -62,10 +60,9 @@ public:
 private:
     std::string m_progressName;
     std::string m_whatDoing;
-    UButton m_cancelButton;
+    Button m_cancelButton;
     Image *m_background;
-    UButton::signal m_onCancelPressed;
-    UActiveArea m_activeArea;
+    Button::signal m_onCancelPressed;
 
     unsigned int m_fullProgress, m_progress, m_maxFullProgress, m_maxProgress;
 };

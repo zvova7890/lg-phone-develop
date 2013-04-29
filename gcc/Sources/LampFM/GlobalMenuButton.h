@@ -1,20 +1,21 @@
 #ifndef GLOBALMENUBUTTON_H
 #define GLOBALMENUBUTTON_H
 
-#include <Ui/UButton.h>
+#include <Widget.h>
+#include <Button.h>
 #include <Graph/Image.h>
 #include "png_ops.h"
-#include <TimerWrap.h>
+#include <Timer.h>
 #include <signals/signal.h>
 
 
 
-class GlobalMenuButton : public UActiveAreaItem<ActiveAreaItem>
+class GlobalMenuButton : public Widget
 {
 public:
-    typedef signal_slot::signal <void(GlobalMenuButton *, int, int, int)> MoveSignal;
+    typedef signal_slot::multi_signal <GlobalMenuButton *, int, int, int> MoveSignal;
 
-    GlobalMenuButton(UActiveArea *parent, const Rect &r, bool blockable = true);
+    GlobalMenuButton(Widget *parent, const Rect &r);
     void paintEvent();
     void touchEvent(int action, int x, int y);
 

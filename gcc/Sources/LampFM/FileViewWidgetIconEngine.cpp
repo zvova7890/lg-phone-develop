@@ -13,9 +13,8 @@
 
 
 FileViewWidgetIconItem::FileViewWidgetIconItem(FileViewWidget *parent, int w, int h, int num, const std::vector<FSEntryInfo> &entries) :
-    ActiveListItem(parent, w, h),
-    m_widgetParent(parent),
-   m_touchArea(parent->eventManager(), Rect(0, 0, w, h))
+    Widget(Rect(0, 0, w, h), parent),
+    m_widgetParent(parent)
 {
     m_fsInfo = entries;
 
@@ -27,7 +26,7 @@ FileViewWidgetIconItem::FileViewWidgetIconItem(FileViewWidget *parent, int w, in
     for(unsigned int i=0; i<m_fsInfo.size(); ++i) {
         FsEntryItem *it = new FsEntryItem(this, 0, Rect(startx, 0, max_width, h));
         it->setFSEntryItem(&m_fsInfo[i]);
-        m_touchArea.push(it);
+        add(it);
         startx += max_width+subitem_w;
     }
 }
@@ -35,41 +34,28 @@ FileViewWidgetIconItem::FileViewWidgetIconItem(FileViewWidget *parent, int w, in
 
 FileViewWidgetIconItem::~FileViewWidgetIconItem()
 {
-    /*GLQueueList *q = _touch_area.itemsQueue();
-    GLQueueListItem *item;
-    for(item = q->first; item; item = (GLQueueListItem*)item->next)
-    {
-        ActiveAreaItem *titem = *glQueueListItemBody(item, ActiveAreaItem **);
-        auto aai = (FsEntryItem*)titem->user;
-        delete aai;
-    }*/
-
     /* iterator style for items queue */
-    for(auto item : m_touchArea)
+    for(Widget *item : m_childs)
     {
-        auto fei = (FsEntryItem*)item->user;
-        delete fei;
+        delete ((FsEntryItem*)item);
     }
 }
 
 
 void FileViewWidgetIconItem::paintEvent()
 {
-    m_touchArea.move(rect().x(), rect().y());
-
     /*if(isTouched() && !isMoved()) {
         glSetPen(0x4FFF0000);
-        glDrawFilledRectange(rect().x(), rect().y(), rect().x()+rect().w(), rect().y() + rect().x()+rect().h());
+        glDrawFilledRectange(realRect().x(), realRect().y(), realRect().x()+realRect().w(), realRect().y() + realRect().x()+realRect().h());
     }*/
 
-    m_touchArea.paintEvent();
+    Widget::paintEvent();
 }
 
 
 void FileViewWidgetIconItem::touchEvent(int action, int x, int y)
 {
-    m_touchArea.move(rect().x(), rect().y());
-    m_touchArea.touchEvent(action, x, y);
+    Widget::touchEvent(action, x, y);
 }
 
 
@@ -95,11 +81,11 @@ void FileViewWidgetIconItem::itemTouched(FSEntryInfo *fs_entry)
 void FileViewWidgetIconItem::FsEntryItem::paintEvent()
 {
     if(m_fsEntryInfo) {
-        int x = rect().x();
-        int y = rect().y();
+        int x = realRect().x();
+        int y = realRect().y();
 
-        int w = rect().w();
-        int h = rect().h();
+        int w = realRect().w();
+        int h = realRect().h();
 
         glSaveClipRegion();
         glSetClipRegion(x, y, x+w, y+h);
@@ -212,7 +198,7 @@ void FileViewWidgetIconItem::FsEntryItem::touchEvent(int action, int x, int y)
             m_isLongPress = false;
             break;
 
-        case TOUCH_ACTION_LONG_PRESS:
+        case TOUCH_ACTION_LONGPRESS:
 
             m_isLongPress = true;
             m_itemParent->m_widgetParent->eventManager()->updateAfterEvent();
@@ -244,7 +230,7 @@ FileViewWidgetIconEngine::~FileViewWidgetIconEngine()
 }
 
 
-ScrollAreaItem *FileViewWidgetIconEngine::getListItem(int index)
+Widget *FileViewWidgetIconEngine::getListItem(int index)
 {
     int size = 0;
     if(fileSystemEntriesCount()) {
@@ -256,7 +242,7 @@ ScrollAreaItem *FileViewWidgetIconEngine::getListItem(int index)
 
 
     if(index < 0) {
-        printf("Warning: index must be >= 0. item: %d, index: %d\n ", fileViewParent()->item()->item, index);
+        printf("Warning: index must be >= 0. item: %d, index: %d\n ", fileViewParent()->fileViewArea().item(), index);
         return 0;
     }
 
@@ -295,7 +281,7 @@ ScrollAreaItem *FileViewWidgetIconEngine::getListItem(int index)
     } else
         fi = (FileViewWidgetIconItem*)m_items[index];
 
-    return fi->item();
+    return fi;
 }
 
 
@@ -381,9 +367,10 @@ void FileViewWidgetIconEngine::setMarkedAll()
 
         if(item) {
             /* iterate items per line */
-            for(auto items : *item->itemsUActiveArea())
+
+            for(auto items : item->directChilds())
             {
-                auto fei = (FileViewWidgetIconItem::FsEntryItem*)items->user;
+                auto fei = ((FileViewWidgetIconItem::FsEntryItem*)items);
                 fei->setMarked();
             }
         }
@@ -396,9 +383,9 @@ void FileViewWidgetIconEngine::setUnMarkedAll()
     for(FileViewWidgetIconItem * i : m_items)
     {
         if(i) {
-            for(auto item : *i->itemsUActiveArea())
+            for(auto item : i->directChilds())
             {
-                auto fei = (FileViewWidgetIconItem::FsEntryItem*)item->user;
+                auto fei = (FileViewWidgetIconItem::FsEntryItem*)item;
                 fei->setMarked(false);
             }
         }
@@ -413,9 +400,9 @@ std::list<const FSEntryInfo *> FileViewWidgetIconEngine::getSelectedEntriesList(
     for(FileViewWidgetIconItem * i : m_items)
     {
         if(i) {
-            for(auto item : *i->itemsUActiveArea())
+            for(auto item : i->directChilds())
             {
-                auto fei = (FileViewWidgetIconItem::FsEntryItem*)item->user;
+                auto fei = (FileViewWidgetIconItem::FsEntryItem*)item;
                 if(i && fei->isMarked() && !fei->getSelectedEntry().action) {
                     list.push_back(&fei->getSelectedEntry());
                 }

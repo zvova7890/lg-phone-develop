@@ -15,19 +15,52 @@
 #include "FSEntryInfo.h"
 #include "LocalFSProtocol.h"
 #include "ThreadWorker.h"
+#include "Keyboard/Keyboard.h"
 
 
 
-FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rect &r) :
-    ActiveList(parent, r),
+
+
+
+FileViewWidget::FileScrollView::FileScrollView(const Rect &r, FileViewWidget *parent) :
+    VScrollArea(r, parent)
+{
+
+}
+
+FileViewWidget::FileScrollView::~FileScrollView()
+{
+
+}
+
+
+void FileViewWidget::FileScrollView::paintEvent()
+{
+    glSaveClipRegion();
+    glSetClipRegion(realRect().x(), realRect().y(), realRect().x2(), realRect().y2());
+    VScrollArea::paintEvent();
+    glRestoreClipRegion();
+}
+
+
+Widget *FileViewWidget::FileScrollView::widgetItem(int index)
+{
+    return parent()->m_mainViewEngine->getListItem(index);
+}
+
+
+
+FileViewWidget::FileViewWidget(Widget *parent, EffectManager *em, const Rect &r) :
+    Widget(r, parent),
     m_itemSelectMode(false),
+    m_fileViewList(r, this),
     m_mainViewEngine(0),
     m_firstHeight(r.h()),
-    m_fsEntryMenu(parent, Rect(10, 60, 240-20, 280), parent->eventManager()),
+    m_fsEntryMenu(this, Rect(10, 60, 240-20, 280)),
     global_yes_no_question(0),
     m_needCd(false),
-    global_menu(parent, Rect(0, 0, 240, 310), parent->eventManager()),
-    global_menu_button(parent, Rect(0, 0, 240, 39), false),
+    global_menu(this, Rect(0, 0, 240, 310)),
+    m_headMenuButton(this, Rect(0, 0, 240, 39)),
     global_menu_showing(false),
     m_effectManager(em)
 {
@@ -54,16 +87,24 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
 
     initGlobalMenu();
 
-    global_menu_button.setHeight(border_img.height());
-    global_menu_button.setWidth(border_img.width());
-    global_menu_button.setBackround(&border_img);
-    global_menu_button.setFullScreenBlock(false);
-    global_menu_button.setBlockable(true);
+    m_headMenuButton.setHeight(border_img.height());
+    m_headMenuButton.setWidth(border_img.width());
+    m_headMenuButton.setBackround(&border_img);
+    m_headMenuButton.setFullScreenBlock(false);
+    m_headMenuButton.setBlockable(true);
 
-    this->parent()->pushFront(&global_menu_button);
+    int off_h = m_headMenuButton.realRect().h();
+    m_fileViewList.setSize( Rect(realRect().x(), realRect().y()+off_h, rect().w(), rect().h()-off_h) );
+
+
+    this->add(&m_fileViewList);
+    this->add(&m_headMenuButton);
 
 
     auto event = [this](Timer *t) {
+
+        if(!global_menu_showing)
+            return;
 
         int new_y = 0;
 
@@ -73,7 +114,7 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
             if(new_y > 0) {
                 t->stop();
                 global_menu.move( global_menu.rect().x(), 1);
-                global_menu_button.move( 0, global_menu.rect().y2() );
+                m_headMenuButton.move( 0, global_menu.rect().y2() );
                 eventManager()->updateAfterEvent();
                 return;
             }
@@ -86,7 +127,7 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
                 global_menu.hide();
 
                 t->stop();
-                global_menu_button.move( 0, 0 );
+                m_headMenuButton.move( 0, 0 );
                 global_menu.setFullScreenBlock(false);
                 eventManager()->updateAfterEvent();
                 return;
@@ -95,14 +136,14 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
 
         global_menu_speed += (global_menu_speed*30)/100;
         global_menu.move( global_menu.rect().x(), new_y);
-        global_menu_button.move( 0, global_menu.rect().y2() );
+        m_headMenuButton.move( 0, global_menu.rect().y2() );
         eventManager()->updateAfterEvent();
     };
 
     m_menuTimer.timerEventSignal().connect( event );
 
 
-    global_menu_button.touchActionSignal().connect( [this](GlobalMenuButton *mm, int action, int x, int y) {
+    m_headMenuButton.touchActionSignal().connect( [this](GlobalMenuButton *mm, int action, int x, int y) {
 
         switch(action)
         {
@@ -113,10 +154,16 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
                 }
 
                 if(isSelectionMode()) {
-                    mark_start_stop->setText("Закончить выделение");
+                    m_menuMarkOptionsItem->setText("Закончить выделение");
                 } else {
-                    mark_start_stop->setText("Начать выделение");
+                    m_menuMarkOptionsItem->setText("Начать выделение");
                 }
+
+                if(!isClipboardsEmpty())
+                    m_menuPasteItem->setActive();
+                else
+                    m_menuPasteItem->setActive(false);
+
 
                 if(!global_menu_showing)
                    global_menu_first_move = true;
@@ -124,7 +171,7 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
                    global_menu_first_move = false;
 
 
-                global_menu_fix_y = y - global_menu_button.rect().y();
+                global_menu_fix_y = y - m_headMenuButton.rect().y();
                 global_menu_last_x = x;
                 global_menu_last_y = y;
                 global_menu_speed = 25;
@@ -133,10 +180,10 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
 
             case TOUCH_ACTION_RELEASE:
                 if(!global_menu_first_move && !mm->isOffRectTouch())
-                    m_menuTimer.start(5);
+                    m_menuTimer.start(40);
 
                 if(mm->isOffRectTouch() && !mm->isMoved()) {
-                    global_menu.hide();
+                    global_menu.close();
                     return;
                 }
 
@@ -148,14 +195,14 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
                     return;
 
                 if(global_menu_first_move) {
-                    stopScroll();
-                    global_menu.resetViewListPosition();
+                    fileViewArea().breakScrolling();
+                    global_menu.scrollArea().resetViewPosition();
                     global_menu.show();
                     global_menu.setFullScreenBlock(false);
-                    global_menu_button.setFullScreenBlock(true);
+                    m_headMenuButton.setFullScreenBlock(true);
                     global_menu_showing = true;
 
-                    fixScrollPosition();
+                    fileViewArea().fixupViewPosition();
                     global_menu_first_move = false;
 
 
@@ -172,11 +219,12 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
 
 
 
-                global_menu.move( global_menu.rect().x(), (y-global_menu_fix_y)-global_menu.rect().h() );
-                if(global_menu.rect().y() > 0)
+                global_menu.move( global_menu.realRect().x(), (y-global_menu_fix_y)-global_menu.rect().h() );
+                if(global_menu.realRect().y() > 0)
                     global_menu.moveY(1);
 
-                global_menu_button.move( 0, global_menu.rect().y2() );
+                m_headMenuButton.move( realRect().x(), global_menu.realRect().y2() );
+
                 eventManager()->updateAfterEvent();
                 break;
         }
@@ -187,8 +235,8 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
     global_menu.onHideSignal().connect( [this](ListMenu *) {
         m_menuTimer.stop();
 
-        global_menu_button.setFullScreenBlock(false);
-        global_menu_button.move( 0, 0 );
+        m_headMenuButton.setFullScreenBlock(false);
+        m_headMenuButton.move( 0, 0 );
 
         global_menu_showing = false;
         eventManager()->updateAfterEvent();
@@ -200,6 +248,8 @@ FileViewWidget::FileViewWidget(UActiveArea *parent, EffectManager *em, const Rec
 
 FileViewWidget::~FileViewWidget()
 {
+    m_exitSignal.trigger(this);
+
     clearFSEntries();
     setViewList();
     clearItems();
@@ -209,14 +259,15 @@ FileViewWidget::~FileViewWidget()
     m_prevScreenShoot.bitmap = 0;
 
 
-    for(ActiveListItem *i : *m_fsEntryMenu.itemList()) {
+    for(Widget *i : m_fsEntryMenu.scrollArea().items()) {
         delete i;
     }
 
-    for(ActiveListItem *i : *global_menu.itemList()) {
+    for(Widget *i : global_menu.scrollArea().items()) {
         delete i;
     }
-    global_menu.itemList()->clear();
+
+    global_menu.scrollArea().clear();
 
     if(global_yes_no_question) {
         global_yes_no_question->hide();
@@ -236,38 +287,39 @@ void FileViewWidget::initGlobalMenu()
     global_menu.style().setShadow(Brush());
 
 
-    global_menu.pushBack( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Назад..."));
+    global_menu.scrollArea().addItem( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Назад..."));
     mi->onReleasedSignal().connect( [this](ListMenuItem *) {
         global_menu.hide();
         cdDown();
     } );
 
-    global_menu.pushBack( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "В начало"));
+    global_menu.scrollArea().addItem( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "В начало"));
     mi->onReleasedSignal().connect( [this](ListMenuItem *) {
         global_menu.hide();
-        resetViewListPosition();
-        setViewListScrollCoordinateY(rect().x2());
-        fixScrollPosition();
+        fileViewArea().setMoveDirection(VScrollArea::Direction::Down);
+        fileViewArea().setItem(0);
+        fileViewArea().setViewCoord(realRect().x2());
+        fileViewArea().fixupViewPosition();
     } );
 
-    global_menu.pushBack( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "В конец"));
+    global_menu.scrollArea().addItem( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "В конец"));
     mi->onReleasedSignal().connect( [this](ListMenuItem *) {
         global_menu.hide();
-        resetViewListPosition();
-        setLineItem(linesCount()-1);
-        fixScrollPosition();
+        fileViewArea().setMoveDirection(VScrollArea::Direction::Up);
+        fileViewArea().setItem(fileViewArea().count()-1);
+        fileViewArea().fixupViewPosition();
     } );
 
 
-    global_menu.pushBack( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Обновить"));
+    global_menu.scrollArea().addItem( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Обновить"));
     mi->onReleasedSignal().connect( [this](ListMenuItem *) {
         global_menu.hide();
         refreshDir();
         eventManager()->updateAfterEvent();
     } );
 
-    global_menu.pushBack( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Вставить"));
-    mi->onReleasedSignal().connect( [this](ListMenuItem *) {
+    global_menu.scrollArea().addItem( m_menuPasteItem = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Вставить"));
+    m_menuPasteItem->onReleasedSignal().connect( [this](ListMenuItem *) {
         global_menu.hide();
 
         paste(directory());
@@ -275,20 +327,20 @@ void FileViewWidget::initGlobalMenu()
         eventManager()->updateAfterEvent();
     } );
 
-    global_menu.pushBack( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Сменить папку"));
+    global_menu.scrollArea().addItem( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Сменить папку"));
     mi->onReleasedSignal().connect( [this](ListMenuItem *) {
         global_menu.hide();
         switchNextWorkSpace();
     } );
 
-    global_menu.pushBack( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Сменить вид"));
+    global_menu.scrollArea().addItem( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Сменить вид"));
     mi->onReleasedSignal().connect( [this](ListMenuItem *) {
         global_menu.hide();
         switchViewType();
     } );
 
 
-    global_menu.pushBack( mark_start_stop = mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Начать выделение"));
+    global_menu.scrollArea().addItem( m_menuMarkOptionsItem = mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Начать выделение"));
     mi->onReleasedSignal().connect( [this](ListMenuItem *) {
         setSelectMode(!isSelectionMode());
 
@@ -299,11 +351,12 @@ void FileViewWidget::initGlobalMenu()
         eventManager()->updateAfterEvent();
     } );
 
-    global_menu.pushBack( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Информация"));
-    mi->style().setLineText(0xffa3a3a3);
+    global_menu.scrollArea().addItem( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Информация"));
+    mi->setActive(false);
 
-    global_menu.pushBack( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Выход..."));
+    global_menu.scrollArea().addItem( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Выход..."));
     mi->onReleasedSignal().connect( [this](ListMenuItem *) {
+        global_menu.hide();
         m_exitSignal.trigger(this);
     } );
 
@@ -312,13 +365,7 @@ void FileViewWidget::initGlobalMenu()
         eventManager()->updateAfterEvent();
     });
 
-    global_menu.setLinesCount(global_menu.itemList()->size());
-}
-
-
-ScrollAreaItem *FileViewWidget::getListItem(int index)
-{
-    return m_mainViewEngine->getListItem(index);
+    global_menu.scrollArea().setLinesCount(global_menu.scrollArea().items().size());
 }
 
 
@@ -340,7 +387,7 @@ void FileViewWidget::pushBackFile(const FSEntryInfo &info)
 
 void FileViewWidget::setViewList()
 {
-    setLinesCount(m_mainViewEngine->itemsForViewList());
+    fileViewArea().setLinesCount(m_mainViewEngine->itemsForViewList());
 }
 
 
@@ -369,17 +416,7 @@ void FileViewWidget::paintEvent()
     glSetPen(0xFF0F0000);
     glDrawFilledRectange(0, /*border->h*/0, rect().w(), rect().y2());
 
-    glSaveClipRegion();
-    glSetClipRegion(0, 30, rect().w(), rect().y2());
-
-
-    moveY( global_menu_button.rect().h() );
-    setHeight( m_firstHeight - global_menu_button.rect().h() );
-    ActiveList::paintEvent();
-
-    glRestoreClipRegion();
-
-    int cline = lineItem()+1;
+    int cline = fileViewArea().item()+1;
     int entries = fsEntriesCount();
     int dirs = viewDirsCount();
 
@@ -400,20 +437,108 @@ void FileViewWidget::paintEvent()
     }
 
 
-    global_menu_button.setDirecory(directory());
-    global_menu_button.setDirectoriesCount(dirs);
-    global_menu_button.setFilesCount(viewFilesCount());
-    global_menu_button.setCurrentLine(cline);
-    global_menu_button.setViewLines(entries);
-    global_menu_button.setWorkspace(workspace().id);
+    m_headMenuButton.setDirecory(directory());
+    m_headMenuButton.setDirectoriesCount(dirs);
+    m_headMenuButton.setFilesCount(viewFilesCount());
+    m_headMenuButton.setCurrentLine(cline);
+    m_headMenuButton.setViewLines(entries);
+    m_headMenuButton.setWorkspace(workspace().id);
 
-    global_menu_button.paintEvent();
+    //m_headMenuButton.paintEvent();
+
+    Widget::paintEvent();
+
+#if 0
+    //static int last_ololo = 0;
+
+    bool haveOffRectItems = fileViewArea().listHeightInRect() > fileViewArea().rect().h();
+    if(haveOffRectItems)
+        last_ololo = fileViewArea().displayingItems();
+
+    auto percent_to_real = [](float percent, int real) -> float {
+        return real * percent / 100;
+    };
+
+    auto real_to_percent = [](int real, int part) -> float {
+        return real? part * 100 / real : 0;
+    };
+
+
+    auto calc_percent_pos = [&real_to_percent, haveOffRectItems, this](int i) -> float {
+
+        /*if(haveOffRectItems) {
+            if(fileViewArea().displayingItems() < fileViewArea().count() &&
+                    (fileViewArea().viewPageHeight() < fileViewArea().rect().h()))
+                return 100.0f;
+        } else
+            return 100.0f;*/
+
+        return real_to_percent(fileViewArea().count()-last_ololo-1, i);
+    };
+
+    auto calc_position = [&percent_to_real, this](int slider_h, float percent_pos) {
+        return percent_to_real(percent_pos, fileViewArea().rect().h()-slider_h);
+    };
+
+    auto calc_step = [&percent_to_real, &real_to_percent, this]() -> float {
+        return percent_to_real(real_to_percent(fileViewArea().count()-last_ololo, 1.0f), fileViewArea().rect().h());
+    };
+
+
+    auto calc_slider_h = [&calc_step, &haveOffRectItems, this]() -> int {
+
+
+        auto slider_h = haveOffRectItems? calc_step() : fileViewArea().rect().h();
+
+        if(slider_h < 10)
+            slider_h = 10;
+        return slider_h;
+    };
+
+
+    if(fileViewArea().listHeightInRect() > fileViewArea().rect().h()) {
+
+    }
+
+    Rect inrc = fileViewArea().size();
+
+    auto percent_pos = calc_percent_pos(fileViewArea().item());
+    int slider_h = calc_slider_h();
+    int slider_pos = calc_position(slider_h, percent_pos);
+
+    int diff_between_next = calc_position(slider_h,
+                                          fileViewArea().item()+1 == fileViewArea().count()? 100 : calc_percent_pos(fileViewArea().item()+1) )
+            - slider_pos;
+
+
+    Widget *w = fileViewArea().widgetItem(fileViewArea().item()+fileViewArea().displayingItems());
+    if(w) {
+
+        int cpos = fileViewArea().itemCoord();
+
+        if((!fileViewArea().item() && cpos > 0) || cpos == w->rect().h())
+            cpos = 0;
+
+        int p = cpos*100 / w->rect().h();
+        int pos = diff_between_next * p / 100;
+
+        slider_pos -= pos;
+    }
+
+    glSetPen(0xFF0000FF);
+
+
+    //printf("slider_pos: %d\nslider_h: %d\nheight: %d\n\n", slider_pos, slider_h, fileViewArea().rect().h());
+
+    glDrawVLine(inrc.y()+slider_pos, inrc.y()+slider_pos+slider_h, inrc.x2()-4);
+#endif
 }
 
 
 void FileViewWidget::touchEvent(int action, int x, int y)
 {
-    ActiveList::touchEvent(action, x, y);
+    //VScrollArea::touchEvent(action, x, y);
+    Widget::touchEvent(action, x, y);
 
     if(m_needCd) {
 
@@ -432,18 +557,18 @@ void FileViewWidget::touchEvent(int action, int x, int y)
 
 int FileViewWidget::refreshDir(bool fix_scroll)
 {
-    int linei = lineItem();
+    int linei = fileViewArea().item();
     clearScreen();
     fillEntries();
     setViewList();
 
-    if(linei >= linesCount())
-        linei = linesCount()-1;
+    if(linei >= fileViewArea().count())
+        linei = fileViewArea().count()-1;
 
-    setLineItem(linei);
+    fileViewArea().setItem(linei);
 
     if(fix_scroll)
-        fixScrollPosition();
+        fileViewArea().fixupViewPosition();
     return 0;
 }
 
@@ -512,7 +637,7 @@ int FileViewWidget::fillEntries()
 
     if(path == "/") {
 
-        const char *names[4] = {"usr/", "sys/", "mmc/", "cus/"};
+        const char *names[4] = {"usr/", "sys/", "mmc/", "tmp/"};
 
         for(int i=0; i<4; ++i) {
             push_item(names[i], FSProtocol::FSEntryFlags::Dir, 0, false);
@@ -614,11 +739,19 @@ void FileViewWidget::cdEffectStop()
 }
 
 
+void FileViewWidget::clearAndReset()
+{
+    fileViewArea().clear();
+    fileViewArea().setLinesCount(0);
+    fileViewArea().resetViewPosition();
+}
+
+
 void FileViewWidget::setViewEngine(int id)
 {
-    int fs_entry = m_mainViewEngine->fileSystemEntryByItem(lineItem());
+    int fs_entry = m_mainViewEngine->fileSystemEntryByItem(fileViewArea().item());
 
-    fullResetViewList();
+    clearAndReset();
     clearItems();
 
     workspace().viewEngine = id;
@@ -632,7 +765,7 @@ void FileViewWidget::setViewEngine(int id)
     }
 
     setViewList();
-    setLineItem( m_mainViewEngine->itemBySystemEntryNumber(fs_entry) );
+    fileViewArea().setItem( m_mainViewEngine->itemBySystemEntryNumber(fs_entry) );
 }
 
 
@@ -641,7 +774,7 @@ void FileViewWidget::switchViewType()
     cdEffectPrepare();
 
     setViewEngine(!workspace().viewEngine);
-    fixScrollPosition();
+    fileViewArea().fixupViewPosition();
 
     cdEffectStart(EFFECT_RIGHT_SCALE);
 }
@@ -683,12 +816,6 @@ void FileViewWidget::markAllFiles()
 }
 
 
-void FileViewWidget::pushFileToClipBoard(const std::string &dir, const FSListedEntry &info, ClipBoard::Action type)
-{
-    m_clipboard.pushFile(workspace().protocol, dir, info, type);
-}
-
-
 void FileViewWidget::switchNextWorkSpace()
 {
     unsigned int id = m_currentWorkspaceId+1;
@@ -706,10 +833,10 @@ bool FileViewWidget::switchWorkSpace(unsigned int id)
 
     bool bigger = false;
 
-    stopScroll();
+    fileViewArea().breakScrolling();
 
     /* save scroll state */
-    workspace().scrollState = scrollState();
+    workspace().scrollState = fileViewArea().scrollState();
 
     cdEffectPrepare();
 
@@ -725,8 +852,8 @@ bool FileViewWidget::switchWorkSpace(unsigned int id)
     setViewList();
 
     /* restore scroll state */
-    setScrollState( workspace().scrollState );
-    fixScrollPosition();
+    fileViewArea().setScrollState( workspace().scrollState );
+    fileViewArea().fixupViewPosition();
 
     if(bigger) {
         cdEffectStart(EFFECT_LEFT_MOVE);

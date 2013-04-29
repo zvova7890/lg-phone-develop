@@ -24,11 +24,17 @@ public:
     }
 
     Rect(const Rect &r) {
+        operator =(r);
+    }
+
+
+    /*Rect & operator =(const Rect &r) {
         _x = r.x();
         _y = r.y();
         _w = r.w();
         _h = r.h();
-    }
+        return *this;
+    }*/
 
     inline void setX(int c) {
         _x = c;

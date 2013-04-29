@@ -1,36 +1,32 @@
 #ifndef QUESTIONDIALOG_H
 #define QUESTIONDIALOG_H
 
-#include <Ui/UActiveArea.h>
-#include <Ui/UButton.h>
+#include <Widget.h>
+#include <Button.h>
 #include <string>
 #include <vector>
 
 
-class QuestionDialog : public UActiveAreaItem<ActiveAreaItem>
+class QuestionDialog : public Widget
 {
 public:
-    QuestionDialog(UActiveArea *parent, const Rect &r, const std::string &question);
-    ~QuestionDialog();
+    QuestionDialog(Widget *parent, const Rect &r, const std::string &question);
+    virtual ~QuestionDialog();
 
     void touchEvent(int action, int x, int y);
     void paintEvent();
 
     void parentHasDied();
 
-    void show();
-    void hide();
+    typedef signal_slot::multi_signal <QuestionDialog *, int> signal;
 
-
-    signal_slot::multi_signal <void(QuestionDialog *, int)> & choisPressedSignal() {
+    signal & choisPressedSignal() {
         return m_buttonPressed;
     }
 
 private:
     std::string m_question;
-    std::vector< UButton* > m_buttons;
-    signal_slot::multi_signal <void(QuestionDialog *, int)> m_buttonPressed;
-    UActiveArea m_buttonsArea;
+    signal m_buttonPressed;
 };
 
 #endif // QUESTIONDIALOG_H
