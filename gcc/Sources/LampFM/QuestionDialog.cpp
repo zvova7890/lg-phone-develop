@@ -1,4 +1,5 @@
 
+#include <Core/compatible.h>
 #include "QuestionDialog.h"
 #include "main.h"
 
@@ -6,15 +7,12 @@
 
 
 
-QuestionDialog::QuestionDialog(Widget *parent, const Rect &r, const std::string &question) :
-    Widget(r, parent),
+QuestionDialog::QuestionDialog(Widget *parent, const std::string &question) :
+    PopupWindow(parent),
     m_question(question)
 {
-    setFullScreenBlock(true);
-
-
     int button_w = rect().w()/2-10;
-    int button_h = button_w/2-10;
+    int button_h = 40;
 
     Button *button_yes = new Button(Rect(5, rect().h()-button_h-5, button_w, button_h), this, "Yes");
     Button *button_no = new Button(Rect(rect().w()-button_w-5, rect().h()-button_h-5, button_w, button_h), this, "No");
@@ -43,18 +41,30 @@ QuestionDialog::QuestionDialog(Widget *parent, const Rect &r, const std::string 
 
 
 
+void QuestionDialog::resizeEvent()
+{
+    PopupWindow::resizeEvent();
+
+    int button_w = rect().w()/2-10;
+    int button_h = 35;
+
+
+    auto it = directChilds().begin();
+
+    Widget *w = *it;
+    w->setSize(Rect(5, rect().h()-button_h-5, button_w, button_h));
+
+    w = *(++it);
+    w->setSize(Rect(rect().w()-button_w-5, rect().h()-button_h-5, button_w, button_h));
+}
+
+
 QuestionDialog::~QuestionDialog()
 {
     for(Widget *i: childs())
         delete i;
 
     directChilds().clear();
-}
-
-
-void QuestionDialog::parentHasDied()
-{
-
 }
 
 

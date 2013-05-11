@@ -215,6 +215,7 @@ void String::unref(bool clear)
 
 void String::modify(bool clear)
 {
+    (void) clear;
     reparentToNext(1);
 }
 

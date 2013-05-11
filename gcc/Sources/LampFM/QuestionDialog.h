@@ -1,22 +1,23 @@
 #ifndef QUESTIONDIALOG_H
 #define QUESTIONDIALOG_H
 
-#include <Widget.h>
-#include <Button.h>
+#include <Widget/Widget.h>
+#include <PopupWindow.h>
+#include <Widget/Button.h>
 #include <string>
 #include <vector>
 
+// TODO class PopupWindow
 
-class QuestionDialog : public Widget
+class QuestionDialog : public PopupWindow
 {
 public:
-    QuestionDialog(Widget *parent, const Rect &r, const std::string &question);
+    QuestionDialog(Widget *parent, const std::string &question);
     virtual ~QuestionDialog();
 
     void touchEvent(int action, int x, int y);
     void paintEvent();
-
-    void parentHasDied();
+    void resizeEvent();
 
     typedef signal_slot::multi_signal <QuestionDialog *, int> signal;
 

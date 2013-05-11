@@ -65,8 +65,8 @@ public:
     virtual int seek(void *, off_t offset, int mode);
     virtual int close(void *);
 
+    virtual int rename(const char *old, const char *nw);
     virtual int unlink(const char *f);
-
     virtual int mkdir(const char *d);
     virtual int rmdir(const char *d);
 

@@ -24,6 +24,10 @@ public:
 
     }
 
+    virtual void resizeEvent() {
+
+    }
+
     /* n - is nummber of fs entry in list, function must return when the fs entry is placed(item number) */
     virtual int  itemBySystemEntryNumber(int /*n*/) {
         return 0;

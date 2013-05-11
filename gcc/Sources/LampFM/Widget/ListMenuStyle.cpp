@@ -73,7 +73,7 @@ ListMenuItemStyle::ListMenuItemStyle() :
 
     // Set the separator as gradient-line
     m_separator = Brush( [](Brush &, const Rect & rect) {
-        const short alpha = 0xff;
+        /*const short alpha = 0xff;
         float colors = 255.0f;
         float r = rect.w() / 2;
         float sub_f = 255 / r + (r * 0.1f/100.0f);
@@ -102,7 +102,10 @@ ListMenuItemStyle::ListMenuItemStyle() :
             colors -= sub_f;
             if(colors < 0)
                 colors = 0;
-        }
+        }*/
+
+            glSetPen(0x4FFFFFFF);
+            glDrawHLine(rect.x()+4, rect.x2()-4, rect.y());
 
     });
 }

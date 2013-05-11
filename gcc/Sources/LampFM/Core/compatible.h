@@ -1,6 +1,6 @@
 
-#ifndef __INC_CORE_H__
-#define __INC_CORE_H__
+#ifndef __COMPATIBLE_H__
+#define __COMPATIBLE_H__
 
 
 #ifdef __cplusplus
@@ -16,6 +16,7 @@ extern "C" {
 #define TOUCH_ACTION_RELEASE 1
 #define TOUCH_ACTION_MOVE 2
 
+#include <pxeapi_graphics.h>
 
 void GrSys_Refresh();
 
@@ -24,10 +25,22 @@ int Timer_KillEvent(int id);
 
 void TaskMngr_AppExit(int, int, int);
 
+void *Graphics_GetScreenBuffer();
+unsigned short Graphics_GetScreenWidth();
+unsigned short Graphics_GetScreenHeight();
+unsigned char Graphics_GetScreenDepth();
+
+int GrSys_GetGDIID();
+
+
+#define GRSYS_WIDTH Graphics_GetScreenWidth()
+#define GRSYS_HEIGHT Graphics_GetScreenHeight()
+
 #else
 
 #include <pxeapi.h>
 #include <pxeapi_timer.h>
+#include <Api/ApiLinkLib/ApiLink.h>
 
 #endif
 
@@ -45,5 +58,5 @@ void TaskMngr_AppExit(int, int, int);
 }
 #endif
 
-#endif /* __INC_CORE_H__ */
+#endif /* __COMPATIBLE_H__ */
 

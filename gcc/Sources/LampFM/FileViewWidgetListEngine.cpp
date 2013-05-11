@@ -1,4 +1,5 @@
 
+#include <Core/compatible.h>
 #include "FileViewWidget.h"
 #include "FileViewWidgetListEngine.h"
 #include "main.h"
@@ -11,12 +12,16 @@
 /**********************************************************************************************/
 
 
-FileViewWidgetListItem::FileViewWidgetListItem(FileViewWidget *parent, int w, int h, const FSEntryInfo & entry) :
+FileViewWidgetListItem::FileViewWidgetListItem(FileViewWidget *parent, int w, int h, const FSEntryInfo & entry, Image *icon) :
     FileViewWidgetAbstractItem(parent),
     Widget(Rect(Point(), Point(w, h)), parent),
     _is_longpress(false),
-    _fsinfo(entry)
+    _fsinfo(entry),
+    m_icon(icon)
 {
+    if(!m_icon)
+        m_icon = &m_widgetParent->file_icon;
+
     m_notFile = _fsinfo.action;
 }
 
@@ -70,7 +75,7 @@ void FileViewWidgetListItem::paintEvent()
                 x_offset += img->width();
             }
         } else {
-            Image *img = &m_widgetParent->file_icon;
+            Image *img = /*&m_widgetParent->file_icon*/ m_icon;
 
             if(!img->isEmpty()) {
                 drawImage(x+1, y+2, img);
@@ -249,7 +254,20 @@ Widget *FileViewWidgetListEngine::getListItem(int index)
 
 
         if(!m_items[index]) {
-            m_items[index] = new FileViewWidgetListItem(fileViewParent(), fileViewParent()->rect().w(), 45, fileViewParent()->getFSEntry(index));
+
+            FSEntryInfo &fs_entry = fileViewParent()->getFSEntry(index);
+            auto extinfo = extensionManager().extension(fs_entry.ext());
+            Image *icon = 0;
+
+            if(extinfo)
+                icon = extinfo->s_icon.empty()? 0 : &resourceManager().image(extinfo->s_icon, "icons/");
+
+            m_items[index] = new FileViewWidgetListItem(fileViewParent(), fileViewParent()->rect().w(), 45,
+                                                        fs_entry, icon? icon->isEmpty()? 0 : icon : 0);
+
+            m_items[index]->handleResizeEvent().connect( [](Widget *w) {
+                w->setSize(Rect(0, 0, w->parent()->rect().w(), 45));
+            });
         }
 
         fi = (FileViewWidgetListItem*)m_items[index];
@@ -259,6 +277,17 @@ Widget *FileViewWidgetListEngine::getListItem(int index)
 
 
     return fi;
+}
+
+
+void FileViewWidgetListEngine::resizeEvent()
+{
+    for(Widget *w : m_items)
+    {
+        if(w) {
+            w->resizeEvent();
+        }
+    }
 }
 
 

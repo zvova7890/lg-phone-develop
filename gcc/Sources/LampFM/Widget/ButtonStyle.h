@@ -8,7 +8,7 @@
 #define getset(type, visible1, name1, visible2, name2) \
     private:   type m_##name2; \
     visible2: type &name2() { return m_##name2; } \
-    visible1: void set##name1(type &t) { m_##name2 = t; }
+    visible1: void set##name1(const type &t) { m_##name2 = t; }
 
 
 
@@ -38,40 +38,18 @@ public:
         return m_pressedTextColor;
     }
 
-    /*ButtonStyle & setBackground(const Brush &b) {
-        m_background = b;
-        return *this;
+    void setFontFlags(int flags) {
+        m_fontFlags = flags;
     }
 
-    const Brush & background() const {
-        return m_background;
+    int fontFlags() const {
+        return m_fontFlags;
     }
-
-    ButtonStyle & setPressedBackground(const Brush &b) {
-        m_pressedBackground = b;
-        return *this;
-    }
-
-    const Brush & pressedBackground() const {
-        return m_pressedBackground;
-    }
-
-    ButtonStyle & setBorder(const Brush &b) {
-        m_border = b;
-        return *this;
-    }
-
-    const Brush & border() const {
-        return m_border;
-    }*/
-
-
 
 private:
     friend class Button;
     GLColor m_textColor, m_pressedTextColor;
-    //Brush m_background, m_pressedBackground,
-     //     m_border, m_pressedBorder;
+    int m_fontFlags;
 
 
 
@@ -79,6 +57,9 @@ private:
     getset(Brush, public, PressedBackground, public, pressedBackground)
     getset(Brush, public, Border, public, border)
     getset(Brush, public, PressedBorder, public, pressedBorder)
+    getset(Point, public, PressedTextOffset, public, pressedTextOffset)
+    getset(bool, public, RoundedRect, public, roundedRect)
+    getset(bool, public, ShadowAfterBackground, public, shadowAfterBackground)
 };
 
 #endif // UBUTTONSTYLE_H

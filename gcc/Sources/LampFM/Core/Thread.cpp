@@ -86,3 +86,8 @@ void Thread::run()
     _on_run.trigger(this);
 }
 
+
+void Thread::sleep(int tick)
+{
+    NU_Sleep(tick);
+}

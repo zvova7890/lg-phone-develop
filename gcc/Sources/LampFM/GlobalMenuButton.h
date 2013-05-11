@@ -15,7 +15,7 @@ class GlobalMenuButton : public Widget
 public:
     typedef signal_slot::multi_signal <GlobalMenuButton *, int, int, int> MoveSignal;
 
-    GlobalMenuButton(Widget *parent, const Rect &r);
+    GlobalMenuButton(const Rect &r, Widget *parent);
     void paintEvent();
     void touchEvent(int action, int x, int y);
 

@@ -1,13 +1,15 @@
-#ifndef VSCROLLAREA_H
-#define VSCROLLAREA_H
+#ifndef HSCROLLAREA_H
+#define HSCROLLAREA_H
 
-#include <Widget.h>
-#include <Timer.h>
-#include <TimerCounter.h>
+
+#include <Widget/Widget.h>
+#include <Core/Timer.h>
+#include <Core/TimerCounter.h>
 #include <vector>
+#include <functional>
 
 
-class VScrollArea : public Widget, protected Timer
+class ScrollArea : public Widget, protected Timer
 {
 public:
 
@@ -37,12 +39,18 @@ public:
     enum TimerWork {
         NoWork = 0,
         ScrollFading = 1,
-        ScrollFixup
+        ScrollFixup,
+        ScrollToStartEnd
     };
 
+    typedef enum {
+        Vertical = 1,
+        Horizontal
+    }ScrollType;
+
 public:
-    VScrollArea(const Rect &, Widget *parent = 0);
-    virtual ~VScrollArea();
+    ScrollArea(const Rect &, ScrollArea::ScrollType scroll_type, Widget *parent = 0);
+    virtual ~ScrollArea();
 
     virtual void touchItemEvent(int item, int action, int x, int y);
     virtual int count() const;
@@ -54,6 +62,8 @@ public:
     void setViewCoord(int c);
     void setItem(int c);
     void setLinesCount(int c);
+    void toStart();
+    void toEnd();
     bool isAutoScrollActive() const;
 
     void addItem(Widget *);
@@ -82,7 +92,7 @@ public:
         return m_item;
     }
 
-    void setMoveDirection(VScrollArea::Direction d) {
+    void setMoveDirection(ScrollArea::Direction d) {
         m_moveDirection = d;
     }
 
@@ -99,13 +109,14 @@ public:
     }
 
     int viewPageHeight() const {
-        return m_pageHeight;
+        return m_pageSize;
     }
 
 protected:
 
     virtual void paintEvent();
     virtual void touchEvent(int action, int x, int y);
+    virtual void resizeEvent();
 
     virtual Widget *widgetItem(int id);
 
@@ -125,13 +136,12 @@ protected:
 
 
 private:
-
     std::vector<Widget*> m_items;
 
     int m_linesCount;
     int m_item;
     int m_coordPos;
-    int m_pageHeight;
+    int m_pageSize;
     int m_displayingItems;
     bool m_haveOffscreenItems;
     Direction m_moveDirection;
@@ -161,8 +171,12 @@ private:
         int boost;
 
     }PosFixup;
+
+
+    ScrollType m_scrollType;
+
+    std::function <int()> dep_type_area_pos;
+    std::function <int(const Widget *)> dep_type_area_size;
 };
 
-
-
-#endif // VSCROLLAREA_H
+#endif // HSCROLLAREA_H

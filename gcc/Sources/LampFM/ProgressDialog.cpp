@@ -3,6 +3,14 @@
 #include "main.h"
 
 
+Rect ololo()
+{
+    Rect r = Rect(1, 1, 4, 4);
+    return r;
+}
+
+
+
 
 
 ProgressDialog::ProgressDialog(Widget *parent, const Rect &r) :

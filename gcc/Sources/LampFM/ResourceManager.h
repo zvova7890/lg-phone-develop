@@ -12,7 +12,7 @@ public:
     ResourceManager(const std::string & my_dir);
     ~ResourceManager();
 
-    Image & image(const std::string & name);
+    Image & image(const std::string & name, const std::string &subfolder = "", bool full_way = false);
 
 
 

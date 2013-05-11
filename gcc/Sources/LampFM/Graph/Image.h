@@ -18,11 +18,13 @@ public:
     Image(const Image &i, bool ref = true);
     Image(image_t *img, bool ref = true);
     Image(int w, int h, int depth);
+    Image(int w, int h, int depth, const char *data, bool ref = false);
     Image(const char *file);
     ~Image();
 
     Image &operator =(const Image &);
     Image &operator =(const Image *);
+    void clear();
 
     unsigned char *bitmap() {
         return (unsigned char*)m_Image.bitmap;
@@ -47,6 +49,8 @@ public:
     inline bool isEmpty() const {
         return m_Image.bitmap == 0;
     }
+
+
 
 private:
     image_t m_Image;

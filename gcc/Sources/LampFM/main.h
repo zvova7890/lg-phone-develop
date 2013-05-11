@@ -9,14 +9,12 @@
 #include "FSProtocol.h"
 
 
-class Keyboard;
 
 EventManager & eventManager();
 ResourceManager & resourceManager();
 ExtManager & extensionManager();
 Widget & mainWidget();
 FSProtocolsContainer & protocolsContainer();
-Keyboard *mainKeyboard();
 
 
 #endif // __MAIN_H__

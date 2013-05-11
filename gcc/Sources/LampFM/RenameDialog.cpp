@@ -8,6 +8,7 @@
 EditLine::EditLine(const Rect &r, Widget *parent) :
     Widget(r, parent),
     m_cursorVisible(false),
+    kbd( (Keyboard*)parent->mainParent()->providesExtraWidget("keyboard") ),
     m_kbdDisconnected(true),
     m_dontHideKbd(false)
 {
@@ -21,7 +22,8 @@ EditLine::EditLine(const Rect &r, Widget *parent) :
 EditLine::~EditLine()
 {
     if(!m_kbdDisconnected) {
-        mainKeyboard()->hideAction().disconnect(m_kbd_hideAction);
+        if(kbd)
+            kbd->hideAction().disconnect(m_kbd_hideAction);
         m_kbdDisconnected = true;
     }
 }
@@ -72,23 +74,28 @@ void EditLine::touchEvent(int action, int x, int y)
 
 void EditLine::focusEvent()
 {
-    printf("void EditLine::focus()\n");
+    //printf("void EditLine::focus()\n");
     eventManager()->updateAfterEvent();
 
     Widget::focusEvent();
-    mainKeyboard()->keyActionSignal().connect(this, &EditLine::keyAction,
+    if(kbd) {
+        kbd->keyActionSignal().connect(this, &EditLine::keyAction,
                                               std::placeholders::_1,
                                               std::placeholders::_2,
                                               std::placeholders::_3);
-    mainKeyboard()->show();
+        kbd->show();
+    }
 
     if(m_kbdDisconnected) {
         m_kbdDisconnected = false;
-        m_kbd_hideAction = mainKeyboard()->hideAction().connect( [this](Keyboard *) {
-            m_dontHideKbd = true;
-            unfocus();
-            m_dontHideKbd = false;
-        });
+
+        if(kbd) {
+            m_kbd_hideAction = kbd->hideAction().connect( [this](Keyboard *) {
+                m_dontHideKbd = true;
+                unfocus();
+                m_dontHideKbd = false;
+            });
+        }
     } else {
         assert(0);
     }
@@ -99,19 +106,89 @@ void EditLine::focusEvent()
 
 void EditLine::unfocusEvent()
 {
-    printf("void EditLine::unfocus()\n");
+    //printf("void EditLine::unfocus()\n");
 
     if(!m_kbdDisconnected) {
         printf("m_kbdDisconnected\n");
-        mainKeyboard()->hideAction().disconnect(m_kbd_hideAction);
+        if(kbd)
+            kbd->hideAction().disconnect(m_kbd_hideAction);
         m_kbdDisconnected = true;
     }
 
     Widget::unfocusEvent();
     eventManager()->updateAfterEvent();
 
-    if(!m_dontHideKbd)
-        mainKeyboard()->hide();
+    if(!m_dontHideKbd && kbd)
+        kbd->hide();
+}
+
+
+
+int utf8_charset_size(const char *word)
+{
+    const char *s = word;
+
+    /* Assumes correct input and no characters outside the BMP. */
+
+    if((s[0]&0x80)==0)
+    {
+        s++;
+    }
+    else if((s[0]&0x20)==0)
+    {
+        s+=2;
+    }
+    else if((s[0]&0x10)==0)
+    {
+        s+=3;
+    }
+
+    return s-word;
+}
+
+
+
+void EditLine::setText(const std::string &text)
+{
+    chars.clear();
+    m_text = text;
+
+    const char *s = m_text.c_str();
+
+    while(1) {
+        int l = utf8_charset_size(s);
+
+        if(l > 0)
+            chars.push_back(l);
+        else
+            break;
+
+        s += l;
+        if(!*s) {
+            break;
+        }
+    }
+}
+
+
+void EditLine::appendText(const std::string &text)
+{
+    const char *s = text.c_str();
+    while(1) {
+        int l = utf8_charset_size(s);
+
+        if(l > 0)
+            chars.push_back(l);
+        else
+            break;
+
+        s += l;
+        if(!*s) {
+            break;
+        }
+    }
+
+    m_text.append( text );
 }
 
 
@@ -120,7 +197,7 @@ void EditLine::keyAction(Keyboard *, int type, const char *k)
     switch(type)
     {
         case 0:
-            m_text.append(k);
+            appendText(k);
             break;
 
         case 1:
@@ -130,13 +207,32 @@ void EditLine::keyAction(Keyboard *, int type, const char *k)
                     m_text.clear();
 
                 else {
-                    auto last = (--m_text.end());
-                    m_text.erase(last, m_text.end());
+
+
+                    auto last = (--chars.end());
+                    int rm_sz = (*last);
+                    chars.erase( last );
+
+
+                    if(rm_sz > 0) {
+                        auto last = (m_text.end());
+
+                        for(int i=0; i<rm_sz; ++i)
+                            last--;
+
+                        m_text.erase(last, m_text.end());
+                    } else {
+                        printf("That is happens!!! O_O\n");
+                    }
                 }
             }
             break;
 
         case 2:
+            break;
+
+        case 10:
+            m_editFinishedSignal.trigger(this);
             break;
     }
 
@@ -149,19 +245,27 @@ void EditLine::keyAction(Keyboard *, int type, const char *k)
 
 RenameDialog::RenameDialog(const Rect &r, Widget *parent) :
     Widget(r, parent),
-    m_editor(Rect(4, 50, r.w()-8, 35), this),
-    m_doneButton(Rect(4, 100, 70, 30), this, "Done")
+    m_editor(Rect(), this),
+    m_cancel(Rect(), this, "Cancel")
 {
+    resizeEvent();
+
+    m_editor.editFinishedAction().connect( [this](EditLine *e) {
+        m_editor.hide();
+        m_renameAction.trigger(this, e->text());
+    });
+
+
     m_editor.show();
     m_editor.focus();
 
-    m_doneButton.show();
 
-    m_doneButton.releasedSignal().connect( [this](Button *b) {
-        if(b->isTouched() && !b->isMoved()) {
+    m_cancel.releasedSignal().connect( [this](Button *b) {
+        if(b->isTouched() && !b->isMoved())
             deleteLater();
-        }
     });
+
+    m_cancel.show();
 
     setFullScreenBlock(true);
     setBlockable(true);
@@ -188,6 +292,20 @@ void RenameDialog::paintEvent()
 void RenameDialog::touchEvent(int action, int x, int y)
 {
     Widget::touchEvent(action, x, y);
+}
+
+
+void RenameDialog::resizeEvent()
+{
+    Widget::resizeEvent();
+
+    if(rect().w() > rect().h()) {
+        m_editor.setSize(Rect(4, 40, rect().w()-78, 35));
+        m_cancel.setSize(Rect(rect().w()-65, 40, 60, 35));
+    } else {
+        m_editor.setSize(Rect(4, 40, rect().w()-8, 35));
+        m_cancel.setSize(Rect(rect().w()-65, 80, 60, 35));
+    }
 }
 
 

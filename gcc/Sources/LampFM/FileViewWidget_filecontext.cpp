@@ -9,6 +9,7 @@
 #include "LocalFSProtocol.h"
 #include "EInformationDialog.h"
 #include "RenameDialog.h"
+#include "MessageBox.h"
 
 
 
@@ -18,15 +19,62 @@ void FileViewWidget::showEntryInformationDialog()
 }
 
 
+void FileViewWidget::createFolder()
+{
+    RenameDialog *d = new RenameDialog(realRect(), this);
+    d->show();
+    d->handleResizeEvent().connect( [this](Widget *w) {
+        w->setSize(realRect());
+    });
+
+    std::string mydir = directory();
+
+    d->renameAction().connect( [this, mydir](RenameDialog *d, const std::string &t) {
+
+        FSProtocol & p = protocolsContainer().indexOf(workspace().protocol);
+
+        printf("mkdir: %s\n", (mydir+t).c_str());
+
+        if(p.mkdir((mydir+t).c_str())) {
+            MessageBox *msg = new MessageBox(this, "Ошибка!");
+            msg->show();
+        }
+
+
+        d->deleteLater();
+
+        refreshDir();
+    });
+}
+
 
 void FileViewWidget::showRenameDialog(const std::string &name)
 {
     RenameDialog *d = new RenameDialog(realRect(), this);
-
     d->setText(name);
-
     d->show();
+    d->handleResizeEvent().connect( [this](Widget *w) {
+        w->setSize(realRect());
+    });
 
+    std::string mydir = directory();
+
+    d->renameAction().connect( [this, mydir, name](RenameDialog *d, const std::string &t) {
+
+        FSProtocol & p = protocolsContainer().indexOf(workspace().protocol);
+
+        printf("Rename: %s -> %s\n", (mydir+name).c_str(), (mydir+t).c_str());
+
+        if(p.rename((mydir+name).c_str(), (mydir+t).c_str())) {
+            MessageBox *msg = new MessageBox(this, "Ошибка!");
+            msg->show();
+        }
+
+
+        d->deleteLater();
+
+        refreshDir();
+    });
 }
 
 
@@ -61,14 +109,20 @@ void FileViewWidget::onItemMenu(const FSEntryInfo &f, FileViewWidgetAbstractItem
 
 
     m_fsEntryMenu.style().setShadow(Brush());
-    m_fsEntryMenu.style().setBackground(Brush(&resourceManager().image("fs-menu")));
+    //m_fsEntryMenu.style().setBackground(Brush(&resourceManager().image("fs-menu")));
     //m_fsEntryMenu.style().setBackground(Brush(0xFF000000));
 
+    m_fsEntryMenu.style().setShadow(Brush(0xFFFFFFFF));
     m_fsEntryMenu.style().setHeaderSize(Rect(0, 0, m_fsEntryMenu.rect().w(), 27));
+    m_fsEntryMenu.style().setHeader( Brush( [](Brush &, const Rect &r){
+         glSetPen(0xFFFFFFFF);
+         glDrawHLine(r.x(), r.x2(), r.y2());
+    }));
+
     m_fsEntryMenu.style().setListSize(Rect(0, 29, m_fsEntryMenu.rect().w(), m_fsEntryMenu.rect().h()-29));
     m_fsEntryMenu.setHeaderScrollable(true);
 
-    m_fsEntryMenu.__name = "m_fsEntryMenu";
+    //m_fsEntryMenu.__name = "m_fsEntryMenu";
 
     ListMenuItem *it = 0;
 
@@ -98,7 +152,7 @@ void FileViewWidget::onItemMenu(const FSEntryInfo &f, FileViewWidgetAbstractItem
             printf("Another question has view??\n");
         }
 
-        global_yes_no_question = new QuestionDialog(this, Rect(20, 80, 240-40, 400-160), "Удалить?");
+        global_yes_no_question = new QuestionDialog(this, "Удалить?");
         global_yes_no_question->show();
         global_yes_no_question->setBlockable(true);
         global_yes_no_question->setFullScreenBlock(true);
@@ -123,11 +177,7 @@ void FileViewWidget::onItemMenu(const FSEntryInfo &f, FileViewWidgetAbstractItem
 
             self->hide();
 
-            /* delete it after event safetly */
-            eventManager()->notifyAfterEvent( [self]() {
-                self->close();
-                delete self;
-            });
+            self->deleteLater();
 
             eventManager()->updateAfterEvent();
             global_yes_no_question = 0;

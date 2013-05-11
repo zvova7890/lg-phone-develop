@@ -2,9 +2,9 @@
 #define LISTMENU_H
 
 
-#include <VScrollArea.h>
+#include <Widget/ScrollArea.h>
 #include "ListMenuStyle.h"
-#include <HTextScroller.h>
+#include <Widget/HTextScroller.h>
 #include <Graph/Brush.h>
 #include <signals/signal.h>
 #include <string>
@@ -36,6 +36,10 @@ public:
 
     void setText(const std::string &text) {
         m_text = text;
+    }
+
+    const std::string &text() const {
+        return m_text;
     }
 
     ListMenu *parent() {
@@ -75,7 +79,7 @@ public:
 
     typedef signal_slot::multi_signal<ListMenu*> signal;
 
-    ListMenu(Widget *parent, const Rect &r);
+    ListMenu(const Rect &r, Widget *parent);
     ~ListMenu();
 
     void paintEvent();
@@ -101,6 +105,10 @@ public:
         return _style;
     }
 
+    void setStyle(const ListMenuStyle &s) {
+        _style = s;
+    }
+
     inline void setHeadText(const std::string &h) {
         _head_text = h;
     }
@@ -109,7 +117,7 @@ public:
         m_headerTextScrollable = is;
     }
 
-    inline VScrollArea & scrollArea() {
+    inline ScrollArea & scrollArea() {
         return m_scroll;
     }
 
@@ -121,11 +129,12 @@ public:
         m_isModal = is;
     }
 
+
 protected:
     signal _on_hide, _on_show, _on_offsreen_touch;
 
 private:
-    VScrollArea m_scroll;
+    ScrollArea m_scroll;
     //Widget m_header;
     ListMenuStyle _style;
     std::string _head_text;

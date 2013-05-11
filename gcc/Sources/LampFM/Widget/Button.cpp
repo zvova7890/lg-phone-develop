@@ -1,13 +1,15 @@
 
 #include <gl.h>
 #include "Button.h"
-
+#include <Core/compatible.h>
 
 
 Button::Button(const Rect &rc, Widget *parent, const std::string &text) :
     Widget(rc, parent),
     m_text(text),
-    m_isActive(true)
+    m_isActive(true),
+    m_textVisible(true),
+    m_icon(0)
 {
     setDefaultTextRender();
 }
@@ -38,29 +40,33 @@ void Button::defaultTextRender(Button *b)
     int off_x = 0, off_y = 0;
     if(b->isTouched()) {
         glSetPen( b->style().pressedTextColor() );
-        off_x = 2;
-        off_y = 2;
+        off_x = b->style().pressedTextOffset().x();
+        off_y = b->style().pressedTextOffset().y();
 
     } else {
         glSetPen( b->style().textColor() );
     }
 
     glDrawString(b->m_text.c_str(), b->realRect().x()+off_x, b->realRect().y()+off_y, b->realRect().x2(), b->realRect().y2(),
-                 15, FT_TEXT_H_CENTER | FT_TEXT_W_CENTER, 0, 128);
+                 15, b->style().fontFlags(), 0, 128);
 }
 
 
 void Button::paintEvent()
 {
-    int round = roundRect(realRect().w());
+    int round = style().roundedRect()? roundRect(realRect().w()) : 0;
 
     //printf("round: %d\n", round);
 
-    if(isTouched())
-        style().pressedBorder().paint((realRect() - Point(1, 1)) + Rect(0, 0, 1, 1), round, round);
-    else
-        style().border().paint((realRect() - Point(1, 1)) + Rect(0, 0, 1, 1), round, round);
+    auto p = [this, round]() {
+        if(isTouched())
+            style().pressedBorder().paint((realRect() - Point(1, 1)) + Rect(0, 0, 1, 1), round, round);
+        else
+            style().border().paint((realRect() - Point(1, 1)) + Rect(0, 0, 1, 1), round, round);
+    };
 
+    if(!style().shadowAfterBackground())
+        p();
 
     if(isActive()) {
         if(isTouched())
@@ -72,8 +78,26 @@ void Button::paintEvent()
         //style().pressedBackground().paint(realRect(), round, round);
     }
 
+    if(style().shadowAfterBackground())
+        p();
 
-    m_textRender(this);
+
+    if(m_icon) {
+        int px, py;
+
+        px = rect().w()/2 - m_icon->width()/2;
+        py = rect().h()/2 - m_icon->height()/2;
+
+        drawImage(realRect().x() + px, realRect().y() + py, m_icon);
+    }
+
+    if(m_textVisible)
+        m_textRender(this);
+
+    if(!isActive()) {
+        glSetPen(0x7F000000);
+        glDrawFilledRectange(realRect().x(), realRect().y(), realRect().x2(), realRect().y2());
+    }
 }
 
 

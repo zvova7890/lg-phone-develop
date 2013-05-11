@@ -3,12 +3,12 @@
 
 
 
-#include <VScrollArea.h>
+#include <ScrollArea.h>
 #include <signals/signal.h>
 
 
 
-class EInformationDialog : public VScrollArea
+class EInformationDialog : public ScrollArea
 {
 public:
     typedef signal_slot::multi_signal <EInformationDialog *, int> state_signal;
