@@ -1,3 +1,5 @@
+
+#include <Core/compatible.h>
 #include "FileViewWidgetIconEngine.h"
 #include "FileViewWidget.h"
 #include "FileViewWidgetAbstractItem.h"
@@ -14,6 +16,7 @@
 
 FileViewWidgetIconItem::FileViewWidgetIconItem(FileViewWidget *parent, int w, int h, int num, const std::vector<FSEntryInfo> &entries) :
     Widget(Rect(0, 0, w, h), parent),
+    m_maxView(num),
     m_widgetParent(parent)
 {
     m_fsInfo = entries;
@@ -34,10 +37,31 @@ FileViewWidgetIconItem::FileViewWidgetIconItem(FileViewWidget *parent, int w, in
 
 FileViewWidgetIconItem::~FileViewWidgetIconItem()
 {
-    /* iterator style for items queue */
-    for(Widget *item : m_childs)
-    {
+    // that provide a copy of childs list, because childs can do self-removing from tham
+    auto c = childs();
+
+    for(Widget *item : c) {
         delete ((FsEntryItem*)item);
+    }
+
+    m_childs.clear();
+}
+
+
+
+void FileViewWidgetIconItem::resizeEvent()
+{
+    Widget::resizeEvent();
+
+    int num = m_maxView;
+    int subitem_w = 5;
+    int startx = 1;
+    int max_width = (rect().w()-(startx*2)-(subitem_w*(num-1))) /num;
+
+    for(Widget *w : directChilds())
+    {
+        w->setSize(Rect(startx, 0, max_width, rect().h()));
+        startx += max_width+subitem_w;
     }
 }
 
@@ -274,6 +298,10 @@ Widget *FileViewWidgetIconEngine::getListItem(int index)
             }
 
             m_items[index] = new FileViewWidgetIconItem(fileViewParent(), fileViewParent()->rect().w(), 50, 3, entries);
+
+            m_items[index]->handleResizeEvent().connect( [](Widget *w) {
+                w->setSize(Rect(0, 0, w->parent()->rect().w(), 50));
+            });
         }
 
         fi = (FileViewWidgetIconItem*)m_items[index];
@@ -282,6 +310,16 @@ Widget *FileViewWidgetIconEngine::getListItem(int index)
         fi = (FileViewWidgetIconItem*)m_items[index];
 
     return fi;
+}
+
+
+void FileViewWidgetIconEngine::resizeEvent()
+{
+    for(Widget *w : m_items) {
+        if(w) {
+            w->resizeEvent();
+        }
+    }
 }
 
 

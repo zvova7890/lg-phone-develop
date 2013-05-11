@@ -1,7 +1,8 @@
 
 
-#include <Widget.h>
-#include <TimerCounter.h>
+#include <Widget/Widget.h>
+#include <Core/TimerCounter.h>
+#include <Core/compatible.h>
 #include <stdio.h>
 #include <assert.h>
 
@@ -43,17 +44,7 @@ void Widget::init()
     m_touched = 0;
     m_id = 0;
     m_focused = 0;
-    m_hidden = false;
-    m_isTouched = false;
-    m_isMoved = false;
-    m_isMoving = false;
-    m_isOffRectTouch = false;
-    m_isFullScreenBlocked = false;
-    m_isBlockable = true;
-    m_isHaveLongPress = false;
-    m_isMovable = true;
-    m_isFocused = false;
-    m_isFocuseable = true;
+    m_attrs = ATTR_BLOCKABLE | ATTR_MOVABLE | ATTR_FOCUSEABLE | ATTR_HIDDEN;
 }
 
 
@@ -116,9 +107,9 @@ void Widget::touch(int action, int x, int y)
             //item->cur_x = item->touched_x = x;
             //item->cur_y = item->touched_y = y;
 
-            m_isMoved = false;
-            m_isMoving = false;
-            m_isTouched = true;
+            erase_attr(ATTR_MOVED);
+            erase_attr(ATTR_MOVING);
+            set_attr(ATTR_TOUCHED);
 
 
             if(m_longPressTimer) {
@@ -143,16 +134,17 @@ void Widget::touch(int action, int x, int y)
         case TOUCH_ACTION_MOVE:
             if(m_longPressTimer)
                 m_longPressTimer->stop();
-            m_isMoved = true;
-            m_isMoving = true;
+
+            set_attr(ATTR_MOVED);
+            set_attr(ATTR_MOVING);
             break;
     }
 
     touchEvent(action, x, y);
 
     if(action == TOUCH_ACTION_RELEASE) {
-        m_isMoving = false;
-        m_isTouched = false;
+        erase_attr(ATTR_TOUCHED);
+        erase_attr(ATTR_MOVING);
 
         if(m_longPressTimer)
             m_longPressTimer->stop();
@@ -161,14 +153,21 @@ void Widget::touch(int action, int x, int y)
 
 void Widget::paintEvent()
 {
-    for(Widget *widget : m_childs) {
+    std::list<Widget*> &ch_list = m_childs;
+    int at = 0;
+    for(Widget *widget : ch_list) {
 
-        assert(widget != NULL);
+        /*if(widget->__name == "Ololo") {
+            if(m_childs.size() == 4444)
+                exit(-1);
+        }*/
 
-        if(!widget->m_hidden) {
+        if(!widget->isHidden()) {
             updateCoordinates(widget);
             widget->paint();
         }
+
+        ++at;
     }
 }
 
@@ -217,12 +216,12 @@ void Widget::touchEvent(int action, int x, int y)
 
 __ex:
 
-
-    for(auto wi = m_childs.rbegin(); wi != m_childs.rend(); ++wi) {
+    std::list<Widget*> &ch_list = m_childs;
+    for(auto wi = ch_list.rbegin(); wi != ch_list.rend(); ++wi) {
 
         Widget *widget = *wi;
 
-        if(!widget->m_hidden) {
+        if(!widget->isHidden()) {
 
             if(x >= widget->realRect().x() && x < widget->realRect().x2() &&
                                 y >= widget->realRect().y() && y < widget->realRect().y2())
@@ -236,7 +235,8 @@ __ex:
                     widget->focus();
                 }
 
-                widget->m_isOffRectTouch = false;
+                widget->erase_attr(ATTR_OFFRECT_TOUCH);
+
                 updateCoordinates(widget);
                 widget->touch(action, x, y);
 
@@ -250,11 +250,11 @@ __ex:
                     widget->focus();
                 }
 
-                widget->m_isOffRectTouch = true;
+                widget->set_attr(ATTR_OFFRECT_TOUCH);
                 updateCoordinates(widget);
                 widget->touch(action, x, y);
 
-                widget->m_isOffRectTouch = false;
+                widget->erase_attr(ATTR_OFFRECT_TOUCH);
                 break;
             }
         }
@@ -275,7 +275,7 @@ void Widget::focusEvent()
         parent()->m_focused = this;
     }*/
 
-    m_isFocused = true;
+    set_attr(ATTR_FOCUSED);
 }
 
 
@@ -299,14 +299,19 @@ void Widget::unfocusEvent()
         m_focused = 0;
     }
 
-    m_isFocused = false;
+    erase_attr(ATTR_FOCUSED);
 }
 
 
 void Widget::add(Widget *widget)
 {
+    if(widget->m_wid.isValid()) {
+        printf("WARNING: Double show\n");
+    }
+
     m_childs.push_back(widget);
     widget->m_wid = (--m_childs.end());
+    widget->erase_attr(ATTR_HIDDEN);
 }
 
 
@@ -330,19 +335,25 @@ void Widget::swap(wid & id1, Widget::wid & id2)
 
 void Widget::hide()
 {
+    if(isHidden())
+        return;
+
     unfocus();
-    m_hidden = true;
+    set_attr(ATTR_HIDDEN);
 }
 
 
 void Widget::show()
 {
+    if(!isHidden())
+        return;
+
     if(!m_wid.isValid() && parent()) {
         printf("void Widget::show() add %lX\n", (unsigned long)this);
         parent()->add(this);
     }
 
-    m_hidden = false;
+    erase_attr(ATTR_HIDDEN);
 
     //focus();
 }
@@ -354,7 +365,7 @@ void Widget::showBefore(Widget::wid &id)
         parent()->insert(id, this);
     }
 
-    m_hidden = false;
+    erase_attr(ATTR_HIDDEN);
 }
 
 
@@ -366,6 +377,20 @@ void Widget::close()
 
     unfocusEvent();
     m_wid.erase();
+}
+
+
+void Widget::addParentToQueue()
+{
+    if(m_wid.isValid())
+        return;
+
+    if(!m_wid.isValid() && parent()) {
+        printf("void Widget::show() add %lX\n", (unsigned long)this);
+        parent()->add(this);
+    }
+
+    set_attr(ATTR_HIDDEN);
 }
 
 
@@ -385,13 +410,19 @@ void Widget::setHeight(int h)
 
 void Widget::setBlockable(bool is)
 {
-    m_isBlockable = is;
+    if(is)
+        set_attr(ATTR_BLOCKABLE);
+    else
+        erase_attr(ATTR_BLOCKABLE);
 }
 
 
 void Widget::setFullScreenBlock(bool is)
 {
-    m_isFullScreenBlocked = is;
+    if(is)
+        set_attr(ATTR_FULLSCREEN_BLOCK);
+    else
+        erase_attr(ATTR_FULLSCREEN_BLOCK);
 }
 
 
@@ -436,7 +467,7 @@ Rect Widget::size() const
 }
 
 
-void Widget::activateLongPress(bool is)
+void Widget::activateLongPressSupport(bool is)
 {
     if(is) {
         if(!m_longPressTimer) {
@@ -455,6 +486,77 @@ void Widget::activateLongPress(bool is)
 void Widget::deleteLater()
 {
     eventManager()->notifyAfterEvent( [this](){
+        eventManager()->updateAfterEvent();
         delete this;
     });
+}
+
+
+void Widget::motionSensorEvent(int pos)
+{
+    (void) pos;
+}
+
+
+void Widget::motionSensorEvent(int x, int y, int z)
+{
+    (void) x;
+    (void) y;
+    (void) z;
+}
+
+
+Widget *Widget::mainParent()
+{
+    Widget *p = parent();
+    while(p && p->parent()) {
+        p = p->parent();
+    }
+
+    return p;
+}
+
+
+Widget *Widget::providesExtraWidget(const std::string &)
+{
+    return 0;
+}
+
+
+void Widget::resizeEvent()
+{
+    m_resizeHandler.trigger(this);
+
+    for(Widget *w : m_childs) {
+        w->resizeEvent();
+    }
+}
+
+
+bool Widget::isTop()
+{
+    if(parent()->directChilds().front() == this) {
+        return true;
+    }
+
+    return false;
+}
+
+
+bool Widget::toTop()
+{
+    if(!isTop())
+        return false;
+
+    if(m_wid.isValid())
+    {
+        parent()->m_childs.erase(m_wid.m_it);
+
+        parent()->m_childs.push_back(this);
+        m_wid.m_it = (--parent()->m_childs.end());
+
+        return true;
+    }
+
+    return false;
 }

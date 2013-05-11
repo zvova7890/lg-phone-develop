@@ -60,7 +60,7 @@ protected:
     }
 
     void pop(const String *s) {
-        if(m_refed != 2)
+        if(m_refed)
             m_myRefs.erase(s->m_listId);
     }
 

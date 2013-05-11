@@ -1,5 +1,8 @@
+
+#include <Core/compatible.h>
 #include "ListMenu.h"
-#include "main.h"
+
+
 
 
 ListMenuItem::ListMenuItem(ListMenu *parent, int w, int h, const std::string &text) :
@@ -106,10 +109,10 @@ void ListMenuItem::touchEvent(int action, int x, int y)
 
 
 
-ListMenu::ListMenu(Widget *parent, const Rect &r) :
+ListMenu::ListMenu(const Rect &r, Widget *parent) :
     Widget(r, parent),
-    m_scroll(Rect(0, 0, rect().w(), rect().h()), this),
-    m_scroller(parent->eventManager()),
+    m_scroll(Rect(0, 0, rect().w(), rect().h()), ScrollArea::Vertical, this),
+    m_scroller(eventManager()),
     m_headerTextScrollable(false),
     m_isModal(false)
 {
@@ -121,7 +124,20 @@ ListMenu::ListMenu(Widget *parent, const Rect &r) :
     });
 
 
-    add(&m_scroll);
+
+    m_scroll.handleResizeEvent().connect( [this](Widget *) {
+        m_scroll.setSize( Rect(0, 0, rect().w(), rect().h()) );
+
+        Rect r( m_scroll.rect() );
+
+        r.setY(style().headerSize().h());
+        r.setH( rect().h() - r.y() );
+
+        style().setSize(m_scroll.rect());
+        style().setListSize(r);
+    });
+
+    m_scroll.show();
 }
 
 
@@ -143,11 +159,13 @@ void ListMenu::paintEvent()
     style().shadow().paint(Rect(realRect().x2(), realRect().y(), 1, realRect().h()));
     style().shadow().paint(Rect(realRect().x()-1, realRect().y(), 1, realRect().h()));
 
+    const Rect & r = style().headerSize();
+    Rect rc = realRect();
+
+    style().header().paint(Rect(r.x() + rc.x(), r.y() + rc.y(), r.w(), r.h()));
+
 
     glSetPen(style().headerText());
-
-    const Rect & r = style().headerSize();
-
     if(m_headerTextScrollable) {
 
         if( !scrollArea().isAutoScrollActive() ) {

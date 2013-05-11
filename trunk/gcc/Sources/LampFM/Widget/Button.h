@@ -4,7 +4,8 @@
 #include <string>
 #include <Widget/EventManager.h>
 #include <Widget/Widget.h>
-#include <ButtonStyle.h>
+#include <Widget/ButtonStyle.h>
+#include <Graph/Image.h>
 #include <signals/signal.h>
 
 /* Simple button */
@@ -28,11 +29,13 @@ public:
         return m_isActive;
     }
 
-
     void setActive(bool is = true) {
         m_isActive = is;
     }
 
+    void setTextVisible(bool is) {
+        m_textVisible = is;
+    }
 
     typedef signal_slot::multi_signal <Button *> signal;
     static typename signal_slot::multi_signal <Button *> &_sig;
@@ -62,6 +65,10 @@ public:
         return m_text;
     }
 
+    void setIcon(const Image *i) {
+        m_icon = i;
+    }
+
 protected:
     static void defaultTextRender(Button *);
 
@@ -70,10 +77,12 @@ private:
     signal m_pressed, m_released;
     std::string m_text;
     bool m_isActive;
+    bool m_textVisible;
 
     ButtonStyle m_style;
 
     std::function<void(Button *)> m_textRender;
+    const Image *m_icon;
 };
 
 

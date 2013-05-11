@@ -1,7 +1,9 @@
 
 #include <gl.h>
-#include "VScrollArea.h"
-#include <include.h>
+#include <Core/compatible.h>
+#include "ScrollArea.h"
+
+
 
 #ifndef __PC_BUILD__
 #include <mips.h>
@@ -12,30 +14,50 @@
 #define printf(...)
 
 
-VScrollArea::VScrollArea(const Rect &r, Widget *parent) :
+ScrollArea::ScrollArea(const Rect &r, ScrollArea::ScrollType scroll_type, Widget *parent) :
     Widget(r, parent),
-    m_timerType(NoWork)
+    m_timerType(NoWork),
+    m_scrollType(scroll_type)
 {
     init();
 }
 
 
-VScrollArea::~VScrollArea()
+ScrollArea::~ScrollArea()
 {
 }
 
 
-void VScrollArea::init()
+void ScrollArea::init()
 {
+    if(m_scrollType == Vertical) {
+        dep_type_area_pos = [this](){
+            return realRect().y();
+        };
+
+        dep_type_area_size = [](const Widget *w) {
+            return w->rect().h();
+        };
+    } else {
+
+        dep_type_area_pos = [this](){
+            return realRect().x();
+        };
+
+        dep_type_area_size = [](const Widget *w) {
+            return w->rect().w();
+        };
+    }
+
     m_item = 0;
     m_coordPos = 0;
-    m_pageHeight = 0;
+    m_pageSize = 0;
     m_touched = 0;
     m_linesCount = 0;
 }
 
 
-Widget *VScrollArea::widgetItem(int id)
+Widget *ScrollArea::widgetItem(int id)
 {
     if(m_items.size() <= (unsigned)id) {
         return 0;
@@ -45,13 +67,13 @@ Widget *VScrollArea::widgetItem(int id)
 }
 
 
-int VScrollArea::count() const
+int ScrollArea::count() const
 {
     return m_linesCount;
 }
 
 
-Widget *VScrollArea::takeItemByCoord(int x, int y)
+Widget *ScrollArea::takeItemByCoord(int x, int y)
 {
     GL_UNUSED(x);
 
@@ -63,7 +85,7 @@ Widget *VScrollArea::takeItemByCoord(int x, int y)
         return 0; // Oops
 
 
-    int start_y = realRect().y()+m_coordPos;
+    int start_p = dep_type_area_pos()+m_coordPos;
     for(int i=0; item()+i < count(); ++i) {
 
         w = widgetItem(item()+i);
@@ -72,19 +94,19 @@ Widget *VScrollArea::takeItemByCoord(int x, int y)
             break;
         }
 
-        if(y >= start_y && y < start_y+w->realRect().h()) {
+        if(y >= start_p && y < start_p + dep_type_area_size(w)) {
             printf("Take at %d\n", item()+i);
             return widgetItem(item()+i);
         }
 
-        start_y += w->realRect().h();
+        start_p += dep_type_area_size(w);
     }
 
     return 0;
 }
 
 
-void VScrollArea::touchItemEvent(int item, int action, int x, int y)
+void ScrollArea::touchItemEvent(int item, int action, int x, int y)
 {
     Widget *w = widgetItem(item);
     if(!w)
@@ -94,36 +116,48 @@ void VScrollArea::touchItemEvent(int item, int action, int x, int y)
 }
 
 
-inline int VScrollArea::checkItemSizes(Widget *w) const
+inline int ScrollArea::checkItemSizes(Widget *w) const
 {
     if(!w)
         return 0;
 
-    if(w->realRect().h() <= realRect().h())
+    if(dep_type_area_size(w) <= dep_type_area_size(this))
         return 0;
 
-    return w->realRect().h() - realRect().h();
+    return dep_type_area_size(w) - dep_type_area_size(this);
 }
 
 
-inline Widget *VScrollArea::lastWidgetItem()
+inline Widget *ScrollArea::lastWidgetItem()
 {
     return widgetItem(count()-1);
 }
 
 
-void VScrollArea::paintEvent()
+void ScrollArea::resizeEvent()
 {
+    Widget::resizeEvent();
 
-    int h = 0;
+    for(Widget *w : m_items) {
+        w->resizeEvent();
+    }
+}
+
+
+void ScrollArea::paintEvent()
+{
+    printf("void HScrollArea::paintEvent()\n");
+
+    int dep_type_pos = 0;
     int i;
-    m_pageHeight = m_coordPos;
+    m_pageSize = m_coordPos;
     m_displayingItems = -1;
     m_haveOffscreenItems = false;
 
     if(!count()) {
-        printf(" -> VScrollArea:: no have items for view\n");
+        printf(" -> HScrollArea:: no have items for view\n");
     }
+
 
     for(i = m_item; i < count(); ++i) {
 
@@ -132,31 +166,39 @@ void VScrollArea::paintEvent()
             break;
 
         w->setId(i);
-        w->setRealRect( Rect(Point(w->realRect().x(), h+realRect().y()+m_coordPos), w->rect().wh() ) );
+
+        if(m_scrollType == Vertical) {
+            w->setRealRect( Rect(Point(w->realRect().x(), dep_type_pos+realRect().y()+m_coordPos), w->rect().wh() ) );
+        } else {
+            w->setRealRect( Rect(Point(dep_type_pos+realRect().x()+m_coordPos, w->realRect().y()), w->rect().wh() ) );
+        }
+
         w->paint();
 
-        if(h > realRect().h()) {
+        if(dep_type_pos > dep_type_area_size(this)) {
             break;
         }
 
-        h += w->realRect().h();
-        m_pageHeight += w->realRect().h();
+        dep_type_pos += dep_type_area_size(w);
+        m_pageSize += dep_type_area_size(w);
 
-        if(h+m_coordPos >= realRect().h() && m_displayingItems == -1) {
+        if(dep_type_pos+m_coordPos >= dep_type_area_size(this) && m_displayingItems == -1) {
             m_displayingItems = i-m_item;
             m_haveOffscreenItems = true;
 
-            if(h+m_coordPos != realRect().h())
+            if(dep_type_pos+m_coordPos != dep_type_area_size(this))
                 m_displayingItems--;
         }
     }
 
     if(m_displayingItems == -1)
         m_displayingItems = 0;
+
+    Widget::paintEvent();
 }
 
 
-void VScrollArea::touchEvent(int action, int x, int y)
+void ScrollArea::touchEvent(int action, int x, int y)
 {
 #ifndef __PC_BUILD__
     auto ticks_diff = [](unsigned long ticks) -> unsigned long {
@@ -169,6 +211,11 @@ void VScrollArea::touchEvent(int action, int x, int y)
         return c - ticks;
     };
 #endif
+
+    int dep_type_pos = m_scrollType == Vertical? y : x;
+    auto dep_type_lastpos = [this]() {
+        return m_scrollType == Vertical? m_lastPos.y() :  m_lastPos.x();
+    };
 
     switch(action)
     {
@@ -205,9 +252,9 @@ void VScrollArea::touchEvent(int action, int x, int y)
             bool direction_changed = false;
             Direction move_direction;
 
-            if(m_lastPos.y() < y) {
+            if(dep_type_lastpos() < dep_type_pos) { // FIXME
                 move_direction = Direction::Down;
-            } else if(m_lastPos.y() > y){
+            } else if(dep_type_lastpos() > dep_type_pos){ // FIXME
                 move_direction = Direction::Up;
             } else
                 move_direction = Direction::No;
@@ -219,10 +266,10 @@ void VScrollArea::touchEvent(int action, int x, int y)
 
 
             if(move_direction == Direction::Up) {
-                moveUp(m_lastPos.y() - y);
+                moveUp(dep_type_lastpos() - dep_type_pos); // FIXME
             }
             else if(move_direction == Direction::Down) {
-                moveDown(y - m_lastPos.y());
+                moveDown(dep_type_pos - dep_type_lastpos()); // FIXME
             }
 
 
@@ -246,7 +293,7 @@ void VScrollArea::touchEvent(int action, int x, int y)
                 ++m_timeStampDiff;
 #endif
 
-            m_yDiff = glAbs(y-m_lastPos.y());
+            m_yDiff = glAbs(dep_type_pos-dep_type_lastpos()); // FIXME
 
             m_lastPos.setX(x).setY(y);
             m_moveDirection = move_direction;
@@ -264,10 +311,10 @@ void VScrollArea::touchEvent(int action, int x, int y)
 
             int speed = 0;
             int fadden = 0;
-            int ydiff = glAbs(m_touchLastPos.y() - m_lastPos.y());
+            int sdiff = glAbs(m_touchLastPos.y() - m_lastPos.y()); // FIXME
 
-            if(ydiff && m_timeStampDiff)
-                speed = (ydiff/2) / m_timeStampDiff;
+            if(sdiff && m_timeStampDiff)
+                speed = (sdiff/2) / m_timeStampDiff; // FIXME
 
             fadden = m_timeStampDiff*2;
 
@@ -309,11 +356,12 @@ void VScrollArea::touchEvent(int action, int x, int y)
             break;
     }
 
+    Widget::touchEvent(action, x, y);
     eventManager()->updateAfterEvent();
 }
 
 
-bool VScrollArea::moveDown(int steps)
+bool ScrollArea::moveDown(int steps)
 {
     m_coordPos += steps;
 
@@ -326,7 +374,7 @@ bool VScrollArea::moveDown(int steps)
         m_item --;
 
 
-        m_coordPos -= w->realRect().h();
+        m_coordPos -= dep_type_area_size(w);
         w = widgetItem(item());
     }
 
@@ -336,8 +384,8 @@ bool VScrollArea::moveDown(int steps)
         if(!w)
             return false; //Oops
 
-        if(m_coordPos - checkItemSizes(w) > realRect().h() - w->realRect().h()) {
-            m_coordPos = checkItemSizes(w) + realRect().h() - w->realRect().h();
+        if(m_coordPos - checkItemSizes(w) > dep_type_area_size(this) - dep_type_area_size(w)) {
+            m_coordPos = checkItemSizes(w) + dep_type_area_size(this) - dep_type_area_size(w);
             return false;
         }
     }
@@ -346,12 +394,12 @@ bool VScrollArea::moveDown(int steps)
 }
 
 
-bool VScrollArea::moveUp(int steps)
+bool ScrollArea::moveUp(int steps)
 {
     m_coordPos -= steps;
 
     Widget *w = widgetItem(item());
-    while(w && w->realRect().h() < -(m_coordPos)) {
+    while(w && dep_type_area_size(w) < -(m_coordPos)) {
 
         if(m_item+1 >= count())
             break;
@@ -359,7 +407,7 @@ bool VScrollArea::moveUp(int steps)
         m_item ++;
 
 
-        m_coordPos += w->realRect().h();
+        m_coordPos += dep_type_area_size(w);
         w = widgetItem(item());
     }
 
@@ -381,7 +429,7 @@ bool VScrollArea::moveUp(int steps)
 
 
 
-void VScrollArea::startMove(int speed, int potencial, Direction d)
+void ScrollArea::startMove(int speed, int potencial, Direction d)
 {
     //printf("startMove()\n");
 
@@ -396,7 +444,7 @@ void VScrollArea::startMove(int speed, int potencial, Direction d)
 
 
 
-void VScrollArea::fixupViewPosition()
+void ScrollArea::fixupViewPosition()
 {
     //auto w = lastWidgetItem();
 
@@ -406,7 +454,7 @@ void VScrollArea::fixupViewPosition()
 
         PosFixup.distance = m_coordPos;
         PosFixup.speed = 10;
-        PosFixup.boost = 20;//%
+        PosFixup.boost = 30;//%
         PosFixup.direction = Direction::Up;
 
         m_timerType = TimerWork::ScrollFixup;
@@ -423,7 +471,7 @@ void VScrollArea::fixupViewPosition()
 
         PosFixup.distance = least;
         PosFixup.speed = 10;
-        PosFixup.boost = 20;//%
+        PosFixup.boost = 30;//%
         PosFixup.direction = Direction::Down;
 
         m_timerType = TimerWork::ScrollFixup;
@@ -432,7 +480,7 @@ void VScrollArea::fixupViewPosition()
 }
 
 
-void VScrollArea::breakScrolling()
+void ScrollArea::breakScrolling()
 {
     if(m_timerType == TimerWork::ScrollFading) {
         Timer::stop();
@@ -440,7 +488,7 @@ void VScrollArea::breakScrolling()
 }
 
 
-void VScrollArea::resetViewPosition()
+void ScrollArea::resetViewPosition()
 {
     Timer::stop();
 
@@ -455,13 +503,13 @@ void VScrollArea::resetViewPosition()
 }
 
 
-void VScrollArea::setViewCoord(int c)
+void ScrollArea::setViewCoord(int c)
 {
     m_coordPos = c;
 }
 
 
-void VScrollArea::setItem(int c)
+void ScrollArea::setItem(int c)
 {
     if(c < 0 || c >= m_linesCount)
         return;
@@ -470,13 +518,13 @@ void VScrollArea::setItem(int c)
 }
 
 
-void VScrollArea::setLinesCount(int c)
+void ScrollArea::setLinesCount(int c)
 {
     m_linesCount = c;
 }
 
 
-bool VScrollArea::isAutoScrollActive() const
+bool ScrollArea::isAutoScrollActive() const
 {
     if(m_timerType != TimerWork::NoWork && Timer::isActive())
         return true;
@@ -485,21 +533,25 @@ bool VScrollArea::isAutoScrollActive() const
 
 
 
-void VScrollArea::addItem(Widget *w)
+void ScrollArea::addItem(Widget *w)
 {
     m_items.push_back(w);
+
+    w->handleResizeEvent().connect( [this](Widget *w) {
+        w->setSize( Rect(0, 0, rect().w(), w->rect().h()) );
+    });
 }
 
 
-void VScrollArea::clear()
+void ScrollArea::clear()
 {
     m_items.clear();
 }
 
 
-int VScrollArea::listHeightInRect()
+int ScrollArea::listHeightInRect()
 {
-    int h = 0;
+    int dep_type_pos = 0;
     int i = 0;
 
     for(i = count()-1; i> -1; --i) {
@@ -508,16 +560,16 @@ int VScrollArea::listHeightInRect()
         if(!w)
             break;
 
-        h += w->realRect().h();
-        if(h >= realRect().h())
+        dep_type_pos += dep_type_area_size(w);
+        if(dep_type_pos >= dep_type_area_size(this))
             break;
     }
 
-    return h;
+    return dep_type_pos;
 }
 
 
-int VScrollArea::leastFreePage()
+int ScrollArea::leastFreePage()
 {
     /*bool haveEndItem = false;
     int h = 0;
@@ -555,7 +607,7 @@ int VScrollArea::leastFreePage()
 
 
     Widget *item = 0;
-    int pos_y = 0;
+    int dept_type_pos = 0;
 
     for(int i = m_item; i < count(); ++i)
     {
@@ -563,15 +615,15 @@ int VScrollArea::leastFreePage()
         if(!item)
             break;
 
-        pos_y += item->rect().h();
+        dept_type_pos += dep_type_area_size(item);
 
-        if(pos_y+m_coordPos >= rect().h()) {
+        if(dept_type_pos+m_coordPos >= dep_type_area_size(this)) {
             return 0;
         }
     }
 
 
-    int lol_h = 0;
+    int dep_type_pos_check = 0;
 
     for(int i = count()-1; i > -1; --i)
     {
@@ -579,23 +631,23 @@ int VScrollArea::leastFreePage()
         if(!item)
             break;
 
-        lol_h += item->rect().h();
-        if(lol_h >= rect().h()) {
-            lol_h -= lol_h - rect().h();
+        dep_type_pos_check += dep_type_area_size(item);
+        if(dep_type_pos_check >= dep_type_area_size(this)) {
+            dep_type_pos_check -= dep_type_pos_check - dep_type_area_size(this);
             break;
         }
     }
 
     //printf("lol_h: %d pos_y: %d\n", lol_h, pos_y);
-    return lol_h - pos_y - m_coordPos;
+    return dep_type_pos_check - dept_type_pos - m_coordPos;
 }
 
 
-void VScrollArea::timerEvent()
+void ScrollArea::timerEvent()
 {
     switch(m_timerType)
     {
-        case TimerWork::ScrollFading:
+        case ScrollFading:
 
             m_timerSpeed -= (m_timerSpeed * m_potencialOfHiding / 100);
 
@@ -619,7 +671,7 @@ void VScrollArea::timerEvent()
 
                     if(leastFreePage() > 0) {
                         //printf("Offscreen UP fadding down quikly\n");
-                        m_potencialOfHiding += 4;
+                        m_potencialOfHiding += 16;
                     }
                     break;
 
@@ -633,7 +685,7 @@ void VScrollArea::timerEvent()
 
                     if(m_coordPos-checkItemSizes(w) > 0) {
                         //printf("Offscreen DOWN fadding down quikly\n");
-                        m_potencialOfHiding += 4;
+                        m_potencialOfHiding += 16;
                     }
                     break;
                 }
@@ -646,7 +698,7 @@ void VScrollArea::timerEvent()
             break;
 
 
-        case TimerWork::ScrollFixup:
+        case ScrollFixup:
 
             PosFixup.speed += (PosFixup.speed * PosFixup.boost / 100);
 
@@ -685,9 +737,66 @@ void VScrollArea::timerEvent()
 
             break;
 
+        case ScrollToStartEnd:
+        {
+            PosFixup.speed += (PosFixup.speed * PosFixup.boost / 100);
+
+            auto stop_and_fix = [this]() {
+
+                m_timerType = TimerWork::NoWork;
+                Timer::stop();
+                fixupViewPosition();
+            };
+
+            switch(PosFixup.direction)
+            {
+                case Direction::Up:
+                    if(!moveUp(PosFixup.speed))
+                        stop_and_fix();
+
+                    eventManager()->updateAfterEvent();
+                    break;
+
+                case Direction::Down:
+                    if(!moveDown(PosFixup.speed))
+                        stop_and_fix();
+
+                    eventManager()->updateAfterEvent();
+                    break;
+
+                case Direction::No:
+                    break;
+            }
+
+            break;
+        }
 
         case TimerWork::NoWork:
             break;
     }
 }
+
+
+
+void ScrollArea::toStart()
+{
+    PosFixup.speed = 10;
+    PosFixup.boost = 20;//%
+    PosFixup.direction = Direction::Down;
+
+    m_timerType = TimerWork::ScrollToStartEnd;
+    Timer::start(30);
+}
+
+
+void ScrollArea::toEnd()
+{
+    PosFixup.speed = 10;
+    PosFixup.boost = 20;//%
+    PosFixup.direction = Direction::Up;
+
+    m_timerType = TimerWork::ScrollToStartEnd;
+    Timer::start(30);
+}
+
 

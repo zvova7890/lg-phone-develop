@@ -54,11 +54,11 @@ public:
         int viewEngine;
         std::string protocol;
         std::string dir;
-        VScrollArea::ScrollState scrollState;
+        ScrollArea::ScrollState scrollState;
     };
 
 
-    class FileScrollView : public VScrollArea
+    class FileScrollView : public ScrollArea
     {
     public:
         FileScrollView(const Rect &, FileViewWidget *parent);
@@ -68,7 +68,7 @@ public:
 
 
         FileViewWidget *parent() {
-            return (FileViewWidget*)VScrollArea::parent();
+            return (FileViewWidget*)ScrollArea::parent();
         }
 
     //protected:
@@ -107,6 +107,7 @@ public:
     int cdUpAfterAction(const std::string &dir);
 
     int fillEntries();
+    void createFolder();
 
     void cdEffectPrepare(bool paint_fresh_screen = true);
     void cdEffectStart(int effect, int delay = 40);
@@ -197,6 +198,7 @@ protected:
 
     //void do_clipboard_work(const std::string &to_dir, int accepted_work);
 
+    void startDeleteOperation();
     void set_clipboard_files(const std::string &dir, const FSEntryInfo &info, int action);
     int copy_file(const std::string &from, const std::string &to,
                   std::function<void(int)> setFullSize,
@@ -207,10 +209,10 @@ protected:
     void initGlobalMenu();
     void showEntryInformationDialog();
 
+    void resizeEvent();
 
 protected:
     bool m_itemSelectMode;
-
 
 private:
     FileScrollView m_fileViewList;

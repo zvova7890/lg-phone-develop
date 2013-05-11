@@ -22,13 +22,13 @@ ResourceManager::~ResourceManager()
 }
 
 
-Image &ResourceManager::image(const std::string & name)
+Image &ResourceManager::image(const std::string & name, const std::string &subfolder, bool full_way)
 {
     Image *i = m_images[name];
 
     if(!i) {
 
-        i = new Image((m_myDir+"images/"+name+".png").c_str());
+        i = new Image((full_way? name : m_myDir+"images/" + subfolder + name + ".png").c_str());
         if(i) {
             if(!i->isEmpty())
                 m_images[name] = i;

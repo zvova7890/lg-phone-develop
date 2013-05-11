@@ -32,6 +32,22 @@ Image::Image(int w, int h, int depth) :
 }
 
 
+Image::Image(int w, int h, int depth, const char *data, bool ref) :
+    m_Refed(ref)
+{
+    m_Image.w = w;
+    m_Image.h = h;
+    m_Image.bit = depth;
+
+    if(!m_Refed) {
+        m_Image.bitmap = (unsigned char*)new unsigned char[w*h*(depth/8)];
+        memcpy(m_Image.bitmap, data, w*h*(depth/8));
+    } else {
+        m_Image.bitmap = (void *)data;
+    }
+}
+
+
 Image::Image(const char *file) :
     m_Refed(false)
 {
@@ -64,6 +80,17 @@ Image::~Image()
     if(!m_Refed && m_Image.bitmap) {
         delete (char*)m_Image.bitmap;
     }
+}
+
+
+void Image::clear()
+{
+    if(!m_Refed && m_Image.bitmap) {
+        delete (char*)m_Image.bitmap;
+        m_Image.bitmap = 0;
+    }
+
+    memset(&m_Image, 0, sizeof(m_Image));
 }
 
 

@@ -1,7 +1,8 @@
-#include "Timer.h"
-#include <include.h>
+
 #include <string.h>
 #include <stdio.h>
+#include "Timer.h"
+#include <Core/compatible.h>
 
 #ifndef __PC_BUILD__
 #define msec2timer(x) (x > 30? x - 30 : 1)

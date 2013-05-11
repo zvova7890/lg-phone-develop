@@ -2,9 +2,9 @@
 #ifndef __WIDGET_H__
 #define __WIDGET_H__
 
-#include <EventManager.h>
-#include <include.h>
-#include <Rect.h>
+#include <Widget/EventManager.h>
+#include <Core/Rect.h>
+#include <Core/Point.h>
 #include <vector>
 #include <list>
 #include <string>
@@ -15,6 +15,34 @@ class TimerCounter;
 
 class Widget
 {
+    enum {
+        ATTR_HIDDEN = (1 << 1),
+        ATTR_TOUCHED = (1 << 2),
+        ATTR_MOVED = (1 << 3),
+        ATTR_MOVING = (1 << 4),
+        ATTR_OFFRECT_TOUCH = (1 << 5),
+        ATTR_FULLSCREEN_BLOCK = (1 << 6),
+        ATTR_BLOCKABLE = (1 << 7),
+        ATTR_HAVE_LONGPRESS = (1 << 8),
+        ATTR_MOVABLE = (1 << 9),
+        ATTR_FOCUSED = (1 << 10),
+        ATTR_FOCUSEABLE = (1 << 11)
+    };
+
+    inline void set_attr(int a) {
+        if(!(m_attrs & a))
+            m_attrs |= a;
+    }
+
+    inline void erase_attr(int a) {
+        if(m_attrs & a)
+            m_attrs &= ~a;
+    }
+
+    inline bool test_attr(int a) const {
+        return m_attrs & a;
+    }
+
 public:
     
     class wid
@@ -72,6 +100,7 @@ public:
     private:
         Widget *m_w;
         std::list<Widget*>::iterator m_it;
+        friend class Widget;
     };
 
 
@@ -105,7 +134,9 @@ public:
     /* unmap widget */
     virtual void close();
 
-    void activateLongPress(bool is);
+    virtual void addParentToQueue();
+
+    void activateLongPressSupport(bool is);
 
     void setWidth(int w);
     void setHeight(int h);
@@ -117,6 +148,10 @@ public:
     void moveX(int x);
     void moveY(int y);
     void setSize(const Rect &r);
+    Widget *mainParent();
+    virtual Widget *providesExtraWidget(const std::string &);
+    bool isTop();
+    bool toTop();
 
     /* aka realSize */
     Rect size() const;
@@ -147,6 +182,13 @@ public:
         return m_id;
     }
 
+    inline void setUserData(void *ud) {
+        m_userData = ud;
+    }
+
+    inline void *userData() {
+        return m_userData;
+    }
 
     inline void setRealRect(const Rect &r) {
         m_realRect = r;
@@ -154,60 +196,66 @@ public:
 
     /* have touch? */
     inline bool isTouched() const {
-        return m_isTouched;
+        return test_attr(ATTR_TOUCHED);
     }
 
     /* have move? */
     inline bool isMoved() const {
-        return m_isMoved;
+        return test_attr(ATTR_MOVED);
     }
 
     /* now it's moving? */
     inline bool isMoving() const {
-        return m_isMoving;
+        return test_attr(ATTR_MOVING);
     }
 
     /* if widget full screen grab, it receive event always,
      * even if xy not in widget rect, that flag is tell, have in rect touch or offrect
     */
     inline bool isOffRectTouch() const {
-        return m_isOffRectTouch;
+        return test_attr(ATTR_OFFRECT_TOUCH);
     }
 
     inline bool isFullScreenBlocked() const {
-        return m_isFullScreenBlocked;
+        return test_attr(ATTR_FULLSCREEN_BLOCK);
     }
 
     inline bool isBlockable() const {
-        return m_isBlockable;
+        return test_attr(ATTR_BLOCKABLE);
     }
 
     bool isHaveLongPress() const {
-        return m_isHaveLongPress;
+        return test_attr(ATTR_HAVE_LONGPRESS);
     }
 
     void setMovable(bool is = true) {
-        m_isMovable = is;
+        if(is)
+            set_attr(ATTR_MOVABLE);
+        else
+            erase_attr(ATTR_MOVABLE);
     }
 
     bool isMovable() const {
-        return m_isMovable;
+        return test_attr(ATTR_MOVABLE);
     }
 
     bool isFocused() const {
-        return m_isFocused;
+        return test_attr(ATTR_FOCUSED);
     }
 
     void setFocuseable(bool is) {
-        m_isFocuseable = is;
+        if(is)
+            set_attr(ATTR_FOCUSEABLE);
+        else
+            erase_attr(ATTR_FOCUSEABLE);
     }
 
     bool isFocuseable() const {
-        return m_isFocuseable;
+        return test_attr(ATTR_FOCUSEABLE);
     }
 
     bool isHidden() const {
-        return m_hidden;
+        return test_attr(ATTR_HIDDEN);
     }
 
     Widget *parent() {
@@ -230,11 +278,19 @@ public:
         return m_lastTouchCoord;
     }
 
+    signal_slot::signal<Widget *> & handleResizeEvent() {
+        return m_resizeHandler;
+    }
+
     void paint();
     void touch(int action, int x, int y);
     
     void focus();
     void unfocus();
+
+    virtual void motionSensorEvent(int pos);
+    virtual void motionSensorEvent(int x, int y, int z);
+    virtual void resizeEvent();
 
 protected:
     virtual void paintEvent();
@@ -248,6 +304,7 @@ protected:
 
 protected:
     std::list<Widget*> m_childs;
+    signal_slot::signal<Widget *> m_resizeHandler;
 
 public:
     std::string __name;
@@ -262,22 +319,14 @@ private:
     Rect m_realRect;
 
     int m_id;
-
-    bool m_hidden;
-    bool m_isTouched;
-    bool m_isMoved;
-    bool m_isMoving;
-    bool m_isOffRectTouch;
-    bool m_isFullScreenBlocked, m_isBlockable;
-    bool m_isHaveLongPress;
-    bool m_isMovable;
-    bool m_isFocused;
-    bool m_isFocuseable;
+    int m_attrs;
 
     TimerCounter *m_longPressTimer;
 
     Point m_lastTouchCoord;
     char m_lastAction;
+
+    void *m_userData;
 };
 
 

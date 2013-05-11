@@ -14,7 +14,7 @@ class FileViewWidget;
 class FileViewWidgetListItem : public FileViewWidgetAbstractItem, public Widget
 {
 public:
-    FileViewWidgetListItem(FileViewWidget *parent, int w, int h, const FSEntryInfo &entry);
+    FileViewWidgetListItem(FileViewWidget *parent, int w, int h, const FSEntryInfo &entry, Image *icon = 0);
     virtual ~FileViewWidgetListItem();
 
     void paintEvent();
@@ -26,6 +26,7 @@ public:
 private:
     bool _is_longpress;
     const FSEntryInfo & _fsinfo;
+    Image *m_icon;
 };
 
 
@@ -40,6 +41,7 @@ public:
     int  itemBySystemEntryNumber(int n);
     int  fileSystemEntryByItem(int n);
     void clearItems();
+    void resizeEvent();
     int itemsForViewList();
     int fsEntriesPerLine();
     int viewItemsCount();

@@ -229,296 +229,6 @@ void FileViewWidget::paste(const std::string &dir)
 }
 
 
-#if 0
-void FileViewWidget::do_clipboard_work(const std::string &to_dir, int accepted_work)
-{
-    if(!m_clipboard.size())
-        return;
-
-    ThreadWorker *worker = new ThreadWorker;
-    ProgressDialog *progress = new ProgressDialog(parent(), Rect(10, 70, 220, 150));
-    ::Timer *timer = new ::Timer();
-
-    worker->to_dir = to_dir;
-
-
-    worker->slot = this->onExitSignal().connect( [this, timer, worker, progress](FileViewWidget *){
-        progress->close();
-        timer->stop();
-
-        delete worker;
-        delete timer;
-        delete progress;
-        m_clipboard.clear();
-    });
-
-
-    progress->setFullScreenBlock(true);
-    progress->setMaxFullProgress(m_clipboard.size(accepted_work));
-
-
-    progress->onCancelPressedSignal().connect( [worker](UButton *){
-        worker->canceled = true;
-    });
-
-    worker->thread.onRunSignal().connect( [accepted_work, worker, this](Thread *) {
-
-        for(auto proto : m_clipboard.protocols())
-        {
-            if(worker->canceled)
-                break;
-
-            struct Remover {
-                Remover(const std::string *_dir, const FSListedEntry *_e) {
-                    dir = _dir;
-                    info = _e;
-                }
-
-                const std::string *dir;
-                const FSListedEntry *info;
-            };
-
-            /* удалять файл из итерирующего спика опастно, лучьше делать это потом */
-            std::list <Remover> remover_list;
-
-            /* пост удаление папок */
-            std::list<std::string> last_dir;
-
-            if(!(accepted_work & ClipBoard::Action::Copy || accepted_work & ClipBoard::Action::Move))
-                goto __next1;
-
-            for(auto files = proto.second.files().begin(); files != proto.second.files().end(); ++files)
-            {
-                if(worker->canceled)
-                    break;
-
-                const std::string &dir = files->first;
-                std::string base_dir;
-                ClipBoardFilesGroup &group = files->second;
-
-                for(auto file = group.filesList().begin(); file != group.filesList().end(); ++file)
-                {
-                    base_dir.clear();
-
-                    if(dir.length() > (unsigned int)group.filesList().front().info.base_from)
-                        base_dir.assign(dir, group.filesList().front().info.base_from, dir.length()-group.filesList().front().info.base_from);
-
-                    if(file->info.flags & FSProtocol::FSEntryFlags::Dir) {
-
-
-                        if((file->action == ClipBoard::Action::Copy || file->action == ClipBoard::Action::Move) &&
-                                (accepted_work & ClipBoard::Action::Copy || accepted_work & ClipBoard::Action::Move))
-                        {
-                            worker->work_name = "Creating...";
-                            worker->cur_file = file->info.name.c_str();
-                            worker->full_size = 1;
-                            worker->done = 0;
-
-                            std::string ndir = worker->to_dir+base_dir+file->info.name+"/";
-                            mkdir(ndir.c_str(), 0777);
-
-                            if( file->action & ClipBoard::Action::Move &&
-                                dir.compare(dir.length()-(file->info.name.length()+1), file->info.name.length(), file->info.name+"/") ) {
-                                last_dir.push_back(dir + file->info.name+"/");
-                            }
-
-                            worker->done = 1;
-                            worker->file++;
-
-                            remover_list.push_back(Remover(&dir, &file->info)); 
-                        }
-
-                    } else {
-
-                        if((file->action == ClipBoard::Action::Copy || file->action == ClipBoard::Action::Move) &&
-                                (accepted_work & ClipBoard::Action::Copy || accepted_work & ClipBoard::Action::Move))
-                        {
-
-                            worker->work_name = file->action == ClipBoard::Action::Copy? "Copying..." : "Moving...";
-                            worker->cur_file = file->info.name.c_str(); // Avoid CoW?
-                            worker->done = 0;
-
-
-                            if(file->action & ClipBoard::Action::Move && !strncmp(worker->to_dir.c_str(), dir.c_str(), 4)) {
-                                U_CHAR old[256], nw[256];
-
-                                UniLib_UTF8ToUCS2((char*)(dir+file->info.name).c_str(), old);
-                                UniLib_UTF8ToUCS2((char*)(worker->to_dir+base_dir+file->info.name).c_str(), nw);
-
-                                if(!FileSys_MoveFile(old, nw))
-                                    goto try_copy;
-
-                            } else {
-
-                                try_copy:
-                                int err = copy_file((dir+file->info.name).c_str(), (worker->to_dir+base_dir+file->info.name).c_str(),
-                                                    &worker->full_size, &worker->done, &worker->canceled);
-                                if(err)
-                                    worker->cur_file = "Ошибка";
-
-                                else if(file->action == ClipBoard::Action::Move)
-                                    unlink((dir+file->info.name).c_str());
-                            }
-
-                            worker->file++;
-
-                            remover_list.push_back(Remover(&dir, &file->info));
-                        }
-                    }
-
-                    if(worker->canceled)
-                        break;
-                }
-
-                for(const auto rl : remover_list) {
-                    m_clipboard.popFile( workspace().protocol, *rl.dir, *rl.info);
-                }
-
-                remover_list.clear();
-
-                if(worker->canceled)
-                    break;
-            }
-
-            if(!last_dir.empty() && accepted_work & ClipBoard::Action::Move) {
-                for(auto it = last_dir.rbegin(); it != last_dir.rend(); ++it) {
-                    rmdir(it->c_str());
-                    printf("REMOVEDIR: %s\n", it->c_str());
-                }
-
-                last_dir.clear();
-            }
-
-
-            if(worker->canceled)
-                goto __end;
-
-            __next1:
-
-            if(!(accepted_work & ClipBoard::Action::Delete))
-                goto __end;
-
-            remover_list.clear();
-            for(auto files = proto.second.files().rbegin(); files != proto.second.files().rend(); ++files)
-            {
-                const std::string &dir = files->first;
-                std::string base_dir;
-                ClipBoardFilesGroup &group = files->second;
-
-                base_dir.assign(dir, group.filesList().front().info.base_from, dir.length()-group.filesList().front().info.base_from);
-
-                for(auto file = group.filesList().rbegin(); file != group.filesList().rend(); ++file)
-                {
-                    if(worker->canceled)
-                        break;
-
-                    if(file->info.flags & FSProtocol::FSEntryFlags::Dir) {
-
-                        if(file->action == ClipBoard::Action::Delete && accepted_work & ClipBoard::Action::Delete) {
-
-                            worker->work_name = "Deleting dir...";
-                            worker->cur_file = file->info.name.c_str();
-                            worker->full_size = 1;
-                            worker->done = 0;
-
-                            //printf("rmdir(%s)\n", (worker->to_dir+base_dir+file->info.name+"/").c_str());
-                            rmdir((worker->to_dir+base_dir+file->info.name+"/").c_str());
-
-                            worker->done = 1;
-                            worker->file++;
-
-                            remover_list.push_back(Remover(&dir, &file->info));
-                        }
-
-                    } else {
-
-                        if(file->action == ClipBoard::Action::Delete && (accepted_work & ClipBoard::Action::Delete)) {
-
-                            worker->work_name = "Deleting...";
-                            worker->cur_file = file->info.name.c_str();
-                            worker->full_size = 1;
-                            worker->done = 0;
-
-                            unlink((dir+file->info.name).c_str());
-
-                            worker->done = 1;
-                            worker->file++;
-
-                            remover_list.push_back(Remover(&dir, &file->info));
-                        }
-                    }
-
-                    if(worker->canceled)
-                        break;
-                }
-
-                for(const Remover & rl : remover_list) {
-                    m_clipboard.popFile(workspace().protocol, *rl.dir, *rl.info);
-                }
-
-                remover_list.clear();
-
-                if(worker->canceled)
-                    break;
-            }
-
-
-__end:;
-        }
-
-
-        if(worker->canceled) {
-            m_clipboard.clear();
-            worker->work_name = "Canceled";
-        }
-
-        onExitSignal().disconnect(worker->slot);
-        worker->work_finished = 1;
-    });
-
-
-    timer->timerEventSignal().connect([worker, progress, this](::Timer *t) {
-
-        if(worker->work_finished > 10) {
-
-            progress->close();
-            t->stop();
-
-            delete worker;
-            delete progress;
-
-            eventManager()->notifyAfterEvent( [t](){
-                //::Timer *t = (::Timer *)c;
-                delete t;
-            } );
-
-            eventManager()->updateAfterEvent();
-            refreshDir();
-            return;
-        }
-
-        if(worker->work_finished)
-            worker->work_finished++;
-
-        progress->setCurrentWorkStatus(worker->cur_file);
-
-        progress->setProgressName(worker->work_name);
-
-        progress->setFullProgress(worker->file);
-        progress->setMaxProgress(worker->full_size);
-        progress->setProgress(worker->done);
-
-        eventManager()->updateAfterEvent();
-    });
-
-
-    timer->start(80);
-    progress->show();
-    worker->start();
-}
-#endif
-
-
 int FileViewWidget::unlinkFiles(const std::list<const FSEntryInfo *> & list)
 {
     printf("unlinkFiles(%d)\n", list.size());
@@ -529,11 +239,15 @@ int FileViewWidget::unlinkFiles(const std::list<const FSEntryInfo *> & list)
     {
         if((entry->attr == FSProtocol::FSEntryFlags::File) && !entry->action)
         {
-            int r = p.unlink((directory() + entry->name).c_str());
-            if(!r) unlinked ++;
+            //int r = p.unlink((directory() + entry->name).c_str());
+            //if(!r) unlinked ++;
+
+            m_deleteClipboard.pushFile(workspace().protocol, directory(),
+                                       FSListedEntry(directory(), directory().length(), *entry),
+                                       ClipBoard::Delete);
         }
 
-        else if(entry->attr & FSProtocol::FSEntryFlags::Dir && !entry->action) {
+        if(entry->attr & FSProtocol::FSEntryFlags::Dir && !entry->action) {
 
             /* если выбрана папка, сгенерируем для неё полный поочерёдный "папка -> список -> папка -> список" список файлов */
             std::list<FSListedEntry> list;
@@ -560,7 +274,7 @@ int FileViewWidget::unlinkFiles(const std::list<const FSEntryInfo *> & list)
         return unlinked;
 
 
-#include "FileOpDelete.cpp"
+    startDeleteOperation();
 
     return unlinked;
 }
@@ -590,7 +304,8 @@ int FileViewWidget::copy_file(const std::string &from, const std::string &to,
             return -2;
         }
 
-        setFullSize(p.fsize(h));
+        int size = p.fsize(h);
+        setFullSize(size);
 
         bool err = false;
         unsigned long processed = 0;
@@ -613,6 +328,9 @@ int FileViewWidget::copy_file(const std::string &from, const std::string &to,
                 err = true;
                 break;
             }
+
+            if(size <= processed)
+                break;
 
             if(isCanceled())
                 break;

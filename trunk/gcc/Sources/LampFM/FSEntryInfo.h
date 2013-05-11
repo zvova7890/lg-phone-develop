@@ -39,6 +39,20 @@ public:
         return *this;
     }
 
+
+    std::string ext() {
+
+        if(attr & (1 << 1) ) // FIXME
+            return std::string();
+
+        auto at = name.find_last_of('.');
+        if(at != std::string::npos) {
+            return name.substr(at+1);
+        }
+
+        return std::string();
+    }
+
     std::string name;
     int attr;
     int size;

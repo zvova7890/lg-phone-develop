@@ -3,7 +3,7 @@
 
 
 #include <signals/signal.h>
-#include <EventManager.h>
+#include <Widget/EventManager.h>
 
 
 typedef struct

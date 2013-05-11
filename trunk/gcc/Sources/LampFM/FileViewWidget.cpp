@@ -8,6 +8,7 @@
 #include <fs.h>
 #include <loader.h>
 
+#include <Core/compatible.h>
 #include "FileViewWidget.h"
 #include "FileViewWidgetListEngine.h"
 #include "FileViewWidgetIconEngine.h"
@@ -23,7 +24,7 @@
 
 
 FileViewWidget::FileScrollView::FileScrollView(const Rect &r, FileViewWidget *parent) :
-    VScrollArea(r, parent)
+    ScrollArea(r, ScrollArea::Vertical, parent)
 {
 
 }
@@ -38,7 +39,7 @@ void FileViewWidget::FileScrollView::paintEvent()
 {
     glSaveClipRegion();
     glSetClipRegion(realRect().x(), realRect().y(), realRect().x2(), realRect().y2());
-    VScrollArea::paintEvent();
+    ScrollArea::paintEvent();
     glRestoreClipRegion();
 }
 
@@ -56,16 +57,21 @@ FileViewWidget::FileViewWidget(Widget *parent, EffectManager *em, const Rect &r)
     m_fileViewList(r, this),
     m_mainViewEngine(0),
     m_firstHeight(r.h()),
-    m_fsEntryMenu(this, Rect(10, 60, 240-20, 280)),
+    m_fsEntryMenu(Rect(10, 60, 200, rect().h()-60-10), this),
     global_yes_no_question(0),
     m_needCd(false),
-    global_menu(this, Rect(0, 0, 240, 310)),
-    m_headMenuButton(this, Rect(0, 0, 240, 39)),
+    global_menu(Rect(0, 0, rect().w(), (rect().h()-39)*90/100), this),
+    m_headMenuButton(Rect(0, 0, rect().w(), 39), this),
     global_menu_showing(false),
     m_effectManager(em)
 {
     memset(&m_prevScreenShoot, 0, sizeof(m_prevScreenShoot));
 
+    if(rect().w() > 210) {
+        int x = (rect().w()-210) / 2;
+        int h = m_headMenuButton.rect().h()+10;
+        m_fsEntryMenu.setSize( Rect(x, h, 210, rect().h()-h-10) );
+    }
 
     // TODO: restoring last dir
     m_currentWorkspaceId = 0;
@@ -87,8 +93,7 @@ FileViewWidget::FileViewWidget(Widget *parent, EffectManager *em, const Rect &r)
 
     initGlobalMenu();
 
-    m_headMenuButton.setHeight(border_img.height());
-    m_headMenuButton.setWidth(border_img.width());
+    m_headMenuButton.setHeight(39);
     m_headMenuButton.setBackround(&border_img);
     m_headMenuButton.setFullScreenBlock(false);
     m_headMenuButton.setBlockable(true);
@@ -99,6 +104,9 @@ FileViewWidget::FileViewWidget(Widget *parent, EffectManager *em, const Rect &r)
 
     this->add(&m_fileViewList);
     this->add(&m_headMenuButton);
+    this->add(&global_menu);
+
+    global_menu.hide();
 
 
     auto event = [this](Timer *t) {
@@ -278,6 +286,39 @@ FileViewWidget::~FileViewWidget()
 }
 
 
+void FileViewWidget::resizeEvent()
+{
+    m_resizeHandler.trigger(this);
+
+    global_menu.setSize(Rect(0, 0, rect().w(), (rect().h()-39)*90/100));
+
+    int off_h = m_headMenuButton.realRect().h();
+    m_fileViewList.setSize( Rect(realRect().x(), realRect().y()+off_h, rect().w(), rect().h()-off_h) );
+
+    if(!global_menu.isHidden())
+        m_headMenuButton.setSize(Rect(realRect().x(), global_menu.realRect().y2(), rect().w(), off_h));
+    else
+        m_headMenuButton.setSize( Rect(m_headMenuButton.rect().xy(), Point(rect().w(), off_h)) );
+
+
+    if(rect().w() > 210) {
+        int x = (rect().w()-210) / 2;
+        int h = m_headMenuButton.rect().h()+10;
+        m_fsEntryMenu.setSize( Rect(x, h, 210, rect().h()-h-10) );
+    } else {
+        m_fsEntryMenu.setSize(Rect(10, 60, 200, rect().h()-60-10));
+    }
+
+
+    for(Widget *w : m_childs) {
+        w->resizeEvent();
+    }
+
+    m_mainViewEngine->resizeEvent();
+    //refreshDir();
+}
+
+
 void FileViewWidget::initGlobalMenu()
 {
     /* init menu */
@@ -296,18 +337,13 @@ void FileViewWidget::initGlobalMenu()
     global_menu.scrollArea().addItem( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "В начало"));
     mi->onReleasedSignal().connect( [this](ListMenuItem *) {
         global_menu.hide();
-        fileViewArea().setMoveDirection(VScrollArea::Direction::Down);
-        fileViewArea().setItem(0);
-        fileViewArea().setViewCoord(realRect().x2());
-        fileViewArea().fixupViewPosition();
+        fileViewArea().toStart();
     } );
 
     global_menu.scrollArea().addItem( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "В конец"));
     mi->onReleasedSignal().connect( [this](ListMenuItem *) {
         global_menu.hide();
-        fileViewArea().setMoveDirection(VScrollArea::Direction::Up);
-        fileViewArea().setItem(fileViewArea().count()-1);
-        fileViewArea().fixupViewPosition();
+        fileViewArea().toEnd();
     } );
 
 
@@ -325,6 +361,12 @@ void FileViewWidget::initGlobalMenu()
         paste(directory());
         refreshDir();
         eventManager()->updateAfterEvent();
+    } );
+
+    global_menu.scrollArea().addItem( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Создать папку"));
+    mi->onReleasedSignal().connect( [this](ListMenuItem *) {
+        global_menu.hide();
+        createFolder();
     } );
 
     global_menu.scrollArea().addItem( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Сменить папку"));
@@ -413,7 +455,7 @@ void FileViewWidget::clearScreen()
 
 void FileViewWidget::paintEvent()
 {
-    glSetPen(0xFF0F0000);
+    glSetPen(0xFF000000);
     glDrawFilledRectange(0, /*border->h*/0, rect().w(), rect().y2());
 
     int cline = fileViewArea().item()+1;
@@ -637,7 +679,7 @@ int FileViewWidget::fillEntries()
 
     if(path == "/") {
 
-        const char *names[4] = {"usr/", "sys/", "mmc/", "tmp/"};
+        const char *names[4] = {"usr/", "sys/", "mmc/", "cus/"};
 
         for(int i=0; i<4; ++i) {
             push_item(names[i], FSProtocol::FSEntryFlags::Dir, 0, false);
@@ -863,13 +905,3 @@ bool FileViewWidget::switchWorkSpace(unsigned int id)
 
     return true;
 }
-
-
-/*
-void FileViewWidget::paste(const std::string &to_dir)
-*/
-
-
-/*
-int FileViewWidget::unlinkFiles(const std::list<const FSEntryInfo *> & list)
-*/

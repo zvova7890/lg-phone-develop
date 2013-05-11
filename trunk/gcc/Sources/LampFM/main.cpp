@@ -38,19 +38,92 @@
 //class MainScreen;
 int my_application = 0;
 static int setup_h;
+static int gdi_state = 0;
+
+ExtManager *ext_manager;
 std::string elfdir;
 
 
-ResourceManager *_global_res_manager;
-ExtManager *ext_manager;
+
+
+
+
+class MainWidget : public Widget
+{
+public:
+
+    MainWidget(const Rect & rect, EventManager *event_manager) :
+        Widget(rect, event_manager)
+    {}
+
+    ~MainWidget() {
+        delete m_kbd;
+        delete m_effectManager;
+        delete m_resourceManager;
+    }
+
+    void init()
+    {
+        m_resourceManager = new ResourceManager( elfdir );
+        m_kbd = new Keyboard(Rect(0, GRSYS_HEIGHT-140, GRSYS_WIDTH, 140), this);
+        m_kbd->handleResizeEvent().connect( [](Widget *w) {
+           w->setSize(Rect(0, GRSYS_HEIGHT-140, GRSYS_WIDTH, 140));
+        });
+
+
+        m_effectManager = new EffectManager( this );
+
+        provideExtraWidget("keyboard", m_kbd);
+    }
+
+    Widget *providesExtraWidget(const std::string &s) {
+        return m_extra_widgets[s];
+    }
+
+    void provideExtraWidget(const std::string &s, Widget *w) {
+        m_extra_widgets[s] = w;
+    }
+
+    ResourceManager *resourceManager() {
+        return m_resourceManager;
+    }
+
+    EffectManager *effectManager() {
+        return m_effectManager;
+    }
+
+
+    void resizeEvent() {
+
+        printf("Width: %d\n", GRSYS_WIDTH);
+        //glSetContextProp(glActiveContext(), GRSYS_WIDTH, GRSYS_HEIGHT, 16, Graphics_GetScreenBuffer());
+        glDestroyContext(glActiveContext());
+
+        glActivateContext( glCreateContext(GRSYS_WIDTH, GRSYS_HEIGHT, 16, Graphics_GetScreenBuffer()) );
+        glEnable(GL_ALPHA_TEST);
+
+        setSize(Rect(0, 0, GRSYS_WIDTH, GRSYS_HEIGHT));
+
+        m_effectManager->resizeEvent();
+        Widget::resizeEvent();
+    }
+
+protected:
+    std::map <std::string, Widget *> m_extra_widgets;
+    ResourceManager *m_resourceManager;
+    Keyboard *m_kbd;
+    EffectManager *m_effectManager;
+};
+
+
+
 EventManager event_mngr;
-Widget active_area(Rect(0, 0, 240, 400), &event_mngr);
-EffectManager global_emanager(&active_area);
+MainWidget *main_widget = 0;
 FSProtocolsContainer protocols;
 
 //GlobalMenuButton *menu_test = 0;
 FileViewWidget *main_view = 0;
-Keyboard *kbd;
+
 
 unsigned int last_time, fps, fps_count;
 bool _inited = false;
@@ -65,7 +138,7 @@ static inline unsigned int cur_sec() {
 
 
 ResourceManager & resourceManager() {
-    return *_global_res_manager;
+    return *main_widget->resourceManager();
 }
 
 
@@ -78,25 +151,19 @@ ExtManager & extensionManager() {
     return *ext_manager;
 }
 
-Widget & mainWidget() {
-    return active_area;
-}
 
 FSProtocolsContainer & protocolsContainer() {
     return protocols;
 }
 
 
-Keyboard *mainKeyboard() {
-    return kbd;
-}
 
 void Screen_OnDraw()
 {
     if(!_inited)
         return;
 
-    active_area.paint();
+    main_widget->paint();
 
     ++fps_count;
     if(last_time != cur_sec())
@@ -123,45 +190,46 @@ void refresh()
 }
 
 
-
-
-
 //Действие при создании окна
 void Screen_OnInit()
 {
-    GLContext *gl_context = glCreateContext(DISPLAY_WITDH, DISPLAY_HEIGHT, 16, GetScreenBuffer());
+    GLContext *gl_context = glCreateContext(GRSYS_WIDTH, GRSYS_HEIGHT, 16, GetScreenBuffer());
     glActivateContext(gl_context);
     glEnable(GL_ALPHA_TEST);
 
-    active_area.activateLongPress(true);
 
     protocols.pushProtocol("local", new LocalFSProtocol);
 
-
-    event_mngr.setRefreshFunc( [](void *) {
-        GrSys_Refresh();
-    });
-
-    event_mngr.setPaintFunc( [](void *) {
+    event_mngr.setPaintFunc( [](void *){
         Screen_OnDraw();
-    });
+    } );
 
-    main_view = new FileViewWidget(&active_area, &global_emanager, Rect(0, 0, 240, 400));
+    event_mngr.setRefreshFunc( [](void *){
+        GrSys_Refresh();
+    } );
 
+    main_widget = new MainWidget(Rect(0, 0, GRSYS_WIDTH, GRSYS_HEIGHT), &event_mngr);
+    main_widget->init();
+    main_widget->activateLongPressSupport(true);
+
+
+    main_view = new FileViewWidget(main_widget, main_widget->effectManager(), main_widget->rect());
     main_view->onExitSignal().connect( std::function<void(FileViewWidget*)>([](FileViewWidget *) {
         TaskMngr_AppExit(0, 0, 0);
     }) );
 
-    active_area.add(main_view);
+    main_view->handleResizeEvent().connect([](Widget *w) {
+        w->setSize(w->parent()->rect());
+        w->eventManager()->updateAfterEvent();
+    });
+
+    main_widget->add(main_view);
 
     main_view->cdEffectPrepare(false);
     main_view->cdUp("/", false);
 
     _inited = true;
     main_view->cdEffectStart(EFFECT_CENTER_SCALE);
-
-    kbd = new Keyboard(Rect(0, 250, 240, 150), &active_area);
-
 }
 
 
@@ -169,10 +237,11 @@ void Screen_OnInit()
 //Действие при уничтожении окна
 void Screen_OnExit()
 {
-    delete kbd;
+    Graphics_ChangeGDI(0);
+
     delete main_view;
-    delete _global_res_manager;
     delete ext_manager;
+    delete main_widget;
 
     glDestroyContext( glActiveContext() );
 }
@@ -182,14 +251,14 @@ void Screen_OnExit()
 //Действие при активации
 void Screen_OnAwake()
 {
-    GrSys_SelectGDI(0);
+    GrSys_SelectGDI(gdi_state);
     refresh();
 }
 
 //Действие при сворачивании
 void Screen_OnSleep()
 {
-
+    gdi_state = GrSys_GetGDIID();
 }
 
 //Действие при зажатии настоящией кнопки или рабочей области тачскрина
@@ -202,8 +271,8 @@ void Screen_OnKeyDown(int key)
         image_t img;
 
         img.bitmap = Graphics_GetScreenBuffer();
-        img.w = 240;
-        img.h = 400;
+        img.w = GRSYS_WIDTH;
+        img.h = GRSYS_HEIGHT;
         img.bit = 16;
 
         save_png_to_file (&img, "/usr/Zbin/shoot.png");
@@ -223,7 +292,7 @@ void Screen_OnKeyDown(int key)
         break;
     }
 
-    refresh();
+    //refresh();
 }
 
 
@@ -269,6 +338,14 @@ void Screen_OnPointing(int action, int position)
     x = PXE_LOWORD(position);
     y = PXE_HIWORD(position);
 
+    if( GrSys_GetGDIID() == 1) {
+        /* retranslate coordinates */
+        int t = x;
+
+        x = y;
+        y = 240-t;
+    }
+
     if(action == TOUCH_ACTION_MOVE && last_action != 1) {
         last_action = 1;
         //setup_h = SetUP_GetHandle();
@@ -280,49 +357,83 @@ void Screen_OnPointing(int action, int position)
         SetUP_SetTouchpadSensitivity(setup_h, TOUCHPAD_SENSITIVITY_SET, 9);
     }
 
-    active_area.touch(action, x, y);
+    main_widget->touch(action, x, y);
     event_mngr.update();
 }
 
 
+void lg_general_axel_event(int position)
+{
+    printf("position: %d\n", position);
+
+    if(position == 2 && GrSys_GetGDIID() == 1) {
+        Graphics_ChangeGDI(0);
+        main_widget->resizeEvent();
+    }
+    else if(position == 1 && GrSys_GetGDIID() != 1) {
+        Graphics_ChangeGDI(1);
+        main_widget->resizeEvent();
+    }
+
+    main_widget->motionSensorEvent(position);
+    event_mngr.update();
+}
+
+
+void lg_axel_event(int x, int y, int z)
+{
+    main_widget->motionSensorEvent(x, y, z);
+    //event_mngr.update();
+}
+
+
 //Главный обработчик окна WINDOW_ID_MAINMENU от приложения
-int Window_EventHandler(int cmd, int subcmd, int status)
+int Window_EventHandler(unsigned long cmd, unsigned long subcmd, unsigned long status)
 {
     switch (cmd)
     {
-    case Window_OnInit:
+    case MSG_INIT:
         Screen_OnInit();
         break;
-    case Window_OnExit:
+
+    case MSG_EXIT:
         Screen_OnExit();
         break;
-    case Window_OnAwake:
-        printf("Window_OnAwake: %d\n", cmd);
+
+    case MSG_RESUME:
         Screen_OnAwake();
         break;
-    case Window_OnSleep:
+
+    case MSG_SLEEP:
         Screen_OnSleep();
         break;
-    case Window_OnKeyDown:
+
+    case MSG_KEYDOWN:
         Screen_OnKeyDown(subcmd);
         break;
-    case Window_OnKeyUp:
+
+    case MSG_KEYUP:
         Screen_OnKeyUp(subcmd);
         break;
-    case Window_OnDraw:
+
+    case MSG_DRAW:
         refresh();
         break;
-    case Window_OnTimer:
+
+    case MSG_TIMER:
         Screen_OnTimer(subcmd, status);
         break;
-    case Window_OnPointing:
+
+    case MSG_POINTING:
         Screen_OnPointing(subcmd, status);
         break;
-    case Window_OnIndicatorDraw:
+
+    case MSG_INDICATOR:
         Screen_OnIndicatorDraw();
         break;
+
     default:
-        printf("Ololo event: %d\n", cmd);
+        //printf("Ololo event: %d\n", cmd);
         break;
     }
 
@@ -331,11 +442,11 @@ int Window_EventHandler(int cmd, int subcmd, int status)
 
 
 
-int listener(int event_id, int wparam, int lparam)
+int listener(unsigned long event_id, unsigned long wparam, unsigned long lparam)
 {
     switch (event_id)
     {
-    case PXE_RUN_CREATE_EVENT:
+    case BNS_EVENT_START:
         TaskMngr_AppSetName(my_application, 0, 0, 0);
 
         //Получаем хендл настроек
@@ -344,40 +455,36 @@ int listener(int event_id, int wparam, int lparam)
         //Устанавливаем чувствительность тачпада
         SetUP_SetTouchpadSensitivity(setup_h, TOUCHPAD_SENSITIVITY_SET, 9);
 
-        Window_Create(WINDOW_ID_SCREEN, Window_EventHandler);
-        Window_Init(WINDOW_ID_SCREEN);
+        MsgHandler_RegisterProcessor(WINDOW_ID_SCREEN, Window_EventHandler);
+        MsgHandler_SetActivePID(WINDOW_ID_SCREEN);
+
+        AccelSensor_Enable();
+        AccelSensor_EventsEnable(1);
+
         return 1;
 
-    case PXE_RUN_DESTROY_EVENT:
+    case BNS_EVENT_TERMINATE:
         // Уничтожаем окно
         SetUP_CloseHandle(setup_h);
-        Window_DestroyAll();
+
+        MsgHandler_Terminate();
         ElfDestroy();
         return 1;
 
         //Событие при активации приложения
-    case PXE_RUN_RESUME_EVENT:
-        //refresh_all = 1;
-        Window_TransEvent(PXE_RUN_PAINT_EVENT, 0, 0);
+    case BNS_EVENT_RESUME:
+        MsgHandler_SendMessage(WINDOW_ID_SCREEN, MSG_RESUME, 0, 0);
         return 1;
 
-    case PXE_RUN_SUSPEND_EVENT:
-        //SetUP_SetTouchpadSensitivity(setup_h, TOUCHPAD_SENSITIVITY_DEFAULT, 0);
+    case BNS_EVENT_SUSPEND:
+        MsgHandler_SendMessage(WINDOW_ID_SCREEN, MSG_SLEEP, 0, 0);
         return 1;
 
-    case 102: // on awake
-        //SetUP_SetTouchpadSensitivity(setup_h, TOUCHPAD_SENSITIVITY_SET, 9);
-        Screen_OnAwake();
-        Window_TransEvent(event_id, wparam, lparam);
-        return 1;
-
-    case 101: // on suspend
-        Screen_OnSleep();
-        Window_TransEvent(event_id, wparam, lparam);
+    case BNS_EVENT_MOTION_SENSOR:
+        lg_general_axel_event(lparam);
         return 1;
 
     default:
-
         //printf("event_id: %d\n", event_id);
         Window_TransEvent(event_id, wparam, lparam);
         return 1;
@@ -385,6 +492,8 @@ int listener(int event_id, int wparam, int lparam)
 }
 
 
+
+void init_fds();
 int main(int argc, char *argv[])
 {
     GL_UNUSED(argc)
@@ -394,12 +503,41 @@ int main(int argc, char *argv[])
         elfdir.assign(argv[0], 0, end-argv[0]);
     }
 
-    _global_res_manager = new ResourceManager(elfdir);
+    init_fds();
     ext_manager = new ExtManager(elfdir);
 
     static ELF_PARASITE_INFO parasite;
     my_application = RegisterApplicationEventListener(&parasite, listener, L"MyMegaApplication");
-    return /*(float)argc / 2.2f*/0;
+
+    /*
+    FILE *fp = fopen("/sys/RecMngr.bin", "r");
+
+    if(fp) {
+        printf("WORK!\n");
+        fclose(fp);
+    } else {
+        printf("NE WORK!\n");
+    }
+
+    TFStat fstat;
+    long it = 0;
+
+    if(FileSys_FindFirstDir(L"/cust/", &it, &fstat)){
+        char ololo[128];
+
+        do{
+            UniLib_UCS2ToUTF8(fstat.szName, ololo);
+
+            printf("LOOOOL: %s\n", ololo);
+
+        } while(FileSys_FindNextDir(it, &fstat));
+
+
+        FileSys_FindClose(it);
+    }
+*/
+
+    return 0;
 }
 
 

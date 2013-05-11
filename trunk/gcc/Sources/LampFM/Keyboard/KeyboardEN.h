@@ -11,17 +11,13 @@ public:
     KeyboardEN(const Rect &r, Keyboard *p = 0);
     virtual ~KeyboardEN();
 
-    String name() const;
-    int rows() const;
-    int rowMaxHeight() const;
+    std::string name() const;
 
 protected:
-    void kbdAction(Button *);
+    //void kbdAction(Button *);
 
 private:
-    std::vector< std::vector <Button *> > m_buttons;
-    Image *kbd_c;
-    Image *kbd_up;
+
 };
 
 

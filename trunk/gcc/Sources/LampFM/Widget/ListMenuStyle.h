@@ -68,6 +68,16 @@ public:
     }
 
 
+    void setHeader(const Brush &b) {
+        m_header = b;
+    }
+
+    Brush & header() {
+        return m_header;
+    }
+
+
+
     bool isPaintLastLine() const {
         return _paint_last_line;
     }
@@ -77,7 +87,7 @@ public:
     }
 
 private:
-    Brush _background, _shadow;
+    Brush _background, _shadow, m_header;
     GLColor _header_text;
     bool _paint_first_line, _paint_last_line;
 

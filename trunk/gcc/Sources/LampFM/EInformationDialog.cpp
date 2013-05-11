@@ -10,7 +10,7 @@
 
 
 EInformationDialog::EInformationDialog(Widget *parent, const Rect &r) :
-    VScrollArea(r, parent)
+    ScrollArea(r, ScrollArea::Vertical, parent)
 {
 
 }

@@ -17,6 +17,7 @@ public:
     int close(void *);
     long fsize(void *);
 
+    int rename(const char *old, const char *nw);
     int unlink(const char *f);
     int mkdir(const char *d);
     int rmdir(const char *d);

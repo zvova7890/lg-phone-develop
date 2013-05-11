@@ -1,3 +1,5 @@
+
+#include <Core/compatible.h>
 #include <pxeapi.h>
 #include "EffectManager.h"
 #include <gl.h>
@@ -5,7 +7,7 @@
 
 
 EffectManager::EffectManager(Widget *parent) :
-    Widget(Rect(0, 0, 240, 400), parent),
+    Widget(Rect(0, 0, GRSYS_WIDTH, GRSYS_HEIGHT), parent),
     m_isActive(false)
 {
     auto event = [](Timer *timer) {
@@ -32,6 +34,18 @@ EffectManager::~EffectManager()
     next_img.bitmap = 0;
 }
 
+
+
+void EffectManager::resizeEvent()
+{
+    Widget::resizeEvent();
+
+    setSize(Rect(0, 0, GRSYS_WIDTH, GRSYS_HEIGHT));
+
+    if(next_img.bitmap)
+        free(next_img.bitmap);
+    next_img.bitmap = 0;
+}
 
 
 void EffectManager::reset()
@@ -102,7 +116,7 @@ void ScaleAndPaint(unsigned short *bitmap, int w, int h, int xfrom, int yfrom, i
             int nx = x+xfrom;
             int ny = y+yfrom;
 
-            //if(nx >= ctx->clip_x1 && nx < ctx->clip_x2 &&  ny >= ctx->clip_y1 && ny < ctx->clip_y2)
+            if(nx >= ctx->clip_x1 && nx < ctx->clip_x2 &&  ny >= ctx->clip_y1 && ny < ctx->clip_y2)
                 glPutPixel16c(ctx, nx, ny, *(bitmap + dy*w+dx));
         }
     }
@@ -157,9 +171,9 @@ void EffectManager::paintEvent()
         //glEnable(GL_ALPHA_TEST);
 
         if(start_pos > -1) {
-            int w_sz = 240-start_pos;
-            int h_sz = 400 - (400 *(start_pos*100/240) /100);
-            ScaleAndPaint((unsigned short*)prev_img.bitmap, prev_img.w, prev_img.h, start_pos/2, 400*(start_pos*100/240)/100 /2, w_sz, h_sz);
+            int w_sz = rect().w()-start_pos;
+            int h_sz = rect().h() - (rect().h() *(start_pos*100/rect().w()) /100);
+            ScaleAndPaint((unsigned short*)prev_img.bitmap, prev_img.w, prev_img.h, start_pos/2, rect().h()*(start_pos*100/rect().w())/100 /2, w_sz, h_sz);
         }
     }
 
@@ -199,21 +213,21 @@ void EffectManager::scaleEffect(int t)
             switch(t)
             {
                 case 0:
-                    w_sz = 240-start_pos;
-                    h_sz = 400 - (400 *(start_pos*100/240) /100);
+                    w_sz = rect().w()-start_pos;
+                    h_sz = rect().h() - (rect().h() *(start_pos*100/rect().w()) /100);
                     xpos = start_pos/2;
-                    ypos = ((400 *(start_pos*100/240) /100))/2;
+                    ypos = ((rect().h() *(start_pos*100/rect().w()) /100))/2;
                     break;
 
                 case 1:
-                    w_sz = 240-start_pos;
+                    w_sz = rect().w()-start_pos;
                     h_sz = prev_img.h;
                     xpos = 0;
                     ypos = 0;
                     break;
 
                 case 2:
-                    w_sz = 240-start_pos;
+                    w_sz = rect().w()-start_pos;
                     h_sz = prev_img.h;
                     xpos = start_pos;
                     ypos = 0;
@@ -221,7 +235,7 @@ void EffectManager::scaleEffect(int t)
             }
 
             //drawImage(0, 0, &prev_img);
-            ScaleAndPaint((unsigned short*)prev_img.bitmap, 240, 400, xpos, ypos, w_sz, h_sz);
+            ScaleAndPaint((unsigned short*)prev_img.bitmap, rect().w(), rect().h(), xpos, ypos, w_sz, h_sz);
         }
     }
 
@@ -281,11 +295,11 @@ void EffectManager::alphaEffect(int t)
             switch(t)
             {
                 case 0:
-                    alpha = 0xff - (0xff * (start_pos*100/240) / 100);
+                    alpha = 0xff - (0xff * (start_pos*100/rect().w()) / 100);
                     if(!next_img.bitmap) {
-                        next_img.bitmap = malloc(240*400*2);
+                        next_img.bitmap = malloc(rect().w()*rect().h()*2);
                     }
-                    memcpy(next_img.bitmap, Graphics_GetScreenBuffer(), 240*400*2);
+                    memcpy(next_img.bitmap, Graphics_GetScreenBuffer(), rect().w()*rect().h()*2);
 
                     glDrawBitmap(0, 0, prev_img.w, prev_img.h, prev_img.bit, prev_img.bitmap);
 
@@ -293,7 +307,7 @@ void EffectManager::alphaEffect(int t)
                     break;
 
                 case 1:
-                    alpha = (0xff * (start_pos*100/240) / 100);
+                    alpha = (0xff * (start_pos*100/rect().w()) / 100);
                     glDrawAlphaBitmap(0, 0, alpha, prev_img.w, prev_img.h, prev_img.bit, prev_img.bitmap);
                     break;
             }

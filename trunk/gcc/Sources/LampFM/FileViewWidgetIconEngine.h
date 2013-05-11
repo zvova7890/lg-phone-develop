@@ -52,6 +52,7 @@ public:
 
     void paintEvent();
     void touchEvent(int action, int x, int y);
+    void resizeEvent();
 
 protected:
     void itemTouched(FSEntryInfo *);
@@ -76,6 +77,7 @@ public:
     Widget *getListItem(int index);
     int  itemBySystemEntryNumber(int n);
     int  fileSystemEntryByItem(int n);
+    void resizeEvent();
     void clearItems();
     int itemsForViewList();
     int fsEntriesPerLine();

@@ -34,6 +34,7 @@ public:
     void stop();
 
     virtual void paintEvent();
+    void resizeEvent();
 
     inline void pushPrevScreen(image_t & img) {
         prev_img = img;

@@ -1,6 +1,6 @@
 
-#include <Rect.h>
-#include <Button.h>
+#include <Core/Rect.h>
+#include <Widget/Button.h>
 #include "ButtonStyle.h"
 
 
@@ -10,29 +10,41 @@
 ButtonStyle::ButtonStyle() :
     m_textColor(0xFFFFFFFF)
   , m_pressedTextColor(0xFFFFFFFF)
-  , m_background(0xFF2f2f2f)
+  , m_fontFlags( FT_TEXT_H_CENTER | FT_TEXT_W_CENTER )
+  , m_background(0xFF000000)
   , m_pressedBackground(0xFF2f2f2f)
   , m_border(0xFFFFFFFF, false)
   , m_pressedBorder(0xFF000000, false)
+  , m_pressedTextOffset(2, 2)
+  , m_roundedRect(false)
+  , m_shadowAfterBackground(false)
 {
 
-    m_border = Brush( [](Brush &, const Rect &r) {
+    /*m_background = Brush( [](Brush &, const Rect &r) {
         //
-            glSetPen(0xFFa29f9f);
+        GLGradient g;
+        glAllocateGradient(&g, 2);
 
-            int round = Button::roundRect(r.w());
+        g.colors[0].color = 0xFF2d2d2d;
+        g.colors[0].pixels = r.h();
 
-            glDrawRoundedRect(r.x(), r.y(), r.w()-2, r.h()-2, round, round);
+        g.colors[1].color = 0xFF1d1d1d;
+
+        glDrawGradient(r.x(), r.y(), r.w(), r.h(), 2, &g);
     });
 
 
-    m_pressedBorder = Brush( [](Brush &, const Rect &r) {
+    m_pressedBackground = Brush( [](Brush &, const Rect &r) {
         //
-            glSetPen(0xFFa29f9f);
+        GLGradient g;
+        glAllocateGradient(&g, 2);
 
-            int round = Button::roundRect(r.w());
+        g.colors[0].color = 0xFF4d4d4d;
+        g.colors[0].pixels = r.h();
 
-            glDrawRoundedRect(r.x()+1, r.y()+1, r.w()-1, r.h()-1, round, round);
-    });
+        g.colors[1].color = 0xFF2d2d2d;
+
+        glDrawGradient(r.x(), r.y(), r.w(), r.h(), 2, &g);
+    });*/
 
 }

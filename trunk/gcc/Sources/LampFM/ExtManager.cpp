@@ -2,12 +2,13 @@
 #include <stdio.h>
 #include <loader.h>
 
+#define printf(x, ...)
 
 
 ExtManager::ExtManager(const std::string &dir) :
     m_dir(dir)
 {
-    loadConfig(dir+"conf/extension.cfg");
+    loadConfig(m_dir+"conf/extension.cfg");
 }
 
 
@@ -17,7 +18,6 @@ int ExtManager::run(const std::string &path)
     auto pos = s.find_last_of('.');
     if(pos == std::string::npos)
         return -1;
-
 
 
     s = s.assign(s.begin()+pos+1, s.end());
@@ -46,6 +46,28 @@ int ExtManager::run(const std::string &path)
 }
 
 
+
+const ExtManager::ExtInfo *ExtManager::extension(const std::string &ext)
+{
+    if(ext.empty())
+        return 0;
+
+    auto a = m_extMap.find(ext);
+
+    if(a != m_extMap.end()) {
+
+        const std::vector<ExtInfo> &v = (*a).second;
+
+        if(v.empty())
+            return 0;
+
+        return &(v.at(0));
+    }
+
+    return 0;
+}
+
+
 #undef isspace
 #define isspace(c) ((c >= 0x09 && c <= 0x0D) || c == 0x20 )
 
@@ -67,6 +89,7 @@ int ExtManager::run(const std::string &path)
         skeep_spaces(s);                \
         if(*s == '#')                   \
             skeep_coment(s);            \
+        skeep_spaces(s);                \
     }
 
 #define goto_space(s) \
@@ -111,9 +134,11 @@ int ExtManager::loadConfig(const std::string &conf)
     int sz = ftell(fp);
     fseek(fp, 0, SEEK_SET);
 
-    char *buf = new char[sz+1];
+    char *buf = new char[sz+2];
     fread(buf, sz, 1, fp);
     buf[sz] = 0;
+    buf[sz+1] = 0;
+
     fclose(fp);
 
     std::string ext, action, attr;
@@ -122,7 +147,7 @@ int ExtManager::loadConfig(const std::string &conf)
     int line = 1;
     char *word = 0;
 
-    while(1)
+    while(*s)
     {
         //printf("\n ======= \n%s\n", s);
         skeep_spaces_and_comments(s);
@@ -155,15 +180,22 @@ int ExtManager::loadConfig(const std::string &conf)
         ExtInfo extinfo;
         extinfo.ext = ext;
 
-        while(1) {
+        while(*s) {
+            action.clear();
+            attr.clear();
             word = s;
+
+            //printf("word: %s\n", word);
 
             goto_space_or_char(s, '=');
             if(!*s)
                 break;
 
+            //char trololo
             attr.assign(word, 0, s-word);
             skeep_spaces_and_comments(s);
+
+            printf("attr: %s\n", attr.c_str());
 
             if(*s != '=') {
                 printf("LampFM: config: error[%d]: Expected a '=', but got a '%c'\n", line, *s);
@@ -181,7 +213,7 @@ int ExtManager::loadConfig(const std::string &conf)
             word = s;
 
             while(*s != '\"' && *s) ++s;
-            if(*s != '"') {
+            if(*s != '"' || !*s) {
                 printf("LampFM: config: error[%d]: Unhandled character or file EOF\n", line);
                 break;
             }
@@ -189,8 +221,10 @@ int ExtManager::loadConfig(const std::string &conf)
             action.assign(word, 0, s-word);
             ++s;
 
+            printf("action: %s\n", action.c_str());
 
             if(attr == "action") {
+                printf("LOOOOOOOOOOOOOOOOL\n");
                 extinfo.action = action;
             } else if(attr == "small_icon") {
                 extinfo.s_icon = action;
@@ -199,6 +233,8 @@ int ExtManager::loadConfig(const std::string &conf)
             } else {
                 printf("LampFM: config: warning[%d]: unknow attribute '%s'\n", line, attr.c_str());
             }
+
+            printf("extinfo.action: %s - %s\n", extinfo.action.c_str(), action.c_str());
 
             goto_end(s);
             skeep_ends(s);
@@ -209,8 +245,8 @@ int ExtManager::loadConfig(const std::string &conf)
         }
 
         m_extMap[ext].push_back(extinfo);
-        //printf(" ====== %s ======\naction: %s\nsmall_icon: %s\nbig_icon: %s\n",
-          //     ext.c_str(), extinfo.action.c_str(), extinfo.s_icon.c_str(), extinfo.b_icon.c_str());
+        printf(" ====== %s ======\naction: %s\nsmall_icon: %s\nbig_icon: %s\n",
+               ext.c_str(), extinfo.action.c_str(), extinfo.s_icon.c_str(), extinfo.b_icon.c_str());
 
     }
 

@@ -32,6 +32,9 @@ public:
         return _user;
     }
 
+
+    static void sleep(int tick);
+
 private:
     bool started;
     bool own_stack;
