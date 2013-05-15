@@ -11,8 +11,8 @@ QMAKE_CXXFLAGS_RELEASE -= -O2
 QMAKE_CFLAGS_RELEASE -= -O2
 #QMAKE_LFLAGS_APP -= -s
 
-QMAKE_CXXFLAGS += -O2 -std=c++11  -U__STRICT_ANSI__ -D__STDC_VERSION__=200001
-QMAKE_CFLAGS_RELEASE += -O2 -std=gnu99
+QMAKE_CXXFLAGS += -O3 -std=c++11  -U__STRICT_ANSI__ -D__STDC_VERSION__=200001
+QMAKE_CFLAGS_RELEASE += -O3 -std=gnu99
 QMAKE_LFLAGS += -Wl,-allow-multiple-definition
 
 LIBS   += -lscrt -lgcc -lc -lpng -lz -lm -lmips -lgl -lft -lc++ -lsupc++
@@ -68,7 +68,8 @@ HEADERS += \
     Keyboard/KeyboardRU.h \
     Keyboard/KeyboardEnum.h \
     MessageBox.h \
-    PopupWindow.h
+    PopupWindow.h \
+    GlobalIconMenu.h
 
 SOURCES += \
     main.cpp \
@@ -113,4 +114,5 @@ SOURCES += \
     Keyboard/KeyboardEnum.cpp \
     MessageBox.cpp \
     FileOpDelete.cpp \
-    PopupWindow.cpp
+    PopupWindow.cpp \
+    GlobalIconMenu.cpp

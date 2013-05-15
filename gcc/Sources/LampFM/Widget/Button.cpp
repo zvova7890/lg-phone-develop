@@ -48,7 +48,7 @@ void Button::defaultTextRender(Button *b)
     }
 
     glDrawString(b->m_text.c_str(), b->realRect().x()+off_x, b->realRect().y()+off_y, b->realRect().x2(), b->realRect().y2(),
-                 15, b->style().fontFlags(), 0, 128);
+                 b->style().fontSize(), b->style().fontFlags(), 0, 128);
 }
 
 
@@ -119,3 +119,7 @@ void Button::touchEvent(int action, int x, int y)
 }
 
 
+void Button::resizeEvent()
+{
+
+}

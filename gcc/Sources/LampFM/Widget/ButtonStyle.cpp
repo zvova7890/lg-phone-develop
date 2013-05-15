@@ -18,6 +18,7 @@ ButtonStyle::ButtonStyle() :
   , m_pressedTextOffset(2, 2)
   , m_roundedRect(false)
   , m_shadowAfterBackground(false)
+  , m_fontSize(15)
 {
 
     /*m_background = Brush( [](Brush &, const Rect &r) {

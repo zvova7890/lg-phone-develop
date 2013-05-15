@@ -14,12 +14,12 @@
 class Button : public Widget
 {
 public:
-    Button(const Rect & rc, Widget *parent, const std::string &text);
+    Button(const Rect & rc, Widget *parent, const std::string &text = "");
 
 
     void paintEvent();
     void touchEvent(int action, int x, int y);
-
+    void resizeEvent();
 
     Button *setTextRender(std::function<void(Button*)> f);
     void setDefaultTextRender();
@@ -62,6 +62,10 @@ public:
     }
 
     std::string text() const {
+        return m_text;
+    }
+
+    const std::string & constText() const {
         return m_text;
     }
 

@@ -20,7 +20,7 @@
 #include "FileViewWidgetEngine.h"
 #include "QuestionDialog.h"
 #include "ProgressDialog.h"
-
+#include "GlobalIconMenu.h"
 
 
 class  FileViewWidgetAbstractItem;
@@ -239,10 +239,10 @@ private:
     std::string m_cdLaterTo;
 
     /* глобальное меню */
-    ListMenu global_menu;
+    GlobalIconMenu global_menu;
     GlobalMenuButton m_headMenuButton;
-    ListMenuItem *m_menuMarkOptionsItem;
-    ListMenuItem *m_menuPasteItem;
+    //ListMenuItem *m_menuMarkOptionsItem;
+    Button *m_menuPasteItem;
 
     bool global_menu_first_move, global_menu_showing;
     int global_menu_last_x, global_menu_last_y, global_menu_fix_y;

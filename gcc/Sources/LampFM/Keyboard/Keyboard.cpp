@@ -27,6 +27,7 @@ void KeyboardHelper::clear()
 
 void KeyboardHelper::createKeyboard(const std::vector<std::vector<const char *> > &kbd_layout)
 {
+    caseTypeSwitcher = 0;
     m_unsignedButtons.clear();
     m_charset = kbd_layout;
 
@@ -45,6 +46,7 @@ void KeyboardHelper::createKeyboard(const std::vector<std::vector<const char *> 
             width = float(rect().w() - 4 - (30+34)) / vec.size();
 
             Button *b = new Button(Rect(xpos, hstep, 30, 30), this, "up");
+            caseTypeSwitcher = b;
             b->setIcon(kbd_up);
             b->setActive(false);
             b->setTextVisible(false);
@@ -280,7 +282,9 @@ Keyboard::Keyboard(const Rect &r, Widget *parent) :
 
 Keyboard::~Keyboard()
 {
-
+    for(auto kbd : m_kbdLayouts) {
+        delete kbd.second;
+    }
 }
 
 
@@ -297,14 +301,12 @@ void Keyboard::switchKeyboard(const std::string &type)
         }
 
         m_kbd = kbd;
-        m_dirtyKbd = true;
     });
 }
 
 
 KeyboardHelper *Keyboard::newKeyboard(const std::string &type)
 {
-  // FIXME
     Rect r = rect();
     KeyboardHelper *kbd = 0;
 
@@ -359,6 +361,11 @@ KeyboardHelper *Keyboard::newKeyboard(const std::string &type)
         });
     }
 
+    if(m_upper && kbd) {
+        kbd->setCharSizeType(true);
+        kbd->caseTypeSwitcher->setActive(true);
+    }
+
     return kbd;
 }
 
@@ -398,13 +405,9 @@ void Keyboard::touchEvent(int action, int x, int y)
 {
     updateCoordinates(m_kbd);
 
-    /*if(!m_dirtyKbd) {*/
-        if(m_kbd)
-            m_kbd->touch(action, x, y);
-    /*} else {
-        m_dirtyKbd = false;
-    }
-*/
+    if(m_kbd)
+        m_kbd->touch(action, x, y);
+
     Widget::touchEvent(action, x, y);
 }
 
@@ -425,7 +428,6 @@ void Keyboard::resizeEvent()
     m_kbdLayouts["en_US"] = newKeyboard("en_US");
 
     m_kbd = m_kbdLayouts[l];
-    m_dirtyKbd = true;
 }
 
 

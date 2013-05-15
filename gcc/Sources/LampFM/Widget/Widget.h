@@ -26,7 +26,10 @@ class Widget
         ATTR_HAVE_LONGPRESS = (1 << 8),
         ATTR_MOVABLE = (1 << 9),
         ATTR_FOCUSED = (1 << 10),
-        ATTR_FOCUSEABLE = (1 << 11)
+        ATTR_FOCUSEABLE = (1 << 11),
+
+        ATTR_RESIZE_NO_CALC_W = (1 << 12),
+        ATTR_RESIZE_NO_CALC_H = (1 << 13)
     };
 
     inline void set_attr(int a) {
@@ -282,6 +285,20 @@ public:
         return m_resizeHandler;
     }
 
+    void setResizeNoCalcW(bool is = true) {
+        if(is)
+            set_attr(ATTR_RESIZE_NO_CALC_W);
+        else
+            erase_attr(ATTR_RESIZE_NO_CALC_W);
+    }
+
+    void setResizeNoCalcH(bool is = true) {
+        if(is)
+            set_attr(ATTR_RESIZE_NO_CALC_H);
+        else
+            erase_attr(ATTR_RESIZE_NO_CALC_H);
+    }
+
     void paint();
     void touch(int action, int x, int y);
     
@@ -317,6 +334,7 @@ private:
     EventManager *m_eventManager;
     Rect m_rect;
     Rect m_realRect;
+    Rect m_lastRect;
 
     int m_id;
     int m_attrs;

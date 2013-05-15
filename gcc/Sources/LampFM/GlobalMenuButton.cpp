@@ -13,8 +13,8 @@ GlobalMenuButton::GlobalMenuButton(const Rect &r, Widget *parent) :
 
 void GlobalMenuButton::paintEvent()
 {
-    int x = rect().x(),
-        y = rect().y();
+    int x = realRect().x(),
+        y = realRect().y();
 
     //if(m_borderImg)
         //drawImage(x, y, m_borderImg);

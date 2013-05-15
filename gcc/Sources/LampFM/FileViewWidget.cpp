@@ -54,13 +54,13 @@ Widget *FileViewWidget::FileScrollView::widgetItem(int index)
 FileViewWidget::FileViewWidget(Widget *parent, EffectManager *em, const Rect &r) :
     Widget(r, parent),
     m_itemSelectMode(false),
-    m_fileViewList(r, this),
+    m_fileViewList(Rect(Point(0, 0), r.wh()), this),
     m_mainViewEngine(0),
     m_firstHeight(r.h()),
     m_fsEntryMenu(Rect(10, 60, 200, rect().h()-60-10), this),
     global_yes_no_question(0),
     m_needCd(false),
-    global_menu(Rect(0, 0, rect().w(), (rect().h()-39)*90/100), this),
+    global_menu(Rect(0, 0, rect().w(), 60), this),
     m_headMenuButton(Rect(0, 0, rect().w(), 39), this),
     global_menu_showing(false),
     m_effectManager(em)
@@ -97,9 +97,10 @@ FileViewWidget::FileViewWidget(Widget *parent, EffectManager *em, const Rect &r)
     m_headMenuButton.setBackround(&border_img);
     m_headMenuButton.setFullScreenBlock(false);
     m_headMenuButton.setBlockable(true);
+    m_headMenuButton.setResizeNoCalcH(true);
 
     int off_h = m_headMenuButton.realRect().h();
-    m_fileViewList.setSize( Rect(realRect().x(), realRect().y()+off_h, rect().w(), rect().h()-off_h) );
+    m_fileViewList.setSize( Rect(0, 0+off_h, rect().w(), rect().h()-off_h) );
 
 
     this->add(&m_fileViewList);
@@ -107,6 +108,7 @@ FileViewWidget::FileViewWidget(Widget *parent, EffectManager *em, const Rect &r)
     this->add(&global_menu);
 
     global_menu.hide();
+    global_menu.setResizeNoCalcH(true);
 
 
     auto event = [this](Timer *t) {
@@ -121,7 +123,7 @@ FileViewWidget::FileViewWidget(Widget *parent, EffectManager *em, const Rect &r)
 
             if(new_y > 0) {
                 t->stop();
-                global_menu.move( global_menu.rect().x(), 1);
+                global_menu.move( global_menu.rect().x(), 0);
                 m_headMenuButton.move( 0, global_menu.rect().y2() );
                 eventManager()->updateAfterEvent();
                 return;
@@ -161,11 +163,11 @@ FileViewWidget::FileViewWidget(Widget *parent, EffectManager *em, const Rect &r)
                     return;
                 }
 
-                if(isSelectionMode()) {
-                    m_menuMarkOptionsItem->setText("Закончить выделение");
+                /*if(isSelectionMode()) {
+                    //m_menuMarkOptionsItem->setText("Закончить выделение"); FIXME
                 } else {
-                    m_menuMarkOptionsItem->setText("Начать выделение");
-                }
+                    //m_menuMarkOptionsItem->setText("Начать выделение"); FIXME
+                }*/
 
                 if(!isClipboardsEmpty())
                     m_menuPasteItem->setActive();
@@ -191,7 +193,7 @@ FileViewWidget::FileViewWidget(Widget *parent, EffectManager *em, const Rect &r)
                     m_menuTimer.start(40);
 
                 if(mm->isOffRectTouch() && !mm->isMoved()) {
-                    global_menu.close();
+                    global_menu.hide();
                     return;
                 }
 
@@ -204,7 +206,6 @@ FileViewWidget::FileViewWidget(Widget *parent, EffectManager *em, const Rect &r)
 
                 if(global_menu_first_move) {
                     fileViewArea().breakScrolling();
-                    global_menu.scrollArea().resetViewPosition();
                     global_menu.show();
                     global_menu.setFullScreenBlock(false);
                     m_headMenuButton.setFullScreenBlock(true);
@@ -227,11 +228,11 @@ FileViewWidget::FileViewWidget(Widget *parent, EffectManager *em, const Rect &r)
 
 
 
-                global_menu.move( global_menu.realRect().x(), (y-global_menu_fix_y)-global_menu.rect().h() );
-                if(global_menu.realRect().y() > 0)
+                global_menu.move( global_menu.rect().x(), (y-global_menu_fix_y)-global_menu.rect().h() );
+                if(global_menu.rect().y() > 0)
                     global_menu.moveY(1);
 
-                m_headMenuButton.move( realRect().x(), global_menu.realRect().y2() );
+                m_headMenuButton.move( rect().x(), global_menu.rect().y2() );
 
                 eventManager()->updateAfterEvent();
                 break;
@@ -240,7 +241,7 @@ FileViewWidget::FileViewWidget(Widget *parent, EffectManager *em, const Rect &r)
     });
 
 
-    global_menu.onHideSignal().connect( [this](ListMenu *) {
+    global_menu.hideAction().connect( [this](GlobalIconMenu *) {
         m_menuTimer.stop();
 
         m_headMenuButton.setFullScreenBlock(false);
@@ -271,12 +272,6 @@ FileViewWidget::~FileViewWidget()
         delete i;
     }
 
-    for(Widget *i : global_menu.scrollArea().items()) {
-        delete i;
-    }
-
-    global_menu.scrollArea().clear();
-
     if(global_yes_no_question) {
         global_yes_no_question->hide();
         delete global_yes_no_question;
@@ -288,15 +283,16 @@ FileViewWidget::~FileViewWidget()
 
 void FileViewWidget::resizeEvent()
 {
-    m_resizeHandler.trigger(this);
+    //m_resizeHandler.trigger(this);
+    Widget::resizeEvent();
 
-    global_menu.setSize(Rect(0, 0, rect().w(), (rect().h()-39)*90/100));
+    global_menu.setSize(Rect(0, 0, rect().w(), 60));
 
-    int off_h = m_headMenuButton.realRect().h();
-    m_fileViewList.setSize( Rect(realRect().x(), realRect().y()+off_h, rect().w(), rect().h()-off_h) );
+    int off_h = m_headMenuButton.rect().h();
+    m_fileViewList.setSize( Rect(rect().x(), rect().y()+off_h, rect().w(), rect().h()-off_h) );
 
     if(!global_menu.isHidden())
-        m_headMenuButton.setSize(Rect(realRect().x(), global_menu.realRect().y2(), rect().w(), off_h));
+        m_headMenuButton.setSize(Rect(rect().x(), global_menu.rect().y2(), rect().w(), off_h));
     else
         m_headMenuButton.setSize( Rect(m_headMenuButton.rect().xy(), Point(rect().w(), off_h)) );
 
@@ -321,93 +317,93 @@ void FileViewWidget::resizeEvent()
 
 void FileViewWidget::initGlobalMenu()
 {
-    /* init menu */
-    ListMenuItem *mi;
-
     global_menu.setFullScreenBlock(true);
-    global_menu.style().setShadow(Brush());
+
+#define check(b) if(!b->isTouched() || b->isMoved()) return;
 
 
-    global_menu.scrollArea().addItem( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Назад..."));
-    mi->onReleasedSignal().connect( [this](ListMenuItem *) {
+
+    global_menu.addIcon(0, "Дом", &resourceManager().image("home"), [this](Button *b) {
+        check(b);
+        global_menu.hide();
+        cdUp("/");
+    });
+
+
+    global_menu.addIcon(0, "Назад", &resourceManager().image("back"), [this](Button *b) {
+        check(b);
         global_menu.hide();
         cdDown();
-    } );
+    });
 
-    global_menu.scrollArea().addItem( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "В начало"));
-    mi->onReleasedSignal().connect( [this](ListMenuItem *) {
+
+    /*global_menu.addIcon(0, "Вперёд", &resourceManager().image("next"), [this](Button *b) {
+        check(b);
         global_menu.hide();
-        fileViewArea().toStart();
-    } );
-
-    global_menu.scrollArea().addItem( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "В конец"));
-    mi->onReleasedSignal().connect( [this](ListMenuItem *) {
-        global_menu.hide();
-        fileViewArea().toEnd();
-    } );
+        //cdDown();
+    });*/
 
 
-    global_menu.scrollArea().addItem( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Обновить"));
-    mi->onReleasedSignal().connect( [this](ListMenuItem *) {
+    global_menu.addIcon(0, "Обновить", &resourceManager().image("reload"), [this](Button *b) {
+        check(b);
         global_menu.hide();
         refreshDir();
-        eventManager()->updateAfterEvent();
-    } );
-
-    global_menu.scrollArea().addItem( m_menuPasteItem = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Вставить"));
-    m_menuPasteItem->onReleasedSignal().connect( [this](ListMenuItem *) {
-        global_menu.hide();
-
-        paste(directory());
-        refreshDir();
-        eventManager()->updateAfterEvent();
-    } );
-
-    global_menu.scrollArea().addItem( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Создать папку"));
-    mi->onReleasedSignal().connect( [this](ListMenuItem *) {
-        global_menu.hide();
-        createFolder();
-    } );
-
-    global_menu.scrollArea().addItem( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Сменить папку"));
-    mi->onReleasedSignal().connect( [this](ListMenuItem *) {
-        global_menu.hide();
-        switchNextWorkSpace();
-    } );
-
-    global_menu.scrollArea().addItem( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Сменить вид"));
-    mi->onReleasedSignal().connect( [this](ListMenuItem *) {
-        global_menu.hide();
-        switchViewType();
-    } );
-
-
-    global_menu.scrollArea().addItem( m_menuMarkOptionsItem = mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Начать выделение"));
-    mi->onReleasedSignal().connect( [this](ListMenuItem *) {
-        setSelectMode(!isSelectionMode());
-
-        if(isSelectionMode())
-            unMarkAllFiles();
-
-        global_menu.hide();
-        eventManager()->updateAfterEvent();
-    } );
-
-    global_menu.scrollArea().addItem( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Информация"));
-    mi->setActive(false);
-
-    global_menu.scrollArea().addItem( mi = new ListMenuItem(&global_menu, global_menu.rect().w(), 40, "Выход..."));
-    mi->onReleasedSignal().connect( [this](ListMenuItem *) {
-        global_menu.hide();
-        m_exitSignal.trigger(this);
-    } );
-
-
-    global_menu.onHideSignal().connect( [this](ListMenu *){
         eventManager()->updateAfterEvent();
     });
 
-    global_menu.scrollArea().setLinesCount(global_menu.scrollArea().items().size());
+
+    global_menu.addIcon(0, "Вверх", &resourceManager().image("up"), [this](Button *b) {
+        check(b);
+        global_menu.hide();
+        fileViewArea().toStart();
+    });
+
+
+    global_menu.addIcon(0, "Вниз", &resourceManager().image("down"), [this](Button *b) {
+        check(b);
+        global_menu.hide();
+        fileViewArea().toEnd();
+    });
+
+
+    (m_menuPasteItem = global_menu.addIcon(0, "Вставить", &resourceManager().image("paste"), [this](Button *b) {
+        check(b);
+        if(b->isActive()) {
+            global_menu.hide();
+            paste(directory());
+            refreshDir();
+            eventManager()->updateAfterEvent();
+        }
+    }))->setActive(false);
+
+
+    global_menu.addIcon(0, "Новый", &resourceManager().image("add"), [this](Button *b) {
+        check(b);
+        global_menu.hide();
+        createFolder();
+    });
+
+
+    global_menu.addIcon(0, "Вид", &resourceManager().image("switch"), [this](Button *b) {
+        check(b);
+        global_menu.hide();
+        switchViewType();
+    });
+
+
+    global_menu.addIcon(0, "Папка", &resourceManager().image("switch_workspace"), [this](Button *b) {
+        check(b);
+        global_menu.hide();
+        switchNextWorkSpace();
+    });
+
+
+    global_menu.addIcon(0, "Выход", &resourceManager().image("exit"), [this](Button *b) {
+        check(b);
+        global_menu.hide();
+        m_exitSignal.trigger(this);
+    });
+
 }
 
 
@@ -456,7 +452,7 @@ void FileViewWidget::clearScreen()
 void FileViewWidget::paintEvent()
 {
     glSetPen(0xFF000000);
-    glDrawFilledRectange(0, /*border->h*/0, rect().w(), rect().y2());
+    glDrawFilledRectange(realRect().x(), realRect().y(), rect().w(), rect().y2());
 
     int cline = fileViewArea().item()+1;
     int entries = fsEntriesCount();

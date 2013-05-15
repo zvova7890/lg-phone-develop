@@ -112,6 +112,14 @@ public:
         return m_pageSize;
     }
 
+    void setClipRegionFunc(std::function <void(const Rect&)> f) {
+        m_setClipRegionFunc = f;
+    }
+
+    void setRestoreClipRegionFunc(std::function <void()> f) {
+        m_setRestoreClipRegionFunc = f;
+    }
+
 protected:
 
     virtual void paintEvent();
@@ -162,7 +170,7 @@ private:
 
     int m_timeStampDiff;
 
-    int m_yDiff;
+    int m_posDiff;
 
     struct {
         Direction direction;
@@ -177,6 +185,9 @@ private:
 
     std::function <int()> dep_type_area_pos;
     std::function <int(const Widget *)> dep_type_area_size;
+
+    std::function <void(const Rect &)> m_setClipRegionFunc;
+    std::function <void()> m_setRestoreClipRegionFunc;
 };
 
 #endif // HSCROLLAREA_H

@@ -65,6 +65,7 @@ protected:
     signal_slot::signal<Keyboard *> m_langSwitch;
     signal_slot::signal<Keyboard *> m_enumSwitch;
     Keyboard *m_parent;
+    Button *caseTypeSwitcher;
 
     friend class Keyboard;
 };
@@ -115,7 +116,6 @@ private:
     bool m_upper;
 
     KeyboardHelper *m_kbd;
-    bool m_dirtyKbd;
     char m_animation_type;
 
     Rect m_lastRect;

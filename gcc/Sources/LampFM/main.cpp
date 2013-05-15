@@ -44,8 +44,8 @@ ExtManager *ext_manager;
 std::string elfdir;
 
 
-
-
+void rebase_for_current_gdi();
+void switch_gdi(int id);
 
 
 class MainWidget : public Widget
@@ -96,11 +96,13 @@ public:
     void resizeEvent() {
 
         printf("Width: %d\n", GRSYS_WIDTH);
+
+
         //glSetContextProp(glActiveContext(), GRSYS_WIDTH, GRSYS_HEIGHT, 16, Graphics_GetScreenBuffer());
-        glDestroyContext(glActiveContext());
+        /*glDestroyContext(glActiveContext());
 
         glActivateContext( glCreateContext(GRSYS_WIDTH, GRSYS_HEIGHT, 16, Graphics_GetScreenBuffer()) );
-        glEnable(GL_ALPHA_TEST);
+        glEnable(GL_ALPHA_TEST);*/
 
         setSize(Rect(0, 0, GRSYS_WIDTH, GRSYS_HEIGHT));
 
@@ -165,7 +167,7 @@ void Screen_OnDraw()
 
     main_widget->paint();
 
-    ++fps_count;
+    /*++fps_count;
     if(last_time != cur_sec())
     {
         fps = fps_count;
@@ -177,7 +179,7 @@ void Screen_OnDraw()
     sprintf(f, "fps: %d", fps);
     glSetPen(0xAFFF0000);
     glDrawString(f, 0, 0, 240, 30, 13, FT_TEXT_W_RIGHT | FT_TEXT_H_CENTER, 0, 128);
-
+*/
 
     event_mngr.update();
 }
@@ -208,7 +210,7 @@ void Screen_OnInit()
         GrSys_Refresh();
     } );
 
-    main_widget = new MainWidget(Rect(0, 0, GRSYS_WIDTH, GRSYS_HEIGHT), &event_mngr);
+    main_widget = new MainWidget(Rect(0, 0, GRSYS_WIDTH, GRSYS_HEIGHT-0), &event_mngr);
     main_widget->init();
     main_widget->activateLongPressSupport(true);
 
@@ -251,7 +253,7 @@ void Screen_OnExit()
 //Действие при активации
 void Screen_OnAwake()
 {
-    GrSys_SelectGDI(gdi_state);
+    switch_gdi(GrSys_GetGDIID());
     refresh();
 }
 
@@ -280,7 +282,8 @@ void Screen_OnKeyDown(int key)
     }
 
     case KEY_SEND:
-        main_view->switchNextWorkSpace();
+        switch_gdi(!GrSys_GetGDIID());
+        //main_view->switchNextWorkSpace();
         break;
 
     case KEY_MULTI:
@@ -338,6 +341,9 @@ void Screen_OnPointing(int action, int position)
     x = PXE_LOWORD(position);
     y = PXE_HIWORD(position);
 
+    //printf("x %d - y %d\n", x, y);
+
+
     if( GrSys_GetGDIID() == 1) {
         /* retranslate coordinates */
         int t = x;
@@ -367,12 +373,10 @@ void lg_general_axel_event(int position)
     printf("position: %d\n", position);
 
     if(position == 2 && GrSys_GetGDIID() == 1) {
-        Graphics_ChangeGDI(0);
-        main_widget->resizeEvent();
+        switch_gdi(0);
     }
     else if(position == 1 && GrSys_GetGDIID() != 1) {
-        Graphics_ChangeGDI(1);
-        main_widget->resizeEvent();
+        switch_gdi(1);
     }
 
     main_widget->motionSensorEvent(position);
@@ -387,9 +391,29 @@ void lg_axel_event(int x, int y, int z)
 }
 
 
+
+void rebase_for_current_gdi()
+{
+    glSetContextProp(glActiveContext(), GRSYS_WIDTH, GRSYS_HEIGHT, 16, Graphics_GetScreenBuffer());
+}
+
+
+void switch_gdi(int id)
+{
+    //if(id == GrSys_GetGDIID())
+      //  return;
+
+    GrSys_SelectGDI(id);
+    rebase_for_current_gdi();
+
+    main_widget->resizeEvent();
+}
+
+
 //Главный обработчик окна WINDOW_ID_MAINMENU от приложения
 int Window_EventHandler(unsigned long cmd, unsigned long subcmd, unsigned long status)
 {
+    //printf("cmd: %d\n", cmd);
     switch (cmd)
     {
     case MSG_INIT:
@@ -405,6 +429,7 @@ int Window_EventHandler(unsigned long cmd, unsigned long subcmd, unsigned long s
         break;
 
     case MSG_SLEEP:
+            printf("Sleep\n");
         Screen_OnSleep();
         break;
 
@@ -444,6 +469,8 @@ int Window_EventHandler(unsigned long cmd, unsigned long subcmd, unsigned long s
 
 int listener(unsigned long event_id, unsigned long wparam, unsigned long lparam)
 {
+    //printf("event_id: %d\n", event_id);
+
     switch (event_id)
     {
     case BNS_EVENT_START:
