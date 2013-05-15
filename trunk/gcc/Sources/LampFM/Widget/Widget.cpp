@@ -40,6 +40,7 @@ Widget::~Widget()
 
 void Widget::init()
 {
+    m_lastRect = rect();
     m_longPressTimer = 0;
     m_touched = 0;
     m_id = 0;
@@ -153,10 +154,11 @@ void Widget::touch(int action, int x, int y)
 
 void Widget::paintEvent()
 {
-    std::list<Widget*> &ch_list = m_childs;
     int at = 0;
-    for(Widget *widget : ch_list) {
+    for(auto it = m_childs.begin();  it != m_childs.end(); ++at) {
+        auto inext = it++;
 
+        Widget *widget = (*inext);
         /*if(widget->__name == "Ololo") {
             if(m_childs.size() == 4444)
                 exit(-1);
@@ -166,8 +168,6 @@ void Widget::paintEvent()
             updateCoordinates(widget);
             widget->paint();
         }
-
-        ++at;
     }
 }
 
@@ -216,10 +216,9 @@ void Widget::touchEvent(int action, int x, int y)
 
 __ex:
 
-    std::list<Widget*> &ch_list = m_childs;
-    for(auto wi = ch_list.rbegin(); wi != ch_list.rend(); ++wi) {
-
-        Widget *widget = *wi;
+    for(auto it = m_childs.rbegin();  it != m_childs.rend();) {
+        auto inext = it++;
+        Widget *widget = (*inext);
 
         if(!widget->isHidden()) {
 
@@ -525,11 +524,34 @@ Widget *Widget::providesExtraWidget(const std::string &)
 
 void Widget::resizeEvent()
 {
+    auto calc = [](int total, int size, int new_total) -> int {
+        int perc = size*100 / total;
+        return new_total * perc / 100;
+    };
+
+    if(parent()) {
+        int newx = calc(parent()->m_lastRect.w(), rect().x(), parent()->rect().w());
+        int newy = calc(parent()->m_lastRect.h(), rect().y(), parent()->rect().h());
+        int neww = calc(parent()->m_lastRect.w(), rect().x2(), parent()->rect().w()) - newx;
+        int newh = calc(parent()->m_lastRect.h(), rect().y2(), parent()->rect().h()) - newy;
+
+
+        if(test_attr(ATTR_RESIZE_NO_CALC_W))
+            neww = rect().w();
+
+        if(test_attr(ATTR_RESIZE_NO_CALC_H))
+            newh = rect().h();
+
+        setSize(Rect(newx, newy, neww, newh));
+    }
+
     m_resizeHandler.trigger(this);
 
     for(Widget *w : m_childs) {
         w->resizeEvent();
     }
+
+    m_lastRect = m_rect;
 }
 
 

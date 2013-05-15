@@ -91,7 +91,7 @@ class multi_signal
 
 public:
 
-    multi_signal() : blocked(false) {
+    multi_signal() /*: blocked(false)*/ {
 
     }
 
@@ -100,7 +100,7 @@ public:
 
     auto connect(const std::function<void(Arguments...)> &f) -> decltype(_iterator)
     {
-        assert(blocked == false);
+        //assert(blocked == false);
         list.push_back( f );
         return (--list.end());
     }
@@ -115,9 +115,9 @@ public:
 
 
     void disconnect(const multi_signal::slot & it) {
-        if(blocked)
-            need_disconnect.push_back(it);
-        else
+        //if(blocked)
+        //    need_disconnect.push_back(it);
+        //else
             list.erase(it);
     }
 
@@ -127,11 +127,16 @@ public:
         /* on triggering, calients can disconnecting signals, it`s may provide a carsh, when remove on iterating
          * so, we make another list of disconnecters, and after iterating, we disconnect it
         */
-        blockDisconnecting();
-        for(signal_base<Arguments...> & c : list)
-            c.trigger(args...);
+        //blockDisconnecting();
+        //for(signal_base<Arguments...> & c : list)
+            //c.trigger(args...);
 
-        unblockDisconnecting();
+        for(slot it = list.begin();  it != list.end();) {
+            slot inext = it++;
+            (*inext).trigger(args...);
+        }
+
+        //unblockDisconnecting();
     }
 
 
@@ -142,11 +147,11 @@ public:
 
     void clear() {
         list.clear();
-        need_disconnect.clear();
+        //need_disconnect.clear();
     }
 
 private:
-    inline void blockDisconnecting() {
+    /*inline void blockDisconnecting() {
         blocked = true;
     }
 
@@ -156,12 +161,12 @@ private:
             list.erase(s);
 
         need_disconnect.clear();
-    }
+    }*/
 
 private:
     _slots list;
-    bool blocked;
-    std::list <slot> need_disconnect;
+    //bool blocked;
+    //std::list <slot> need_disconnect;
 };
 
 

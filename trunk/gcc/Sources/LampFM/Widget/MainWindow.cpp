@@ -13,7 +13,7 @@ int MainWindow::event_listener(unsigned long event, unsigned long p1, unsigned l
         return 1;
     }
 
-    printf("event: %d\n", event);
+    //printf("event: %d\n", event);
 
     /*auto rebaseGlContext = []() {
         glSetContextProp(glActiveContext(), GRSYS_WIDTH, GRSYS_HEIGHT, 16, Graphics_GetScreenBuffer());

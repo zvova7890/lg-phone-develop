@@ -60,6 +60,7 @@ private:
     getset(Point, public, PressedTextOffset, public, pressedTextOffset)
     getset(bool, public, RoundedRect, public, roundedRect)
     getset(bool, public, ShadowAfterBackground, public, shadowAfterBackground)
+    getset(int, public, FontSize, public, fontSize)
 };
 
 #endif // UBUTTONSTYLE_H

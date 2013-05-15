@@ -13,6 +13,10 @@ public:
 
     std::string name() const;
     void setCharSizeType(bool up);
+
+private:
+    std::vector< std::vector<const char *> > m_kbdL;
+    std::vector< std::vector<const char *> > m_upKbd;
 };
 
 #endif // KEYBOARDENUM_H

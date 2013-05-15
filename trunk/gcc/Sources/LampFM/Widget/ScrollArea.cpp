@@ -49,6 +49,8 @@ void ScrollArea::init()
         };
     }
 
+    m_setClipRegionFunc = [](const Rect &) {};
+    m_setRestoreClipRegionFunc = []() {};
     m_item = 0;
     m_coordPos = 0;
     m_pageSize = 0;
@@ -84,7 +86,7 @@ Widget *ScrollArea::takeItemByCoord(int x, int y)
     if(!w)
         return 0; // Oops
 
-
+    int dep_type_pos = m_scrollType == Vertical? y : x;
     int start_p = dep_type_area_pos()+m_coordPos;
     for(int i=0; item()+i < count(); ++i) {
 
@@ -94,7 +96,7 @@ Widget *ScrollArea::takeItemByCoord(int x, int y)
             break;
         }
 
-        if(y >= start_p && y < start_p + dep_type_area_size(w)) {
+        if(dep_type_pos >= start_p && dep_type_pos < start_p + dep_type_area_size(w)) {
             printf("Take at %d\n", item()+i);
             return widgetItem(item()+i);
         }
@@ -136,7 +138,7 @@ inline Widget *ScrollArea::lastWidgetItem()
 
 void ScrollArea::resizeEvent()
 {
-    Widget::resizeEvent();
+    m_resizeHandler.trigger(this);
 
     for(Widget *w : m_items) {
         w->resizeEvent();
@@ -158,6 +160,7 @@ void ScrollArea::paintEvent()
         printf(" -> HScrollArea:: no have items for view\n");
     }
 
+    m_setClipRegionFunc(realRect());
 
     for(i = m_item; i < count(); ++i) {
 
@@ -170,7 +173,7 @@ void ScrollArea::paintEvent()
         if(m_scrollType == Vertical) {
             w->setRealRect( Rect(Point(w->realRect().x(), dep_type_pos+realRect().y()+m_coordPos), w->rect().wh() ) );
         } else {
-            w->setRealRect( Rect(Point(dep_type_pos+realRect().x()+m_coordPos, w->realRect().y()), w->rect().wh() ) );
+            w->setRealRect( Rect(Point(dep_type_pos+realRect().x()+m_coordPos, realRect().y()), w->rect().wh() ) );
         }
 
         w->paint();
@@ -195,6 +198,8 @@ void ScrollArea::paintEvent()
         m_displayingItems = 0;
 
     Widget::paintEvent();
+
+    m_setRestoreClipRegionFunc();
 }
 
 
@@ -213,8 +218,12 @@ void ScrollArea::touchEvent(int action, int x, int y)
 #endif
 
     int dep_type_pos = m_scrollType == Vertical? y : x;
-    auto dep_type_lastpos = [this]() {
+    auto getLastPos = [this]() {
         return m_scrollType == Vertical? m_lastPos.y() :  m_lastPos.x();
+    };
+
+    auto getTouchLastPos = [this]() {
+        return m_scrollType == Vertical? m_touchLastPos.y() :  m_touchLastPos.x();
     };
 
     switch(action)
@@ -226,7 +235,7 @@ void ScrollArea::touchEvent(int action, int x, int y)
             m_lastPos.setX(x).setY(y);
             m_touchLastPos = m_lastPos;
             m_moveDirection = Direction::No;
-            m_yDiff = 0;
+            m_posDiff = 0;
 
 #ifdef __PC_BUILD__
             m_timerCounter.start(30);
@@ -245,6 +254,9 @@ void ScrollArea::touchEvent(int action, int x, int y)
 
         case TOUCH_ACTION_MOVE:
         {
+            //if(!isTouched())
+                //return;
+
             if(m_touched) {
                 m_touched->touch(action, x, y);
             }
@@ -252,9 +264,9 @@ void ScrollArea::touchEvent(int action, int x, int y)
             bool direction_changed = false;
             Direction move_direction;
 
-            if(dep_type_lastpos() < dep_type_pos) { // FIXME
+            if(getLastPos() < dep_type_pos) { // FIXME
                 move_direction = Direction::Down;
-            } else if(dep_type_lastpos() > dep_type_pos){ // FIXME
+            } else if(getLastPos() > dep_type_pos){ // FIXME
                 move_direction = Direction::Up;
             } else
                 move_direction = Direction::No;
@@ -266,10 +278,10 @@ void ScrollArea::touchEvent(int action, int x, int y)
 
 
             if(move_direction == Direction::Up) {
-                moveUp(dep_type_lastpos() - dep_type_pos); // FIXME
+                moveUp(getLastPos() - dep_type_pos); // FIXME
             }
             else if(move_direction == Direction::Down) {
-                moveDown(dep_type_pos - dep_type_lastpos()); // FIXME
+                moveDown(dep_type_pos - getLastPos()); // FIXME
             }
 
 
@@ -293,7 +305,7 @@ void ScrollArea::touchEvent(int action, int x, int y)
                 ++m_timeStampDiff;
 #endif
 
-            m_yDiff = glAbs(dep_type_pos-dep_type_lastpos()); // FIXME
+            m_posDiff = glAbs(dep_type_pos-getLastPos());
 
             m_lastPos.setX(x).setY(y);
             m_moveDirection = move_direction;
@@ -302,7 +314,7 @@ void ScrollArea::touchEvent(int action, int x, int y)
 
         case TOUCH_ACTION_RELEASE:
         {
-            if(!isTouched())
+            if(!isTouched() /*&& !isMoved()*/)
                 break;
 
 #ifdef __PC_BUILD__
@@ -311,10 +323,10 @@ void ScrollArea::touchEvent(int action, int x, int y)
 
             int speed = 0;
             int fadden = 0;
-            int sdiff = glAbs(m_touchLastPos.y() - m_lastPos.y()); // FIXME
+            int sdiff = glAbs(getTouchLastPos() - getLastPos()); // FIXME
 
             if(sdiff && m_timeStampDiff)
-                speed = (sdiff/2) / m_timeStampDiff; // FIXME
+                speed = (sdiff/2) / m_timeStampDiff;
 
             fadden = m_timeStampDiff*2;
 
