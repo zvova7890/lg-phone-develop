@@ -61,6 +61,7 @@ private:
     getset(bool, public, RoundedRect, public, roundedRect)
     getset(bool, public, ShadowAfterBackground, public, shadowAfterBackground)
     getset(int, public, FontSize, public, fontSize)
+    getset(Brush, public, InactiveFill, public, inactiveFill)
 };
 
 #endif // UBUTTONSTYLE_H

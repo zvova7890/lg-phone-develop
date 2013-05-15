@@ -68,15 +68,11 @@ void Button::paintEvent()
     if(!style().shadowAfterBackground())
         p();
 
-    if(isActive()) {
-        if(isTouched())
-            style().pressedBackground().paint(realRect(), round, round);
-        else
-            style().background().paint(realRect(), round, round);
+    if(isTouched())
+        style().pressedBackground().paint(realRect(), round, round);
+    else
+        style().background().paint(realRect(), round, round);
 
-    } else {
-        //style().pressedBackground().paint(realRect(), round, round);
-    }
 
     if(style().shadowAfterBackground())
         p();
@@ -95,8 +91,9 @@ void Button::paintEvent()
         m_textRender(this);
 
     if(!isActive()) {
-        glSetPen(0x7F000000);
-        glDrawFilledRectange(realRect().x(), realRect().y(), realRect().x2(), realRect().y2());
+        //glSetPen(0x7F000000);
+        //glDrawFilledRectange(realRect().x(), realRect().y(), realRect().x2(), realRect().y2());
+        style().inactiveFill().paint(realRect());
     }
 }
 

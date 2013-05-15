@@ -39,13 +39,14 @@ void KeyboardHelper::createKeyboard(const std::vector<std::vector<const char *> 
     for(const std::vector<const char *> &vec : kbd_layout) {
 
         float xstep = 0;
-        float width = float(rect().w() - 4) / vec.size();
-        float xpos = 2;
+        float width = float(rect().w() - 2) / vec.size();
+        float xpos = 1;
+        Button *b = 0;
 
         if(i == 2) {
-            width = float(rect().w() - 4 - (30+34)) / vec.size();
+            width = float(rect().w() - 2 - (35+35)) / vec.size();
 
-            Button *b = new Button(Rect(xpos, hstep, 30, 30), this, "up");
+            b = new Button(Rect(xpos, hstep, 35, 30), this, "up");
             caseTypeSwitcher = b;
             b->setIcon(kbd_up);
             b->setActive(false);
@@ -53,21 +54,21 @@ void KeyboardHelper::createKeyboard(const std::vector<std::vector<const char *> 
             b->pressedSignal().connect(this, &KeyboardHelper::kbdAction, std::placeholders::_1);
 
             add(b);
-            xpos += 30 + xstep;
+            xpos += 35 + xstep;
         }
 
         for(const char *ch : vec) {
 
-            Button *b = new Button(Rect(xpos, hstep, width, 30), this, ch);
+            b = new Button(Rect(xpos, hstep, width, 30), this, ch);
             b->pressedSignal().connect(this, &KeyboardHelper::kbdAction, std::placeholders::_1);
 
             add(b);
-            m_unsignedButtons.push_back(b);
             xpos += width + xstep;
+            m_unsignedButtons.push_back(b);
         }
 
         if(i == 2) {
-            Button *b = new Button(Rect(xpos, hstep, 34, 30), this, "clean");
+            b = new Button(Rect(xpos, hstep, 35, 30), this, "clean");
             b->setIcon(kbd_c);
             b->setTextVisible(false);
             b->pressedSignal().connect(this, &KeyboardHelper::kbdAction, std::placeholders::_1);
@@ -81,9 +82,9 @@ void KeyboardHelper::createKeyboard(const std::vector<std::vector<const char *> 
 
 
     int whitespace = rect().w()*30 / 100;
-    float width = ((rect().w()-4)-whitespace) / 6;
+    float width = float((rect().w()-2)-whitespace) / 6.0f;
     int xstep = 0;
-    int xpos = 2;
+    float xpos = 1;
 
     class Ololo
     {
