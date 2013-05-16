@@ -4,7 +4,15 @@ QtCreator является мощной IDE написанной на С++Qt д�
 <hr>
 
 = Установка Qt и QtCreator =
-Скачиваем Qt4 библиотеки(Не sdk полностью, там много ненужного) и QtCreator. Минимальная версия QtCreator - 2.6.
+== Windows ==
+[http://qt-project.org/downloads Скачиваем Qt4] библиотеки(Не sdk полностью, там много ненужного) и QtCreator. 
+Должно выглядеть примерно так(Выбирать версию с MinGW!): Qt libraries 4.8.4 for Windows (minGW 4.4, 317 MB)
+
+Минимальная версия QtCreator - 2.6.
+Примерно так: Qt Creator 2.7.1 for Windows (52 MB) 
+
+== Unix ==
+Ставим все штатными средствами из репозиториев. Qt4 и QtCreator
 
 = Установка gcc =
 [http://code.google.com/p/lg-phone-develop/wiki/CompillersSetup Читать], если ещё не читали
@@ -16,12 +24,13 @@ QtCreator является мощной IDE написанной на С++Qt д�
 Далее, нам нужно заменить пути расположения либ и хедеров:
 
 Открываем ${ВАША_ПАПКА_С_Qt}/mkspecs/unsupported/lg-gcc/qmake.conf:
-
+<code>
 INCLUDEPATH           = /home/vova7890/compilers/lg/include/ 
 QMAKE_INCDIR          = /home/vova7890/compilers/lg/include/
 INCLUDEPATH           += /home/vova7890/compilers/lg/include/native_api/
 QMAKE_INCDIR          += /home/vova7890/compilers/lg/include/native_api/
 QMAKE_LIBDIR          = /home/vova7890/compilers/lg/lib/
+</code>
 
 /home/vova7890/compilers/lg - заменяем на свой. 
 
