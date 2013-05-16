@@ -2,14 +2,33 @@
 = Предисловие =
 QtCreator является мощной IDE написанной на С++Qt для использования в связке с библиотеками Qt. Но у ide есть возможность подстраивать среду под свои нужды. Чем мы и займёмся.
 <hr>
+
+= Установка Qt и QtCreator =
+Скачиваем Qt4 библиотеки(Не sdk полностью, там много ненужного) и QtCreator. Минимальная версия QtCreator - 2.6.
+
+= Установка gcc =
+[http://code.google.com/p/lg-phone-develop/wiki/CompillersSetup Читать], если ещё не читали
+
 = Настройка конфигов =
-Для начала нам нужно найти папку "mkspecs". На unix-like ОС она находится по пути "/usr/share/qt/mkspecs/" либо "/usr/local/share/qt/mkspecs/". На семействах ОС-windows она может находится в папке с установленой IDE.
-Нашли? Хорошо, теперь переходим в папку unsupported, и создаём там папку "lg-gcc".
-Дальше, располагаем там [http://code.google.com/p/lg-phone-develop/source/browse/#svn%2Fwiki%2FQtCreator 2-файла] из папки "lg-gcc"(unix вариант)
-Так, скопировали? Ну все, теперь открываем текстовым редактором, ищем там пути на папки include и libs, затем меняем на свои ;)
+Для начала нам нужно найти папку "mkspecs". На unix-like ОС она находится по пути "/usr/share/qt/mkspecs/" либо "/usr/local/share/qt/mkspecs/". 
+На ОС семейства Windows она находится в папке с установленым Qt.
+Скачиваем под свою ос по [http://code.google.com/p/lg-phone-develop/source/browse/#svn%2Fwiki%2FQtCreator данной] ссылке папки и распихиваеем их в папку с Qt.
+Далее, нам нужно заменить пути расположения либ и хедеров:
+
+Открываем ${ВАША_ПАПКА_С_Qt}/mkspecs/unsupported/lg-gcc/qmake.conf:
+
+INCLUDEPATH           = /home/vova7890/compilers/lg/include/ 
+QMAKE_INCDIR          = /home/vova7890/compilers/lg/include/
+INCLUDEPATH           += /home/vova7890/compilers/lg/include/native_api/
+QMAKE_INCDIR          += /home/vova7890/compilers/lg/include/native_api/
+QMAKE_LIBDIR          = /home/vova7890/compilers/lg/lib/
+
+/home/vova7890/compilers/lg - заменяем на свой. 
+
+В windows версии можно не менять, если вы установили gcc в C:\lg-dev
+
 <hr>
 = Настройка компиляторов =
-Я надеюсь вы скачали последний QtCreator? Потому-что настройка писалась по текущую версию IDE(Qt Creator 2.6.0). 
 Настраиваем компилятор:
  * Инструменты -> Сборка и запуск
  * Вкладка "Компиляторы", жмём "добавить" -> выпадающий список, выбираем "gcc"
