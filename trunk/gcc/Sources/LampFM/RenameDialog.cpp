@@ -8,6 +8,7 @@
 EditLine::EditLine(const Rect &r, Widget *parent) :
     Widget(r, parent),
     m_cursorVisible(false),
+    cursor_position(0),
     kbd( (Keyboard*)parent->mainParent()->providesExtraWidget("keyboard") ),
     m_kbdDisconnected(true),
     m_dontHideKbd(false)
@@ -39,9 +40,22 @@ void EditLine::paintEvent()
 
     glDrawFilledRectange(realRect().x(), realRect().y(), realRect().x2(), realRect().y2());
 
+
+    int xoffset = 0;
+
+    if(!chars.empty()) {
+        Character &chr = chars.at(cursor_position-1);
+
+        if(chr.pos+3 >= realRect().w()) {
+
+            xoffset -= (chr.pos - realRect().w()) + 4;
+
+        }
+    }
+
     glSetPen(0xFF000000);
-    glDrawString(m_text.c_str(), realRect().x(), realRect().y(), realRect().x2(), realRect().y2(),
-                 15, FT_TEXT_H_CENTER | FT_TEXT_NOCALC_HCENTER, 0, 128);
+    glDrawString(m_text.c_str(), realRect().x()+xoffset, realRect().y(), realRect().x2(), realRect().y2(),
+                 15, FT_TEXT_H_CENTER | FT_TEXT_NOCALC_HCENTER, 0, 1024);
 
     if(isFocused())
     {
@@ -51,7 +65,11 @@ void EditLine::paintEvent()
 
         if(m_cursorVisible) {
 
-            int w = glStringMetrics(15, m_text.c_str(), 0, 0, 128);
+            int w = glStringMetrics(15, m_text.c_str(), 0, 0, 1024)+xoffset;
+
+            //printf("w: %d\n", w);
+
+            glSetPen(0xFFFF0000);
             glDrawVLine(realRect().y()+3, realRect().y2()-3, realRect().x()+w+1);
         }
 
@@ -152,15 +170,18 @@ void EditLine::setText(const std::string &text)
 {
     chars.clear();
     m_text = text;
+    cursor_position = 0;
+
 
     const char *s = m_text.c_str();
 
     while(1) {
         int l = utf8_charset_size(s);
 
-        if(l > 0)
-            chars.push_back(l);
-        else
+        if(l > 0) {
+            chars.push_back( Character(l, newCharPosition(s, l, 15)) );
+            cursor_position ++;
+        } else
             break;
 
         s += l;
@@ -177,9 +198,10 @@ void EditLine::appendText(const std::string &text)
     while(1) {
         int l = utf8_charset_size(s);
 
-        if(l > 0)
-            chars.push_back(l);
-        else
+        if(l > 0) {
+            chars.push_back( Character(l, newCharPosition(s, l, 15)) );
+            cursor_position ++;
+        } else
             break;
 
         s += l;
@@ -189,6 +211,22 @@ void EditLine::appendText(const std::string &text)
     }
 
     m_text.append( text );
+    m_cursorVisible = true;
+}
+
+
+int EditLine::newCharPosition(const char *s, int l, int font)
+{
+    int pos = 0;
+    if(!chars.empty()) {
+        pos = chars.back().pos;
+    }
+
+    char chr[4] = {0};
+    memcpy(chr, s, l);
+
+    pos += glStringMetrics(font, chr, 0, 0, 1);
+    return pos;
 }
 
 
@@ -210,7 +248,7 @@ void EditLine::keyAction(Keyboard *, int type, const char *k)
 
 
                     auto last = (--chars.end());
-                    int rm_sz = (*last);
+                    int rm_sz = (*last).size;
                     chars.erase( last );
 
 
@@ -220,6 +258,7 @@ void EditLine::keyAction(Keyboard *, int type, const char *k)
                         for(int i=0; i<rm_sz; ++i)
                             last--;
 
+                        cursor_position --;
                         m_text.erase(last, m_text.end());
                     } else {
                         printf("That is happens!!! O_O\n");

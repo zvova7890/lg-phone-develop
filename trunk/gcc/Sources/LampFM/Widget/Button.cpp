@@ -109,7 +109,13 @@ void Button::touchEvent(int action, int x, int y)
         case TOUCH_ACTION_RELEASE:
             m_released.trigger(this);
             break;
+
+        case TOUCH_ACTION_MOVE:
+            m_moved.trigger(this);
+            break;
     }
+
+    m_touchAction.trigger(this, action);
 
     Widget::touchEvent(action, x, y);
     parent()->eventManager()->updateAfterEvent();

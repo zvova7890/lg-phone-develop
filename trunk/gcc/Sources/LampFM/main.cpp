@@ -39,6 +39,7 @@
 int my_application = 0;
 static int setup_h;
 static int gdi_state = 0;
+//static int name = 0;
 
 ExtManager *ext_manager;
 std::string elfdir;
@@ -253,7 +254,7 @@ void Screen_OnExit()
 //Действие при активации
 void Screen_OnAwake()
 {
-    switch_gdi(GrSys_GetGDIID());
+    switch_gdi(gdi_state);
     refresh();
 }
 
@@ -268,31 +269,31 @@ void Screen_OnKeyDown(int key)
 {
     switch (key)
     {
-    case KEY_CAMERA:
-    {
-        image_t img;
+        case KEY_CAMERA:
+        {
+            image_t img;
 
-        img.bitmap = Graphics_GetScreenBuffer();
-        img.w = GRSYS_WIDTH;
-        img.h = GRSYS_HEIGHT;
-        img.bit = 16;
+            img.bitmap = Graphics_GetScreenBuffer();
+            img.w = GRSYS_WIDTH;
+            img.h = GRSYS_HEIGHT;
+            img.bit = 16;
 
-        save_png_to_file (&img, "/usr/Zbin/shoot.png");
-        break;
-    }
+            save_png_to_file (&img, "/usr/Zbin/shoot.png");
+            break;
+        }
 
-    case KEY_SEND:
-        switch_gdi(!GrSys_GetGDIID());
-        //main_view->switchNextWorkSpace();
-        break;
+        case KEY_SEND:
+            //TaskMngr_AppSetName(my_application, 0, ++name, 0); //5
+            main_view->switchNextWorkSpace();
+            break;
 
-    case KEY_MULTI:
-        TaskMngr_Show();
-        break;
+        case KEY_MULTI:
+            TaskMngr_Show();
+            break;
 
-    case KEY_END:
-        TaskMngr_AppExit(0, 0, 0);
-        break;
+        case KEY_END:
+            TaskMngr_AppExit(0, 0, 0);
+            break;
     }
 
     //refresh();
@@ -416,50 +417,50 @@ int Window_EventHandler(unsigned long cmd, unsigned long subcmd, unsigned long s
     //printf("cmd: %d\n", cmd);
     switch (cmd)
     {
-    case MSG_INIT:
-        Screen_OnInit();
-        break;
+        case MSG_INIT:
+            Screen_OnInit();
+            break;
 
-    case MSG_EXIT:
-        Screen_OnExit();
-        break;
+        case MSG_EXIT:
+            Screen_OnExit();
+            break;
 
-    case MSG_RESUME:
-        Screen_OnAwake();
-        break;
+        case MSG_RESUME:
+            Screen_OnAwake();
+            break;
 
-    case MSG_SLEEP:
-            printf("Sleep\n");
-        Screen_OnSleep();
-        break;
+        case MSG_SLEEP:
+                printf("Sleep\n");
+            Screen_OnSleep();
+            break;
 
-    case MSG_KEYDOWN:
-        Screen_OnKeyDown(subcmd);
-        break;
+        case MSG_KEYDOWN:
+            Screen_OnKeyDown(subcmd);
+            break;
 
-    case MSG_KEYUP:
-        Screen_OnKeyUp(subcmd);
-        break;
+        case MSG_KEYUP:
+            Screen_OnKeyUp(subcmd);
+            break;
 
-    case MSG_DRAW:
-        refresh();
-        break;
+        case MSG_DRAW:
+            refresh();
+            break;
 
-    case MSG_TIMER:
-        Screen_OnTimer(subcmd, status);
-        break;
+        case MSG_TIMER:
+            Screen_OnTimer(subcmd, status);
+            break;
 
-    case MSG_POINTING:
-        Screen_OnPointing(subcmd, status);
-        break;
+        case MSG_POINTING:
+            Screen_OnPointing(subcmd, status);
+            break;
 
-    case MSG_INDICATOR:
-        Screen_OnIndicatorDraw();
-        break;
+        case MSG_INDICATOR:
+            Screen_OnIndicatorDraw();
+            break;
 
-    default:
-        //printf("Ololo event: %d\n", cmd);
-        break;
+        default:
+            //printf("Ololo event: %d\n", cmd);
+            break;
     }
 
     return 1;
@@ -473,48 +474,50 @@ int listener(unsigned long event_id, unsigned long wparam, unsigned long lparam)
 
     switch (event_id)
     {
-    case BNS_EVENT_START:
-        TaskMngr_AppSetName(my_application, 0, 0, 0);
+        case BNS_EVENT_START:
+        {
+            TaskMngr_AppSetName(my_application, 0, 5, 0);
 
-        //Получаем хендл настроек
-        setup_h = SetUP_GetHandle();
+            //Получаем хендл настроек
+            setup_h = SetUP_GetHandle();
 
-        //Устанавливаем чувствительность тачпада
-        SetUP_SetTouchpadSensitivity(setup_h, TOUCHPAD_SENSITIVITY_SET, 9);
+            //Устанавливаем чувствительность тачпада
+            SetUP_SetTouchpadSensitivity(setup_h, TOUCHPAD_SENSITIVITY_SET, 9);
 
-        MsgHandler_RegisterProcessor(WINDOW_ID_SCREEN, Window_EventHandler);
-        MsgHandler_SetActivePID(WINDOW_ID_SCREEN);
+            MsgHandler_RegisterProcessor(WINDOW_ID_SCREEN, Window_EventHandler);
+            MsgHandler_SetActivePID(WINDOW_ID_SCREEN);
 
-        AccelSensor_Enable();
-        AccelSensor_EventsEnable(1);
+            AccelSensor_Enable();
+            AccelSensor_EventsEnable(1);
 
-        return 1;
+            return 1;
+        }
 
-    case BNS_EVENT_TERMINATE:
-        // Уничтожаем окно
-        SetUP_CloseHandle(setup_h);
+        case BNS_EVENT_TERMINATE:
+            // Уничтожаем окно
+            SetUP_CloseHandle(setup_h);
 
-        MsgHandler_Terminate();
-        ElfDestroy();
-        return 1;
+            MsgHandler_Terminate();
+            ElfDestroy();
+            return 1;
 
-        //Событие при активации приложения
-    case BNS_EVENT_RESUME:
-        MsgHandler_SendMessage(WINDOW_ID_SCREEN, MSG_RESUME, 0, 0);
-        return 1;
+            //Событие при активации приложения
+        case BNS_EVENT_RESUME:
+            MsgHandler_SendMessage(WINDOW_ID_SCREEN, MSG_RESUME, 0, 0);
+            return 1;
 
-    case BNS_EVENT_SUSPEND:
-        MsgHandler_SendMessage(WINDOW_ID_SCREEN, MSG_SLEEP, 0, 0);
-        return 1;
+        case BNS_EVENT_SUSPEND:
+            MsgHandler_SendMessage(WINDOW_ID_SCREEN, MSG_SLEEP, 0, 0);
+            return 1;
 
-    case BNS_EVENT_MOTION_SENSOR:
-        lg_general_axel_event(lparam);
-        return 1;
+        case BNS_EVENT_MOTION_SENSOR:
+            lg_general_axel_event(lparam);
+            return 1;
 
-    default:
-        //printf("event_id: %d\n", event_id);
-        Window_TransEvent(event_id, wparam, lparam);
-        return 1;
+        default:
+            //printf("event_id: %d\n", event_id);
+            Window_TransEvent(event_id, wparam, lparam);
+            return 1;
     }
 }
 
@@ -535,35 +538,6 @@ int main(int argc, char *argv[])
 
     static ELF_PARASITE_INFO parasite;
     my_application = RegisterApplicationEventListener(&parasite, listener, L"MyMegaApplication");
-
-    /*
-    FILE *fp = fopen("/sys/RecMngr.bin", "r");
-
-    if(fp) {
-        printf("WORK!\n");
-        fclose(fp);
-    } else {
-        printf("NE WORK!\n");
-    }
-
-    TFStat fstat;
-    long it = 0;
-
-    if(FileSys_FindFirstDir(L"/cust/", &it, &fstat)){
-        char ololo[128];
-
-        do{
-            UniLib_UCS2ToUTF8(fstat.szName, ololo);
-
-            printf("LOOOOL: %s\n", ololo);
-
-        } while(FileSys_FindNextDir(it, &fstat));
-
-
-        FileSys_FindClose(it);
-    }
-*/
-
     return 0;
 }
 

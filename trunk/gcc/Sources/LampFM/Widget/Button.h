@@ -48,6 +48,14 @@ public:
         return m_pressed;
     }
 
+    signal & movedSignal() {
+        return m_moved;
+    }
+
+    signal_slot::multi_signal <Button *, int> & touchAction() {
+        return m_touchAction;
+    }
+
 
     ButtonStyle & style() {
         return m_style;
@@ -78,7 +86,8 @@ protected:
 
 private:
 
-    signal m_pressed, m_released;
+    signal m_pressed, m_released, m_moved;
+    signal_slot::multi_signal <Button *, int> m_touchAction;
     std::string m_text;
     bool m_isActive;
     bool m_textVisible;
