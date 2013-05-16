@@ -66,10 +66,7 @@ void EditLine::paintEvent()
         if(m_cursorVisible) {
 
             int w = glStringMetrics(15, m_text.c_str(), 0, 0, 1024)+xoffset;
-
-            //printf("w: %d\n", w);
-
-            glSetPen(0xFFFF0000);
+            //glSetPen(0xFF000000);
             glDrawVLine(realRect().y()+3, realRect().y2()-3, realRect().x()+w+1);
         }
 
@@ -189,6 +186,8 @@ void EditLine::setText(const std::string &text)
             break;
         }
     }
+
+    m_cursorVisible = true;
 }
 
 
@@ -260,6 +259,7 @@ void EditLine::keyAction(Keyboard *, int type, const char *k)
 
                         cursor_position --;
                         m_text.erase(last, m_text.end());
+                        m_cursorVisible = true;
                     } else {
                         printf("That is happens!!! O_O\n");
                     }

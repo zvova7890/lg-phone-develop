@@ -211,7 +211,7 @@ void Screen_OnInit()
         GrSys_Refresh();
     } );
 
-    main_widget = new MainWidget(Rect(0, 0, GRSYS_WIDTH, GRSYS_HEIGHT-0), &event_mngr);
+    main_widget = new MainWidget(Rect(0, 0, GRSYS_WIDTH, GRSYS_HEIGHT), &event_mngr);
     main_widget->init();
     main_widget->activateLongPressSupport(true);
 
