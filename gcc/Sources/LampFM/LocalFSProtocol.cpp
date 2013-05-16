@@ -18,7 +18,7 @@ typedef struct
     int size;
 }File;
 
-static File fds[128] = {-1, 0, 0};
+static File fds[128];
 
 
 void init_fds()

@@ -85,7 +85,6 @@ private:
     std::function<void(void *)> refreshFunc;
     int need_upd;
     char block_refresh, block_paint;
-    EventManager *m_self;
 };
 
 
