@@ -30,9 +30,9 @@ $ arm-aebi-gcc main.c -o main.elf
 Для Windows существуют [http://lg-phone-develop.googlecode.com/files/win32-gcc.7z готовые] бинарники gcc + ld.
 
 1. Создаём папку в корне C:\lg-dev распаковываем туда win32-gcc
-2. Из svn копируем 
-                 trunk/gcc/include в C:\lg-dev\win32-gcc\include
-                 trunk/gcc/lib в C:\lg-dev\win32-gcc\lib
+2. Из svn копируем <br/>
+                 trunk/gcc/include в C:\lg-dev\win32-gcc\include<br/>
+                 trunk/gcc/lib в C:\lg-dev\win32-gcc\lib<br/>
 
 3. Идём в C:\lg-dev\win32-gcc\lib и запускаем скрипт hardlink.cmd, он создаст ссылки вида libc++-4.7.so -> libc++.so
 
