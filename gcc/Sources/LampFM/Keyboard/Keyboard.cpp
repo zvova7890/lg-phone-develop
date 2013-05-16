@@ -7,7 +7,17 @@
 #include "KeyboardRU.h"
 #include "KeyboardEnum.h"
 #include "main.h"
+#include <compatible.h>
 
+
+
+KeyboardHelper::KeyboardHelper(const Rect &r, Keyboard *p, bool) :
+    Widget(r, (Widget*)p),
+    m_parent(p),
+    m_poputButton(0)
+{
+    setMovable(false);
+}
 
 
 KeyboardHelper::~KeyboardHelper()
@@ -51,6 +61,7 @@ void KeyboardHelper::createKeyboard(const std::vector<std::vector<const char *> 
             b->setIcon(kbd_up);
             b->setActive(false);
             b->setTextVisible(false);
+            b->setMovable(false);
             b->pressedSignal().connect(this, &KeyboardHelper::kbdAction, std::placeholders::_1);
 
             add(b);
@@ -60,7 +71,10 @@ void KeyboardHelper::createKeyboard(const std::vector<std::vector<const char *> 
         for(const char *ch : vec) {
 
             b = new Button(Rect(xpos, hstep, width, 30), this, ch);
-            b->pressedSignal().connect(this, &KeyboardHelper::kbdAction, std::placeholders::_1);
+            b->releasedSignal().connect(this, &KeyboardHelper::kbdAction, std::placeholders::_1);
+            b->setMovable(false);
+            b->pressedSignal().connect(this, &KeyboardHelper::kbdShowChar, std::placeholders::_1);
+            b->movedSignal().connect(this, &KeyboardHelper::kbdShowChar, std::placeholders::_1);
 
             add(b);
             xpos += width + xstep;
@@ -71,7 +85,27 @@ void KeyboardHelper::createKeyboard(const std::vector<std::vector<const char *> 
             b = new Button(Rect(xpos, hstep, 35, 30), this, "clean");
             b->setIcon(kbd_c);
             b->setTextVisible(false);
-            b->pressedSignal().connect(this, &KeyboardHelper::kbdAction, std::placeholders::_1);
+            //b->setMovable(false);
+
+
+            m_repeat.timerEventSignal().connect( [this, b](Timer *) {
+                m_actionSignal.trigger((Keyboard*)parent(), 1, b->constText().c_str());
+            });
+
+
+            b->touchAction().connect( [this](Button *b, int action) {
+
+                if(action == TOUCH_ACTION_LONGPRESS)
+                    m_repeat.start(100);
+
+                else if(action == TOUCH_ACTION_RELEASE) {
+                    if(m_repeat.isActive())
+                        m_repeat.stop();
+                    else
+                       m_actionSignal.trigger((Keyboard*)parent(), 1, b->constText().c_str());
+                }
+
+            });
 
             add(b);
         }
@@ -102,8 +136,9 @@ void KeyboardHelper::createKeyboard(const std::vector<std::vector<const char *> 
     for(int i=0; i<2; ++i) {
         Button *b = new Button(Rect(xpos, hstep, width, 30), this, ks[i].ch);
         b->setTextVisible(ks[i].textVisible);
-        b->releasedSignal().connect(this, &KeyboardHelper::kbdAction, std::placeholders::_1);
+        b->pressedSignal().connect(this, &KeyboardHelper::kbdAction, std::placeholders::_1);
         b->setIcon(ks[i].icon);
+        b->setMovable(false);
         add(b);
 
         xpos += width+xstep;
@@ -111,6 +146,7 @@ void KeyboardHelper::createKeyboard(const std::vector<std::vector<const char *> 
 
     Button *b = new Button(Rect(xpos, hstep, whitespace, 30), this, " ");
     b->setTextVisible(true);
+    b->setMovable(false);
     b->setTextRender( [](Button *b) {
         Rect rc = b->realRect();
         int xyoff = 0;
@@ -125,7 +161,7 @@ void KeyboardHelper::createKeyboard(const std::vector<std::vector<const char *> 
         glDrawHLine(rc.x()+6+xyoff, rc.x2()-6+xyoff, rc.y2()-4+xyoff);
     });
 
-    b->pressedSignal().connect(this, &KeyboardHelper::kbdAction, std::placeholders::_1);
+    b->releasedSignal().connect(this, &KeyboardHelper::kbdAction, std::placeholders::_1);
     add(b);
 
     xpos += whitespace+xstep;
@@ -141,8 +177,9 @@ void KeyboardHelper::createKeyboard(const std::vector<std::vector<const char *> 
         Button *b = new Button(Rect(xpos, hstep, width, 30), this, ks2[i].ch);
         b->setTextVisible(ks2[i].textVisible);
         b->setIcon(ks2[i].icon);
+        b->setMovable(false);
         b->style().setFontFlags( FT_TEXT_W_CENTER | FT_TEXT_H_DOWN );
-        b->releasedSignal().connect(this, &KeyboardHelper::kbdAction, std::placeholders::_1);
+        b->pressedSignal().connect(this, &KeyboardHelper::kbdAction, std::placeholders::_1);
         add(b);
 
         xpos += width+xstep;
@@ -224,16 +261,57 @@ void KeyboardHelper::setCharSizeType(bool up)
 }
 
 
+void KeyboardHelper::paintEvent()
+{
+    Widget::paintEvent();
+
+    if(m_poputButton) {
+        glSetPen(0xFF0000FF);
+        glDrawRectange(m_infoPopup.x(), m_infoPopup.y(), m_infoPopup.x2(), m_infoPopup.y2());
+
+        glSetPen(0xAF000000);
+        glDrawFilledRectange(m_infoPopup.x()+1, m_infoPopup.y()+1, m_infoPopup.x2(), m_infoPopup.y2());
+
+        glSetPen(0xFFFFFFFF);
+        glDrawString(m_poputButton->text().c_str(), m_infoPopup.x(), m_infoPopup.y(), m_infoPopup.x2(), m_infoPopup.y2(), 25, FT_TEXT_H_CENTER | FT_TEXT_W_CENTER, 0, 128);
+    }
+}
+
+
+void KeyboardHelper::kbdShowChar(Button *b)
+{
+    int xpos = b->realRect().x() + (b->realRect().w()/2 - 40/2);
+
+    if(xpos + 40 > parent()->realRect().x2()) {
+        xpos = parent()->realRect().x2()-40-2;
+
+    } else if(xpos < parent()->realRect().x()) {
+        xpos = parent()->realRect().x()+1;
+    }
+
+    m_infoPopup = Rect(xpos, b->realRect().y()-65, 40, 50);
+    m_poputButton = b;
+}
+
 
 void KeyboardHelper::kbdAction(Button *b)
 {
+    // Если выключен режим привязки при нажатии isMovable(нажали на объекти и ему идут все ивенты пока не отпустим)
+    // то при выходе из зоны объекта приходит RELEASE сигнал, с пометкой что это OffRect сигнал
+    if(b->isOffRectTouch()) {
+        m_poputButton = 0;
+        return;
+    }
+
+    m_poputButton = 0;
     std::string s = b->text();
     //printf("kbdAction: %s\n", b->text().c_str());
 
-    if(s == "clean") {
+    /*if(s == "clean") {
+
         m_actionSignal.trigger((Keyboard*)parent(), 1, s.c_str());
 
-    } else if(s == "up") {
+    } else*/ if(s == "up") {
         b->setActive( !b->isActive() );
         bool up = ((Keyboard*)parent())->m_upper = b->isActive();
 
@@ -267,6 +345,7 @@ Keyboard::Keyboard(const Rect &r, Widget *parent) :
 {
     setBlockable(true);
     setFocuseable(false);
+    setMovable(false);
 
 
     m_kbdLayouts["enum"] = newKeyboard("enum");
@@ -406,8 +485,16 @@ void Keyboard::touchEvent(int action, int x, int y)
 {
     updateCoordinates(m_kbd);
 
+    bool dirty = m_kbd->m_poputButton != 0;
+
+    if(action == TOUCH_ACTION_RELEASE)
+        m_kbd->m_poputButton = 0;
+
     if(m_kbd)
         m_kbd->touch(action, x, y);
+
+    if(dirty && !m_kbd->m_poputButton)
+        eventManager()->updateAfterEvent();
 
     Widget::touchEvent(action, x, y);
 }

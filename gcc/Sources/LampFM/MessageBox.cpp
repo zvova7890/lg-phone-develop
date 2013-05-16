@@ -40,7 +40,7 @@ MessageBox::~MessageBox()
 void MessageBox::paintEvent()
 {
     glSetPen(0xF0000000);
-    glDrawFilledRectange(realRect().x()+1, realRect().y()+1, realRect().x2()-1, realRect().y2()-1);
+    glDrawFilledRectange(realRect().x()+1, realRect().y()+1, realRect().x2(), realRect().y2());
     glSetPen(0xFFFFFFFF);
     glDrawRectange(realRect().x(), realRect().y(), realRect().x2(), realRect().y2());
 
@@ -64,7 +64,7 @@ void MessageBox::resizeEvent()
     PopupWindow::resizeEvent();
 
     int w = rect().w()*60 / 100;
-    m_okButton.setSize(Rect((rect().w()-w)/2, rect().h()-43, w, 40));
+    m_okButton.setSize(Rect((rect().w()-w)/2, rect().h()-45, w, 40));
 }
 
 

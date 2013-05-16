@@ -181,13 +181,15 @@ void Widget::touchEvent(int action, int x, int y)
             case TOUCH_ACTION_PRESS:
 
                 if(m_touched) {
-                    BUGON(m_touched == 0);
+
+                    if(m_touched->isMovable())
+                        BUGON(m_touched == 0);
+
                     m_touched->touch(TOUCH_ACTION_RELEASE, lastTouchedPosition().x(), lastTouchedPosition().y());
                     m_touched = 0;
                 }
 
-                if(w->isMovable())
-                    m_touched = w;
+                m_touched = w;
                 break;
         }
 
@@ -195,23 +197,37 @@ void Widget::touchEvent(int action, int x, int y)
 
 
     if(m_touched) {
-        if(action == TOUCH_ACTION_PRESS) {
 
-            BUGON(m_touched == 0);
+        if(x >= m_touched->realRect().x() && x < m_touched->realRect().x2() &&
+                            y >= m_touched->realRect().y() && y < m_touched->realRect().y2())
+        {
+doit:
+            if(action == TOUCH_ACTION_PRESS) {
 
-            m_touched->touch(TOUCH_ACTION_RELEASE, lastTouchedPosition().x(), lastTouchedPosition().y());
-            m_touched = 0;
-            goto __ex;
-        }
+                BUGON(m_touched == 0);
 
-        if(action == TOUCH_ACTION_RELEASE) {
+                m_touched->touch(TOUCH_ACTION_RELEASE, lastTouchedPosition().x(), lastTouchedPosition().y());
+                m_touched = 0;
+                goto __ex;
+            }
+
+            if(action == TOUCH_ACTION_RELEASE) {
+                m_touched->touch(action, x, y);
+                m_touched = 0;
+                return;
+            }
+
             m_touched->touch(action, x, y);
-            m_touched = 0;
             return;
-        }
 
-        m_touched->touch(action, x, y);
-        return;
+        } else if(!m_touched->isMovable()) {
+            m_touched->set_attr(ATTR_OFFRECT_TOUCH);
+            m_touched->touch(TOUCH_ACTION_RELEASE, lastTouchedPosition().x(), lastTouchedPosition().y());
+            m_touched->erase_attr(ATTR_OFFRECT_TOUCH);
+            m_touched = 0;
+        } else {
+            goto doit;
+        }
     }
 
 __ex:
@@ -255,6 +271,7 @@ __ex:
 
                 widget->erase_attr(ATTR_OFFRECT_TOUCH);
                 break;
+
             }
         }
     }

@@ -34,13 +34,28 @@ public:
     }
 
 protected:
+    int newCharPosition(const char *s, int l, int font);
     void keyAction(Keyboard *, int type, const char *k);
 
 private:
+
+    struct Character {
+
+        Character(int _size, int _pos) {
+            size = _size;
+            pos = _pos;
+        }
+
+        char size;
+        int pos;
+    };
+
     std::string m_text;
-    std::vector<int> chars;
+    std::vector<Character> chars;
     Timer m_timer;
     bool m_cursorVisible;
+    int cursor_position;
+
 
     Keyboard *kbd;
     Keyboard::sig::slot m_kbd_hideAction;
