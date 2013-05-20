@@ -1,5 +1,5 @@
-#ifndef __TASKAPI_H__
-#define __TASKAPI_H__
+#ifndef _TASKAPI_H_
+#define _TASKAPI_H_
 
 #include "pxeapi_macro.h"
 

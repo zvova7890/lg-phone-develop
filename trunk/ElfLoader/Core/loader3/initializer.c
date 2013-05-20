@@ -109,7 +109,7 @@ int __elf_load(const char *elfname, int argc, char *argv[], unsigned int *start,
       argv[0] = (char *)elfname;
     }
     
-    entry(argc, argv);
+    r = entry(argc, argv);
   }
 
   if (start) *start = (unsigned int)ex->body;
