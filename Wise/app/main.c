@@ -14,14 +14,14 @@ __swi __arm void lprintf(const char *format, ...);
 const char __elf_build[] = "ElfApp, builded "__TIME__" "__DATE__;
 #define __elf_start_address (void *)__segment_begin("ELF")
 
-//Хендл процесса
+//РҐРµРЅРґР» РїСЂРѕС†РµСЃСЃР°
 H_PROCESS h_proc;
-//Хендл таймера
+//РҐРµРЅРґР» С‚Р°Р№РјРµСЂР°
 H_TIMER h_timer;
-//Указатель на API
+//РЈРєР°Р·Р°С‚РµР»СЊ РЅР° API
 TApiLink *g_pApiLink = 0;
 
-/* Процедура инициализации */
+/* РџСЂРѕС†РµРґСѓСЂР° РёРЅРёС†РёР°Р»РёР·Р°С†РёРё */
 void elf_init(int *api)
 {
   if (api)
@@ -31,13 +31,13 @@ void elf_init(int *api)
    }
 }
 
-/* Внешний таймер приложения (без события)*/
+/* Р’РЅРµС€РЅРёР№ С‚Р°Р№РјРµСЂ РїСЂРёР»РѕР¶РµРЅРёСЏ (Р±РµР· СЃРѕР±С‹С‚РёСЏ)*/
 void elf_timercore_callback(T_HANDLE hOwner, H_TIMERCORE hTimerCore, int nFlags)
 {
  lprintf("elf_timercore_callback\r\n");
 }
 
-/* Обработчик сообщений для приложения #1 */
+/* РћР±СЂР°Р±РѕС‚С‡РёРє СЃРѕРѕР±С‰РµРЅРёР№ РґР»СЏ РїСЂРёР»РѕР¶РµРЅРёСЏ #1 */
 BOOL elf_msg_run_1(T_MSG msg, T_PARAM wParam, T_PARAM lParam)
 {
  switch (msg)
@@ -79,7 +79,7 @@ BOOL elf_msg_run_1(T_MSG msg, T_PARAM wParam, T_PARAM lParam)
   }
 }
 
-/* Обработчик сообщений для приложения #2 */
+/* РћР±СЂР°Р±РѕС‚С‡РёРє СЃРѕРѕР±С‰РµРЅРёР№ РґР»СЏ РїСЂРёР»РѕР¶РµРЅРёСЏ #2 */
 BOOL elf_msg_run_2(T_MSG msg, T_PARAM wParam, T_PARAM lParam)
 {
  switch (msg)
@@ -117,7 +117,7 @@ BOOL elf_msg_run_2(T_MSG msg, T_PARAM wParam, T_PARAM lParam)
 }
 
 
-/* Обработчик событий для приложения */
+/* РћР±СЂР°Р±РѕС‚С‡РёРє СЃРѕР±С‹С‚РёР№ РґР»СЏ РїСЂРёР»РѕР¶РµРЅРёСЏ */
 int elf_run(T_EVENT EventType, T_PARAM wParam, T_PARAM lParam)
 {
  BOOL error = 0; 
@@ -150,32 +150,32 @@ int elf_run(T_EVENT EventType, T_PARAM wParam, T_PARAM lParam)
 
 int main(int argc, char argv[])
 {
- /* Создание процесса */
+ /* РЎРѕР·РґР°РЅРёРµ РїСЂРѕС†РµСЃСЃР° */
  TProcessCI tproc;
 
- //Доступность процесса
+ //Р”РѕСЃС‚СѓРїРЅРѕСЃС‚СЊ РїСЂРѕС†РµСЃСЃР°
  tproc.enAccessLevel = ACCESSLEVEL_SYSTEM;
- //Задаём адрес кода (чтобы при закрытии автоматически очистить)
- //У нас это весь эльф целиком
+ //Р—Р°РґР°С‘Рј Р°РґСЂРµСЃ РєРѕРґР° (С‡С‚РѕР±С‹ РїСЂРё Р·Р°РєСЂС‹С‚РёРё Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РѕС‡РёСЃС‚РёС‚СЊ)
+ //РЈ РЅР°СЃ СЌС‚Рѕ РІРµСЃСЊ СЌР»СЊС„ С†РµР»РёРєРѕРј
  tproc.CodeArea = (T_ADDR)__elf_start_address;
- //Задаём адрес данных (чтобы при закрытии автоматически очистить)
- //Зададим пустышку
+ //Р—Р°РґР°С‘Рј Р°РґСЂРµСЃ РґР°РЅРЅС‹С… (С‡С‚РѕР±С‹ РїСЂРё Р·Р°РєСЂС‹С‚РёРё Р°РІС‚РѕРјР°С‚РёС‡РµСЃРєРё РѕС‡РёСЃС‚РёС‚СЊ)
+ //Р—Р°РґР°РґРёРј РїСѓСЃС‚С‹С€РєСѓ
  tproc.DataArea = (T_ADDR)0;
- //Зададим ф-ию для инициализации (обычно это инициализация API)
+ //Р—Р°РґР°РґРёРј С„-РёСЋ РґР»СЏ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё (РѕР±С‹С‡РЅРѕ СЌС‚Рѕ РёРЅРёС†РёР°Р»РёР·Р°С†РёСЏ API)
  tproc.PxeInitAddr = (T_ADDR)elf_init;
- //Зададим ф-ию для обработки событий процесса
+ //Р—Р°РґР°РґРёРј С„-РёСЋ РґР»СЏ РѕР±СЂР°Р±РѕС‚РєРё СЃРѕР±С‹С‚РёР№ РїСЂРѕС†РµСЃСЃР°
  tproc.PxeRunAddr = (T_ADDR)elf_run;
- //Зададим имя процесса
+ //Р—Р°РґР°РґРёРј РёРјСЏ РїСЂРѕС†РµСЃСЃР°
  tproc.pszAppName = L"Process";
- //Остальные параметры
+ //РћСЃС‚Р°Р»СЊРЅС‹Рµ РїР°СЂР°РјРµС‚СЂС‹
  tproc.hAppDrive = 0;
  tproc.hAppDir   = 0;
  
- //Создаём непосредственно процесс
+ //РЎРѕР·РґР°С‘Рј РЅРµРїРѕСЃСЂРµРґСЃС‚РІРµРЅРЅРѕ РїСЂРѕС†РµСЃСЃ
  h_proc = ProcMngr_CreateProcess(&tproc, TRUE);
  lprintf("h_proc = 0x%08X\r\n", h_proc);
 
- /* Старт процесса */
+ /* РЎС‚Р°СЂС‚ РїСЂРѕС†РµСЃСЃР° */
  ProcMngr_StartProcess(h_proc, 0, FOREGROUND_PRIORITY);
 }
 
