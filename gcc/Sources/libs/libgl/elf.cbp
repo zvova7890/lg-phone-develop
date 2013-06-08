@@ -19,7 +19,7 @@
 		</Build>
 		<Compiler>
 			<Add option="-mthumb-interwork" />
-			<Add option="-O3" />
+			<Add option="-O2" />
 			<Add option="-Wall" />
 			<Add option="-std=gnu99" />
 			<Add option="-Wno-unused-value" />
@@ -31,7 +31,6 @@
 		<Linker>
 			<Add option="-s" />
 			<Add option="-Wl,--defsym,__ex=0" />
-			<Add option="-flto" />
 			<Add library="scrt" />
 			<Add library="gcc" />
 			<Add library="c" />
@@ -76,6 +75,9 @@
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="glfill.c">
+			<Option compilerVar="CC" />
+		</Unit>
+		<Unit filename="glgradient.c">
 			<Option compilerVar="CC" />
 		</Unit>
 		<Unit filename="glline.c">

@@ -1,0 +1,584 @@
+Терминалы не используются в грамматике
+
+   TOK_NEWLINE
+   TOK_GARBAGE
+   TOK_ERROR
+
+
+Грамматика
+
+    0 $accept: configuration $end
+
+    1 configuration: /* пусто */
+    2              | setting_list
+
+    3 setting_list: setting
+    4             | setting_list setting
+
+    5 setting_list_optional: /* пусто */
+    6                      | setting_list
+
+    7 setting_terminator: /* пусто */
+    8                   | TOK_SEMICOLON
+    9                   | TOK_COMMA
+
+   10 $@1: /* пусто */
+
+   11 setting: TOK_NAME $@1 TOK_EQUALS value setting_terminator
+
+   12 $@2: /* пусто */
+
+   13 array: TOK_ARRAY_START $@2 simple_value_list_optional TOK_ARRAY_END
+
+   14 $@3: /* пусто */
+
+   15 list: TOK_LIST_START $@3 value_list_optional TOK_LIST_END
+
+   16 value: simple_value
+   17      | array
+   18      | list
+   19      | group
+
+   20 string: TOK_STRING
+   21       | string TOK_STRING
+
+   22 simple_value: TOK_BOOLEAN
+   23             | TOK_INTEGER
+   24             | TOK_INTEGER64
+   25             | TOK_HEX
+   26             | TOK_HEX64
+   27             | TOK_FLOAT
+   28             | string
+
+   29 value_list: value
+   30           | value_list TOK_COMMA value
+
+   31 value_list_optional: /* пусто */
+   32                    | value_list
+
+   33 simple_value_list: simple_value
+   34                  | simple_value_list TOK_COMMA simple_value
+
+   35 simple_value_list_optional: /* пусто */
+   36                           | simple_value_list
+
+   37 $@4: /* пусто */
+
+   38 group: TOK_GROUP_START $@4 setting_list_optional TOK_GROUP_END
+
+
+Терминальные символы с правилами, в которых они появляются
+
+$end (0) 0
+error (256)
+TOK_BOOLEAN (258) 22
+TOK_INTEGER (259) 23
+TOK_HEX (260) 25
+TOK_INTEGER64 (261) 24
+TOK_HEX64 (262) 26
+TOK_FLOAT (263) 27
+TOK_STRING (264) 20 21
+TOK_NAME (265) 11
+TOK_EQUALS (266) 11
+TOK_NEWLINE (267)
+TOK_ARRAY_START (268) 13
+TOK_ARRAY_END (269) 13
+TOK_LIST_START (270) 15
+TOK_LIST_END (271) 15
+TOK_COMMA (272) 9 30 34
+TOK_GROUP_START (273) 38
+TOK_GROUP_END (274) 38
+TOK_SEMICOLON (275) 8
+TOK_GARBAGE (276)
+TOK_ERROR (277)
+
+
+Нетерминальные символы с правилами, в которых они появляются
+
+$accept (23)
+    налево: 0
+configuration (24)
+    налево: 1 2, направо: 0
+setting_list (25)
+    налево: 3 4, направо: 2 4 6
+setting_list_optional (26)
+    налево: 5 6, направо: 38
+setting_terminator (27)
+    налево: 7 8 9, направо: 11
+setting (28)
+    налево: 11, направо: 3 4
+$@1 (29)
+    налево: 10, направо: 11
+array (30)
+    налево: 13, направо: 17
+$@2 (31)
+    налево: 12, направо: 13
+list (32)
+    налево: 15, направо: 18
+$@3 (33)
+    налево: 14, направо: 15
+value (34)
+    налево: 16 17 18 19, направо: 11 29 30
+string (35)
+    налево: 20 21, направо: 21 28
+simple_value (36)
+    налево: 22 23 24 25 26 27 28, направо: 16 33 34
+value_list (37)
+    налево: 29 30, направо: 30 32
+value_list_optional (38)
+    налево: 31 32, направо: 15
+simple_value_list (39)
+    налево: 33 34, направо: 34 36
+simple_value_list_optional (40)
+    налево: 35 36, направо: 13
+group (41)
+    налево: 38, направо: 19
+$@4 (42)
+    налево: 37, направо: 38
+
+
+State 0
+
+    0 $accept: . configuration $end
+
+    TOK_NAME  сдвиг, и переход в состояние 1
+
+    $default  вывод с использованием правила 1 (configuration)
+
+    configuration  переход в состояние 2
+    setting_list   переход в состояние 3
+    setting        переход в состояние 4
+
+
+State 1
+
+   11 setting: TOK_NAME . $@1 TOK_EQUALS value setting_terminator
+
+    $default  вывод с использованием правила 10 ($@1)
+
+    $@1  переход в состояние 5
+
+
+State 2
+
+    0 $accept: configuration . $end
+
+    $end  сдвиг, и переход в состояние 6
+
+
+State 3
+
+    2 configuration: setting_list .
+    4 setting_list: setting_list . setting
+
+    TOK_NAME  сдвиг, и переход в состояние 1
+
+    $default  вывод с использованием правила 2 (configuration)
+
+    setting  переход в состояние 7
+
+
+State 4
+
+    3 setting_list: setting .
+
+    $default  вывод с использованием правила 3 (setting_list)
+
+
+State 5
+
+   11 setting: TOK_NAME $@1 . TOK_EQUALS value setting_terminator
+
+    TOK_EQUALS  сдвиг, и переход в состояние 8
+
+
+State 6
+
+    0 $accept: configuration $end .
+
+    $default  принять
+
+
+State 7
+
+    4 setting_list: setting_list setting .
+
+    $default  вывод с использованием правила 4 (setting_list)
+
+
+State 8
+
+   11 setting: TOK_NAME $@1 TOK_EQUALS . value setting_terminator
+
+    TOK_BOOLEAN      сдвиг, и переход в состояние 9
+    TOK_INTEGER      сдвиг, и переход в состояние 10
+    TOK_HEX          сдвиг, и переход в состояние 11
+    TOK_INTEGER64    сдвиг, и переход в состояние 12
+    TOK_HEX64        сдвиг, и переход в состояние 13
+    TOK_FLOAT        сдвиг, и переход в состояние 14
+    TOK_STRING       сдвиг, и переход в состояние 15
+    TOK_ARRAY_START  сдвиг, и переход в состояние 16
+    TOK_LIST_START   сдвиг, и переход в состояние 17
+    TOK_GROUP_START  сдвиг, и переход в состояние 18
+
+    array         переход в состояние 19
+    list          переход в состояние 20
+    value         переход в состояние 21
+    string        переход в состояние 22
+    simple_value  переход в состояние 23
+    group         переход в состояние 24
+
+
+State 9
+
+   22 simple_value: TOK_BOOLEAN .
+
+    $default  вывод с использованием правила 22 (simple_value)
+
+
+State 10
+
+   23 simple_value: TOK_INTEGER .
+
+    $default  вывод с использованием правила 23 (simple_value)
+
+
+State 11
+
+   25 simple_value: TOK_HEX .
+
+    $default  вывод с использованием правила 25 (simple_value)
+
+
+State 12
+
+   24 simple_value: TOK_INTEGER64 .
+
+    $default  вывод с использованием правила 24 (simple_value)
+
+
+State 13
+
+   26 simple_value: TOK_HEX64 .
+
+    $default  вывод с использованием правила 26 (simple_value)
+
+
+State 14
+
+   27 simple_value: TOK_FLOAT .
+
+    $default  вывод с использованием правила 27 (simple_value)
+
+
+State 15
+
+   20 string: TOK_STRING .
+
+    $default  вывод с использованием правила 20 (string)
+
+
+State 16
+
+   13 array: TOK_ARRAY_START . $@2 simple_value_list_optional TOK_ARRAY_END
+
+    $default  вывод с использованием правила 12 ($@2)
+
+    $@2  переход в состояние 25
+
+
+State 17
+
+   15 list: TOK_LIST_START . $@3 value_list_optional TOK_LIST_END
+
+    $default  вывод с использованием правила 14 ($@3)
+
+    $@3  переход в состояние 26
+
+
+State 18
+
+   38 group: TOK_GROUP_START . $@4 setting_list_optional TOK_GROUP_END
+
+    $default  вывод с использованием правила 37 ($@4)
+
+    $@4  переход в состояние 27
+
+
+State 19
+
+   17 value: array .
+
+    $default  вывод с использованием правила 17 (value)
+
+
+State 20
+
+   18 value: list .
+
+    $default  вывод с использованием правила 18 (value)
+
+
+State 21
+
+   11 setting: TOK_NAME $@1 TOK_EQUALS value . setting_terminator
+
+    TOK_COMMA      сдвиг, и переход в состояние 28
+    TOK_SEMICOLON  сдвиг, и переход в состояние 29
+
+    $default  вывод с использованием правила 7 (setting_terminator)
+
+    setting_terminator  переход в состояние 30
+
+
+State 22
+
+   21 string: string . TOK_STRING
+   28 simple_value: string .
+
+    TOK_STRING  сдвиг, и переход в состояние 31
+
+    $default  вывод с использованием правила 28 (simple_value)
+
+
+State 23
+
+   16 value: simple_value .
+
+    $default  вывод с использованием правила 16 (value)
+
+
+State 24
+
+   19 value: group .
+
+    $default  вывод с использованием правила 19 (value)
+
+
+State 25
+
+   13 array: TOK_ARRAY_START $@2 . simple_value_list_optional TOK_ARRAY_END
+
+    TOK_BOOLEAN    сдвиг, и переход в состояние 9
+    TOK_INTEGER    сдвиг, и переход в состояние 10
+    TOK_HEX        сдвиг, и переход в состояние 11
+    TOK_INTEGER64  сдвиг, и переход в состояние 12
+    TOK_HEX64      сдвиг, и переход в состояние 13
+    TOK_FLOAT      сдвиг, и переход в состояние 14
+    TOK_STRING     сдвиг, и переход в состояние 15
+
+    $default  вывод с использованием правила 35 (simple_value_list_optional)
+
+    string                      переход в состояние 22
+    simple_value                переход в состояние 32
+    simple_value_list           переход в состояние 33
+    simple_value_list_optional  переход в состояние 34
+
+
+State 26
+
+   15 list: TOK_LIST_START $@3 . value_list_optional TOK_LIST_END
+
+    TOK_BOOLEAN      сдвиг, и переход в состояние 9
+    TOK_INTEGER      сдвиг, и переход в состояние 10
+    TOK_HEX          сдвиг, и переход в состояние 11
+    TOK_INTEGER64    сдвиг, и переход в состояние 12
+    TOK_HEX64        сдвиг, и переход в состояние 13
+    TOK_FLOAT        сдвиг, и переход в состояние 14
+    TOK_STRING       сдвиг, и переход в состояние 15
+    TOK_ARRAY_START  сдвиг, и переход в состояние 16
+    TOK_LIST_START   сдвиг, и переход в состояние 17
+    TOK_GROUP_START  сдвиг, и переход в состояние 18
+
+    $default  вывод с использованием правила 31 (value_list_optional)
+
+    array                переход в состояние 19
+    list                 переход в состояние 20
+    value                переход в состояние 35
+    string               переход в состояние 22
+    simple_value         переход в состояние 23
+    value_list           переход в состояние 36
+    value_list_optional  переход в состояние 37
+    group                переход в состояние 24
+
+
+State 27
+
+   38 group: TOK_GROUP_START $@4 . setting_list_optional TOK_GROUP_END
+
+    TOK_NAME  сдвиг, и переход в состояние 1
+
+    $default  вывод с использованием правила 5 (setting_list_optional)
+
+    setting_list           переход в состояние 38
+    setting_list_optional  переход в состояние 39
+    setting                переход в состояние 4
+
+
+State 28
+
+    9 setting_terminator: TOK_COMMA .
+
+    $default  вывод с использованием правила 9 (setting_terminator)
+
+
+State 29
+
+    8 setting_terminator: TOK_SEMICOLON .
+
+    $default  вывод с использованием правила 8 (setting_terminator)
+
+
+State 30
+
+   11 setting: TOK_NAME $@1 TOK_EQUALS value setting_terminator .
+
+    $default  вывод с использованием правила 11 (setting)
+
+
+State 31
+
+   21 string: string TOK_STRING .
+
+    $default  вывод с использованием правила 21 (string)
+
+
+State 32
+
+   33 simple_value_list: simple_value .
+
+    $default  вывод с использованием правила 33 (simple_value_list)
+
+
+State 33
+
+   34 simple_value_list: simple_value_list . TOK_COMMA simple_value
+   36 simple_value_list_optional: simple_value_list .
+
+    TOK_COMMA  сдвиг, и переход в состояние 40
+
+    $default  вывод с использованием правила 36 (simple_value_list_optional)
+
+
+State 34
+
+   13 array: TOK_ARRAY_START $@2 simple_value_list_optional . TOK_ARRAY_END
+
+    TOK_ARRAY_END  сдвиг, и переход в состояние 41
+
+
+State 35
+
+   29 value_list: value .
+
+    $default  вывод с использованием правила 29 (value_list)
+
+
+State 36
+
+   30 value_list: value_list . TOK_COMMA value
+   32 value_list_optional: value_list .
+
+    TOK_COMMA  сдвиг, и переход в состояние 42
+
+    $default  вывод с использованием правила 32 (value_list_optional)
+
+
+State 37
+
+   15 list: TOK_LIST_START $@3 value_list_optional . TOK_LIST_END
+
+    TOK_LIST_END  сдвиг, и переход в состояние 43
+
+
+State 38
+
+    4 setting_list: setting_list . setting
+    6 setting_list_optional: setting_list .
+
+    TOK_NAME  сдвиг, и переход в состояние 1
+
+    $default  вывод с использованием правила 6 (setting_list_optional)
+
+    setting  переход в состояние 7
+
+
+State 39
+
+   38 group: TOK_GROUP_START $@4 setting_list_optional . TOK_GROUP_END
+
+    TOK_GROUP_END  сдвиг, и переход в состояние 44
+
+
+State 40
+
+   34 simple_value_list: simple_value_list TOK_COMMA . simple_value
+
+    TOK_BOOLEAN    сдвиг, и переход в состояние 9
+    TOK_INTEGER    сдвиг, и переход в состояние 10
+    TOK_HEX        сдвиг, и переход в состояние 11
+    TOK_INTEGER64  сдвиг, и переход в состояние 12
+    TOK_HEX64      сдвиг, и переход в состояние 13
+    TOK_FLOAT      сдвиг, и переход в состояние 14
+    TOK_STRING     сдвиг, и переход в состояние 15
+
+    string        переход в состояние 22
+    simple_value  переход в состояние 45
+
+
+State 41
+
+   13 array: TOK_ARRAY_START $@2 simple_value_list_optional TOK_ARRAY_END .
+
+    $default  вывод с использованием правила 13 (array)
+
+
+State 42
+
+   30 value_list: value_list TOK_COMMA . value
+
+    TOK_BOOLEAN      сдвиг, и переход в состояние 9
+    TOK_INTEGER      сдвиг, и переход в состояние 10
+    TOK_HEX          сдвиг, и переход в состояние 11
+    TOK_INTEGER64    сдвиг, и переход в состояние 12
+    TOK_HEX64        сдвиг, и переход в состояние 13
+    TOK_FLOAT        сдвиг, и переход в состояние 14
+    TOK_STRING       сдвиг, и переход в состояние 15
+    TOK_ARRAY_START  сдвиг, и переход в состояние 16
+    TOK_LIST_START   сдвиг, и переход в состояние 17
+    TOK_GROUP_START  сдвиг, и переход в состояние 18
+
+    array         переход в состояние 19
+    list          переход в состояние 20
+    value         переход в состояние 46
+    string        переход в состояние 22
+    simple_value  переход в состояние 23
+    group         переход в состояние 24
+
+
+State 43
+
+   15 list: TOK_LIST_START $@3 value_list_optional TOK_LIST_END .
+
+    $default  вывод с использованием правила 15 (list)
+
+
+State 44
+
+   38 group: TOK_GROUP_START $@4 setting_list_optional TOK_GROUP_END .
+
+    $default  вывод с использованием правила 38 (group)
+
+
+State 45
+
+   34 simple_value_list: simple_value_list TOK_COMMA simple_value .
+
+    $default  вывод с использованием правила 34 (simple_value_list)
+
+
+State 46
+
+   30 value_list: value_list TOK_COMMA value .
+
+    $default  вывод с использованием правила 30 (value_list)

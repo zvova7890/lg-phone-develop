@@ -10,7 +10,7 @@
 
 
 EInformationDialog::EInformationDialog(Widget *parent, const Rect &r) :
-    ScrollArea(r, ScrollArea::Vertical, parent)
+    ScrollList(r, ScrollList::Vertical, parent)
 {
 
 }
@@ -56,15 +56,19 @@ void EInformationDialog::touchEvent(int action, int x, int y)
 
 
 
-void EInformationDialog::show()
+bool EInformationDialog::show()
 {
     //_parent->pushFront(this);
     m_stateChanget.trigger(this, 1);
+
+    return Widget::show();
 }
 
 
-void EInformationDialog::hide()
+bool EInformationDialog::hide()
 {
     //_parent->pop(this);
     m_stateChanget.trigger(this, 2);
+
+    return Widget::hide();
 }

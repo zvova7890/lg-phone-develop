@@ -57,9 +57,10 @@ uint16_t ftDrawSymbol(void *context, fte_info *fti, uint16_t leter, int x1, int 
 
 
 
-uint32_t ftStringMetrics(fte_info *fti, const void *str, uint32_t *height, uint32_t *y_seek, int32_t max_leter_cnt, wchar_t (*conv)(const void **))
+uint32_t ftStringMetrics(fte_info *fti, const void *str, ft_metrics *metr, int32_t max_leter_cnt,
+                         int flags, wchar_t (*conv)(const void **))
 {
-    uint32_t w = 0, h = 0;
+    int32_t w = 0, h = 0;
     int t = 0;
     int errs = 0;
     wchar_t smb = conv(&str);
@@ -67,6 +68,9 @@ uint32_t ftStringMetrics(fte_info *fti, const void *str, uint32_t *height, uint3
 
     while(smb && max_leter_cnt > 0)
     {
+        if(flags & FT_TEXT_SENTENCEBREAK && smb == '\n')
+            break;
+
         fte_symbol *fte = fte_get_symbol(fti, smb);
         if(!fte) {
             ++errs;
@@ -86,9 +90,13 @@ uint32_t ftStringMetrics(fte_info *fti, const void *str, uint32_t *height, uint3
         --max_leter_cnt;
     }
 
+    if(metr) {
+        metr->str = str;
+        metr->height = h;
+        metr->width = w;
+        metr->top = t;
+    }
 
-    if(height) *height = h;
-    if(y_seek) *y_seek = t;
     return w == 0 && errs? -1 : w;
 }
 
@@ -162,6 +170,7 @@ uint16_t ftDrawScrollString(void *context, int width, int height, fte_info *fti,
 
     printf("%s: align: %d\n", __FUNCTION__, align);
 
+    ft_metrics metrics;
     switch(align)
     {
         case 0: // w left
@@ -170,7 +179,7 @@ uint16_t ftDrawScrollString(void *context, int width, int height, fte_info *fti,
 
         case 1: // w center
         {
-            int s_maxw = ftStringMetrics(fti, mem, 0, 0, max_leter_cnt, conv);
+            int s_maxw = ftStringMetrics(fti, mem, 0, max_leter_cnt, 0, conv);
             x1 = x1 + ((mw/2) - (s_maxw/2));
             processing_draw();
             break;
@@ -178,7 +187,7 @@ uint16_t ftDrawScrollString(void *context, int width, int height, fte_info *fti,
 
         case 2: // w right
         {
-            int s_maxw = ftStringMetrics(fti, mem, 0, 0, max_leter_cnt, conv);
+            int s_maxw = ftStringMetrics(fti, mem, 0, max_leter_cnt, 0, conv);
             x1 += mw - s_maxw;
             processing_draw();
             break;
@@ -188,7 +197,8 @@ uint16_t ftDrawScrollString(void *context, int width, int height, fte_info *fti,
         case 3: // w: left  h: center
         {
             uint32_t s_maxh;
-            /*int s_maxw = */ftStringMetrics(fti, mem, &s_maxh, 0, max_leter_cnt, conv);
+            /*int s_maxw = */ftStringMetrics(fti, mem, &metrics, max_leter_cnt, 0, conv);
+            s_maxh = metrics.height;
             y1 = y1 + ((mh/2) + (s_maxh/2));
             processing_draw();
             break;
@@ -197,7 +207,11 @@ uint16_t ftDrawScrollString(void *context, int width, int height, fte_info *fti,
         case 4: // w: center  h: center
         {
             uint32_t s_maxh, top;
-            int s_maxw = ftStringMetrics(fti, mem, &s_maxh, &top, max_leter_cnt, conv);
+            int s_maxw = ftStringMetrics(fti, mem, &metrics, max_leter_cnt, 0, conv);
+
+            s_maxh = metrics.height;
+            top = metrics.top;
+
             s_maxh -= top - 1;
             y1 = y1 + ((mh/2) + (s_maxh/2));
             x1 = x1 + ((mw/2) - (s_maxw/2));
@@ -209,7 +223,10 @@ uint16_t ftDrawScrollString(void *context, int width, int height, fte_info *fti,
         case 5: // w: right  h: center
         {
             uint32_t s_maxh, top;
-            int s_maxw = ftStringMetrics(fti, mem, &s_maxh, &top, max_leter_cnt, conv);
+            int s_maxw = ftStringMetrics(fti, mem, &metrics, max_leter_cnt, 0, conv);
+            s_maxh = metrics.height;
+            top = metrics.top;
+
             s_maxh -= top - 1;
             y1 += y1 + ((maximum_h-y1)/2) + (s_maxh/2);
             x1 += mw - s_maxw;
@@ -220,8 +237,10 @@ uint16_t ftDrawScrollString(void *context, int width, int height, fte_info *fti,
 
         case 6: // w: left  h: down
         {
-            uint32_t s_maxh, top;
-            /*int s_maxw = */ftStringMetrics(fti, mem, &s_maxh, &top, max_leter_cnt, conv);
+            uint32_t top;
+            /*int s_maxw = */ftStringMetrics(fti, mem, &metrics, max_leter_cnt, 0, conv);
+            top = metrics.top;
+
             y1 += mh - top - 1;
             processing_draw();
             break;
@@ -230,8 +249,10 @@ uint16_t ftDrawScrollString(void *context, int width, int height, fte_info *fti,
 
         case 7: // w: center  h: down
         {
-            uint32_t s_maxh, top;
-            int s_maxw = ftStringMetrics(fti, mem, &s_maxh, &top, max_leter_cnt, conv);
+            uint32_t top;
+            int s_maxw = ftStringMetrics(fti, mem, &metrics, max_leter_cnt, 0, conv);
+            top = metrics.top;
+
             y1 += maximum_h - top - 1;
             x1 += x1 + ((mw-x1)/2) - s_maxw/2;
             processing_draw();
@@ -241,8 +262,10 @@ uint16_t ftDrawScrollString(void *context, int width, int height, fte_info *fti,
 
         case 8: // w: right  h: down
         {
-            uint32_t s_maxh, top;
-            int s_maxw = ftStringMetrics(fti, mem, &s_maxh, &top, max_leter_cnt, conv);
+            uint32_t top;
+            int s_maxw = ftStringMetrics(fti, mem, &metrics, max_leter_cnt, 0, conv);
+            top = metrics.top;
+
             y1 += maximum_h - top - 1;
             x1 += mw - s_maxw;
             processing_draw();
@@ -252,8 +275,10 @@ uint16_t ftDrawScrollString(void *context, int width, int height, fte_info *fti,
 
         case 9: // w: left  h: up
         {
-            uint32_t s_maxh, s_maxh_t;
-            /*int s_maxw = */ftStringMetrics(fti, mem, &s_maxh, &s_maxh_t, max_leter_cnt, conv);
+            uint32_t s_maxh;
+            /*int s_maxw = */ftStringMetrics(fti, mem, &metrics, max_leter_cnt, 0, conv);
+            s_maxh = metrics.height;
+
             y1 += s_maxh;
             processing_draw();
             break;
@@ -264,7 +289,9 @@ uint16_t ftDrawScrollString(void *context, int width, int height, fte_info *fti,
         case 10: // w: center  h: up
         {
             uint32_t s_maxh;
-            uint32_t s_maxw = ftStringMetrics(fti, mem, &s_maxh, 0, max_leter_cnt, conv);
+            uint32_t s_maxw = ftStringMetrics(fti, mem, &metrics, max_leter_cnt, 0, conv);
+            s_maxh = metrics.height;
+
             y1 += s_maxh;
             x1 += x1 + ((mw-x1)/2) - (s_maxw/2);
             processing_draw();
@@ -276,7 +303,10 @@ uint16_t ftDrawScrollString(void *context, int width, int height, fte_info *fti,
         case 11: // w: right  h: up
         {
             uint32_t s_maxh, s_maxh_t;
-            int s_maxw = ftStringMetrics(fti, mem, &s_maxh, &s_maxh_t, max_leter_cnt, conv);
+            int s_maxw = ftStringMetrics(fti, mem, &metrics, max_leter_cnt, 0, conv);
+            s_maxh = metrics.height;
+            s_maxh_t = metrics.top;
+
             y1 += s_maxh - s_maxh_t;
             x1 += mw - s_maxw;
             processing_draw();

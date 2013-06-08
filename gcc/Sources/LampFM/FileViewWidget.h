@@ -54,11 +54,11 @@ public:
         int viewEngine;
         std::string protocol;
         std::string dir;
-        ScrollArea::ScrollState scrollState;
+        ScrollList::ScrollState scrollState;
     };
 
 
-    class FileScrollView : public ScrollArea
+    class FileScrollView : public ScrollList
     {
     public:
         FileScrollView(const Rect &, FileViewWidget *parent);
@@ -68,7 +68,7 @@ public:
 
 
         FileViewWidget *parent() {
-            return (FileViewWidget*)ScrollArea::parent();
+            return (FileViewWidget*)ScrollList::parent();
         }
 
     //protected:

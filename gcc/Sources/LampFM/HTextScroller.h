@@ -26,7 +26,7 @@ public:
 
     void paintEvent();
     void setRect(const Rect &);
-    void setText(const std::string &);
+    void setText(const std::string &, bool reset = true);
 
     inline void setTextSize(int s) {
         m_textSize = s;

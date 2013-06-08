@@ -3,12 +3,12 @@
 
 
 
-#include <ScrollArea.h>
+#include <ScrollList.h>
 #include <signals/signal.h>
 
 
 
-class EInformationDialog : public ScrollArea
+class EInformationDialog : public ScrollList
 {
 public:
     typedef signal_slot::multi_signal <EInformationDialog *, int> state_signal;
@@ -23,8 +23,8 @@ public:
     void touchEvent(int action, int x, int y);
 
 
-    void show();
-    void hide();
+    bool show();
+    bool hide();
 
 
     state_signal & stateChangedSignal() {

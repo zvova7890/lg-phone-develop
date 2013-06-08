@@ -329,7 +329,7 @@ int FileViewWidget::copy_file(const std::string &from, const std::string &to,
                 break;
             }
 
-            if(size <= processed)
+            if((unsigned)size <= processed)
                 break;
 
             if(isCanceled())

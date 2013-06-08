@@ -68,8 +68,7 @@ void HTextScroller::timerEvent()
 
 void HTextScroller::recalcTextWidth()
 {
-    unsigned int h, top;
-    m_textWidth = glStringMetrics(m_textSize, m_text.c_str(), &h, &top, 128);
+    m_textWidth = glStringMetrics(m_textSize, m_text.c_str(), 0, 0, 128);
 }
 
 
@@ -117,8 +116,9 @@ void HTextScroller::setRect(const Rect &r)
 }
 
 
-void HTextScroller::setText(const std::string &t)
+void HTextScroller::setText(const std::string &t, bool reset)
 {
     m_text = t;
+    if(reset) m_pos = 0;
     recalcTextWidth();
 }

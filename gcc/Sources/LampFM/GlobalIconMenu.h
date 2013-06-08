@@ -3,7 +3,7 @@
 
 #include <Widget/Widget.h>
 #include <Widget/Button.h>
-#include <Widget/ScrollArea.h>
+#include <Widget/ScrollList.h>
 #include <signals/signal.h>
 #include <functional>
 
@@ -18,8 +18,8 @@ public:
 
     Button *addIcon(int row, const std::string &n, Image *i, const std::function<void(Button*)> &f);
 
-    void show();
-    void hide();
+    bool show();
+    bool hide();
 
     void paintEvent();
     void touchEvent(int action, int x, int y);
@@ -36,7 +36,7 @@ protected:
 protected:
     signal_slot::multi_signal<GlobalIconMenu*> m_hideAction;
     ButtonStyle m_style;
-    ScrollArea m_scroll1;
+    ScrollList m_scroll1;
 
     int m_xpos;
 };
