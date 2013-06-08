@@ -34,9 +34,9 @@ inline unsigned int glDrawUCSString(GLContext *ctx, fte_info *fti, const wchar_t
 }
 
 
-inline unsigned int glUCSStringMetrics(fte_info *fti, const wchar_t *str, uint32_t *height, uint32_t *top, int32_t max_leter_cnt)
+inline unsigned int glUCSStringMetrics(fte_info *fti, const wchar_t *str, ft_metrics *metr, int flags, int32_t max_leter_cnt)
 {
-    return ftStringMetrics(fti, (const void*)str, height, top, max_leter_cnt, ucs_conv);
+    return ftStringMetrics(fti, (const void*)str, metr, max_leter_cnt, flags, ucs_conv);
 }
 
 #else
@@ -96,9 +96,9 @@ static inline wchar_t utf8_to_ucs2(const void **__word)
 
 
 #ifndef __SYSTEM_FONT__
-inline unsigned int glUTF8StringMetrics(fte_info *fti, const char *str, uint32_t *height, uint32_t *top, int32_t max_leter_cnt)
+inline unsigned int glUTF8StringMetrics(fte_info *fti, const char *str, ft_metrics *metr, int flags, int32_t max_leter_cnt)
 {
-    return ftStringMetrics(fti, (const void*)str, height, top, max_leter_cnt, utf8_to_ucs2);
+    return ftStringMetrics(fti, (const void*)str, metr, max_leter_cnt, flags, utf8_to_ucs2);
 }
 
 
@@ -208,12 +208,12 @@ unsigned int glCtxDrawUString(GLContext *ctx, const wchar_t *str, int x1, int y1
 }
 
 
-int glStringMetrics(int font, const char *str, uint32_t *height, uint32_t *top, int32_t max_leter_cnt)
+int glStringMetrics(int font, const char *str, ft_metrics *metr, int flags, int32_t max_leter_cnt)
 {
 #ifndef __SYSTEM_FONT__
     fte_info *fti = getFont(font);
     if(fti)
-        return glUTF8StringMetrics(fti, str, height, top, max_leter_cnt);
+        return glUTF8StringMetrics(fti, str, metr, flags, max_leter_cnt);
     return -1;
 #else
     return glUTF8StringMetrics(font, str, height, top, max_leter_cnt);

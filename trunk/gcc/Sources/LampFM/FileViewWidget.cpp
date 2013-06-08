@@ -24,7 +24,7 @@
 
 
 FileViewWidget::FileScrollView::FileScrollView(const Rect &r, FileViewWidget *parent) :
-    ScrollArea(r, ScrollArea::Vertical, parent)
+    ScrollList(r, ScrollList::Vertical, parent)
 {
 
 }
@@ -39,7 +39,7 @@ void FileViewWidget::FileScrollView::paintEvent()
 {
     glSaveClipRegion();
     glSetClipRegion(realRect().x(), realRect().y(), realRect().x2(), realRect().y2());
-    ScrollArea::paintEvent();
+    ScrollList::paintEvent();
     glRestoreClipRegion();
 }
 
@@ -449,6 +449,20 @@ void FileViewWidget::clearScreen()
 }
 
 
+namespace PercentUtils
+{
+    template <typename A, typename B>
+    static inline B percent2value(A percent, B real) {
+        return real * percent / 100;
+    }
+
+    template <typename A, typename B>
+    static inline A value2percent(A value, B part) {
+        return part? part * 100 / value : 0;
+    }
+}
+
+
 void FileViewWidget::paintEvent()
 {
     glSetPen(0xFF000000);
@@ -482,51 +496,59 @@ void FileViewWidget::paintEvent()
     m_headMenuButton.setViewLines(entries);
     m_headMenuButton.setWorkspace(workspace().id);
 
-    //m_headMenuButton.paintEvent();
-
     Widget::paintEvent();
 
 #if 0
-    //static int last_ololo = 0;
 
-    bool haveOffRectItems = fileViewArea().listHeightInRect() > fileViewArea().rect().h();
-    if(haveOffRectItems)
-        last_ololo = fileViewArea().displayingItems();
+    auto calc_percent_pos = [this](int i) -> float {
 
-    auto percent_to_real = [](float percent, int real) -> float {
-        return real * percent / 100;
-    };
+        int can_dsp = 0;
+        int least_up = 0;
+        can_dsp = fileViewArea().lastCanDisplayedItems(&least_up);
 
-    auto real_to_percent = [](int real, int part) -> float {
-        return real? part * 100 / real : 0;
-    };
+        //if((fileViewArea().count())-i < can_dsp)
+          //  i = fileViewArea().count() - can_dsp;
 
+        if(can_dsp == fileViewArea().count()) {
+            if(least_up > 0)
+                return 0.0f;
 
-    auto calc_percent_pos = [&real_to_percent, haveOffRectItems, this](int i) -> float {
+            int least_size = fileViewArea().leastFreePage();
+            int last = fileViewArea().item();
+            Widget *w = fileViewArea().widgetItem(last);
 
-        /*if(haveOffRectItems) {
-            if(fileViewArea().displayingItems() < fileViewArea().count() &&
-                    (fileViewArea().viewPageHeight() < fileViewArea().rect().h()))
+            if(!w)
+                return 0;
+
+            if(least_size > 0)
                 return 100.0f;
-        } else
-            return 100.0f;*/
 
-        return real_to_percent(fileViewArea().count()-last_ololo-1, i);
-    };
+            return PercentUtils::value2percent(w->rect().h(), -fileViewArea().itemCoord());
+        }
 
-    auto calc_position = [&percent_to_real, this](int slider_h, float percent_pos) {
-        return percent_to_real(percent_pos, fileViewArea().rect().h()-slider_h);
-    };
-
-    auto calc_step = [&percent_to_real, &real_to_percent, this]() -> float {
-        return percent_to_real(real_to_percent(fileViewArea().count()-last_ololo, 1.0f), fileViewArea().rect().h());
+        return PercentUtils::value2percent((fileViewArea().count())-can_dsp, i);
     };
 
 
-    auto calc_slider_h = [&calc_step, &haveOffRectItems, this]() -> int {
+    auto calc_position = [this](int slider_h, float percent_pos) {
+        return PercentUtils::percent2value(percent_pos, fileViewArea().rect().h()-(slider_h*2));
+    };
+
+    auto calc_step = [this]() -> float {
+        int can_dsp = 0;
+        int least_up = 0;
+        //can_dsp = fileViewArea().lastCanDisplayedItems(&least_up);
+
+        float perc = PercentUtils::value2percent((fileViewArea().count())-can_dsp, 2);
 
 
-        auto slider_h = haveOffRectItems? calc_step() : fileViewArea().rect().h();
+        return PercentUtils::percent2value(perc, fileViewArea().rect().h());
+    };
+
+
+    auto calc_slider_h = [&calc_step, this]() -> int {
+
+        auto slider_h = calc_step();
 
         if(slider_h < 10)
             slider_h = 10;
@@ -534,41 +556,77 @@ void FileViewWidget::paintEvent()
     };
 
 
-    if(fileViewArea().listHeightInRect() > fileViewArea().rect().h()) {
-
-    }
-
-    Rect inrc = fileViewArea().size();
-
-    auto percent_pos = calc_percent_pos(fileViewArea().item());
-    int slider_h = calc_slider_h();
-    int slider_pos = calc_position(slider_h, percent_pos);
-
-    int diff_between_next = calc_position(slider_h,
-                                          fileViewArea().item()+1 == fileViewArea().count()? 100 : calc_percent_pos(fileViewArea().item()+1) )
-            - slider_pos;
 
 
-    Widget *w = fileViewArea().widgetItem(fileViewArea().item()+fileViewArea().displayingItems());
+    int item = fileViewArea().item();
+    int least = fileViewArea().leastFreePage();
+
+
+    auto percent_pos = calc_percent_pos(item);
+    float slider_h = calc_slider_h();
+    float slider_pos = calc_position(slider_h, percent_pos);
+    int diff_between_next = 0;
+
+
+    /*if(least > 0) {
+        item = fileViewArea().count()-1;
+    }*/
+
+    Widget *w = fileViewArea().widgetItem(item);
+
+    /*if(item+1 == fileViewArea().count()) {
+        diff_between_next = least;
+
+    } else {*/
+        //diff_between_next = calc_position(slider_h, calc_percent_pos(item+1)) - slider_pos;
+    //}
+
+
     if(w) {
 
+        //int cpos = least < 1? fileViewArea().itemCoord() : -least;
         int cpos = fileViewArea().itemCoord();
 
-        if((!fileViewArea().item() && cpos > 0) || cpos == w->rect().h())
-            cpos = 0;
+        //printf("least_up: %d\ndiff_between_next: %d\n", least, diff_between_next);
 
-        int p = cpos*100 / w->rect().h();
-        int pos = diff_between_next * p / 100;
+        float p = cpos*100 / w->rect().h();
+        float pos = slider_h * p / 100;
 
         slider_pos -= pos;
     }
 
-    glSetPen(0xFF0000FF);
 
+    Rect inrc = fileViewArea().size();
+    glSetPen(0xAFFF0000);
 
-    //printf("slider_pos: %d\nslider_h: %d\nheight: %d\n\n", slider_pos, slider_h, fileViewArea().rect().h());
+    if(slider_pos < 0) {
+        slider_h -= slider_pos*-1;
+        slider_pos = 0;
 
-    glDrawVLine(inrc.y()+slider_pos, inrc.y()+slider_pos+slider_h, inrc.x2()-4);
+        if(slider_h < 4)
+            slider_h = 4;
+    }
+
+    if(slider_pos+slider_h > inrc.h()) {
+        int sub = (slider_pos+slider_h) - inrc.h();
+
+        slider_pos += sub;
+        slider_h -= sub;
+
+        if(slider_h < 4) {
+            slider_h = 4;
+            slider_pos = inrc.h()-5;
+        }
+
+        if(slider_pos >= inrc.h()-5) {
+            slider_h = 4;
+            slider_pos = inrc.h()-5;
+        }
+    }
+
+    //glDrawVLine(inrc.y()+slider_pos, inrc.y()+slider_pos+slider_h, inrc.x2()-4);
+
+    glFillRoundedRect(inrc.x2()-6, inrc.y()+slider_pos, 4, slider_h, 2, 2);
 #endif
 }
 

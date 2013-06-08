@@ -1,3 +1,4 @@
+#include <Api/ApiLinkLib/ApiLink.h>
 #include "ExtManager.h"
 #include <stdio.h>
 #include <loader.h>
@@ -26,6 +27,14 @@ int ExtManager::run(const std::string &path)
 
     if(s == "elf") {
         execelf(path.c_str(), 0, 0, 0, 0);
+
+    } else if(s == "pxo") {
+        U_CHAR lol[256];
+	UniLib_UTF8ToUCS2((char*)path.c_str(), lol);
+	
+	
+
+        App_RunEx(lol, 0, FOREGROUND_PRIORITY, TRUE);
 
     } else {
 

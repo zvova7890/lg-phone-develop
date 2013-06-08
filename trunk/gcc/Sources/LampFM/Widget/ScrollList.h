@@ -9,7 +9,7 @@
 #include <functional>
 
 
-class ScrollArea : public Widget, protected Timer
+class ScrollList : public Widget, protected Timer
 {
 public:
 
@@ -40,7 +40,8 @@ public:
         NoWork = 0,
         ScrollFading = 1,
         ScrollFixup,
-        ScrollToStartEnd
+        ScrollToStartEnd,
+        ScrollToItem
     };
 
     typedef enum {
@@ -49,19 +50,20 @@ public:
     }ScrollType;
 
 public:
-    ScrollArea(const Rect &, ScrollArea::ScrollType scroll_type, Widget *parent = 0);
-    virtual ~ScrollArea();
+    ScrollList(const Rect &, ScrollList::ScrollType scroll_type, Widget *parent = 0);
+    virtual ~ScrollList();
 
     virtual void touchItemEvent(int item, int action, int x, int y);
     virtual int count() const;
 
-
+    virtual Widget *widgetItem(int id);
     void fixupViewPosition();
     void breakScrolling();
     void resetViewPosition();
     void setViewCoord(int c);
     void setItem(int c);
     void setLinesCount(int c);
+    void toItem(int c);
     void toStart();
     void toEnd();
     bool isAutoScrollActive() const;
@@ -73,6 +75,8 @@ public:
 
     /* return a free space after last item */
     int leastFreePage();
+
+    int lastCanDisplayedItems(int *least_up = 0);
 
 
     void setScrollState(const ScrollState &s) {
@@ -92,7 +96,7 @@ public:
         return m_item;
     }
 
-    void setMoveDirection(ScrollArea::Direction d) {
+    void setMoveDirection(ScrollList::Direction d) {
         m_moveDirection = d;
     }
 
@@ -125,8 +129,6 @@ protected:
     virtual void paintEvent();
     virtual void touchEvent(int action, int x, int y);
     virtual void resizeEvent();
-
-    virtual Widget *widgetItem(int id);
 
 
     void init();
@@ -177,6 +179,7 @@ private:
         int distance;
         int speed;
         int boost;
+        int item;
 
     }PosFixup;
 

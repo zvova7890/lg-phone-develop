@@ -53,7 +53,7 @@ HEADERS += \
     HTextScroller.h \
     EInformationDialog.h \
     Widget/Widget.h \
-    Widget/ScrollArea.h \
+    Widget/ScrollList.h \
     Widget/EventManager.h \
     Core/TimerCounter.h \
     Widget/ButtonStyle.h \
@@ -69,7 +69,9 @@ HEADERS += \
     Keyboard/KeyboardEnum.h \
     MessageBox.h \
     PopupWindow.h \
-    GlobalIconMenu.h
+    GlobalIconMenu.h \
+    Core/SharedData.h \
+    Core/Shared.h
 
 SOURCES += \
     main.cpp \
@@ -98,7 +100,7 @@ SOURCES += \
     HTextScroller.cpp \
     EInformationDialog.cpp \
     Widget/Widget.cpp \
-    Widget/ScrollArea.cpp \
+    Widget/ScrollList.cpp \
     Widget/EventManager.cpp \
     Core/TimerCounter.cpp \
     Widget/ButtonStyle.cpp \
@@ -115,4 +117,6 @@ SOURCES += \
     MessageBox.cpp \
     FileOpDelete.cpp \
     PopupWindow.cpp \
-    GlobalIconMenu.cpp
+    GlobalIconMenu.cpp \
+    Core/SharedData.cpp \
+    Core/Shared.cpp

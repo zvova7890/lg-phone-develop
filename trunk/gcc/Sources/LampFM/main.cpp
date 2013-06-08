@@ -66,6 +66,8 @@ public:
     void init()
     {
         m_resourceManager = new ResourceManager( elfdir );
+        provideExtraExtension("resource", m_resourceManager);
+
         m_kbd = new Keyboard(Rect(0, GRSYS_HEIGHT-140, GRSYS_WIDTH, 140), this);
         m_kbd->handleResizeEvent().connect( [](Widget *w) {
            w->setSize(Rect(0, GRSYS_HEIGHT-140, GRSYS_WIDTH, 140));
@@ -74,14 +76,14 @@ public:
 
         m_effectManager = new EffectManager( this );
 
-        provideExtraWidget("keyboard", m_kbd);
+        provideExtraExtension("keyboard", m_kbd);
     }
 
-    Widget *providesExtraWidget(const std::string &s) {
+    void *providesExtraExtension(const std::string &s) {
         return m_extra_widgets[s];
     }
 
-    void provideExtraWidget(const std::string &s, Widget *w) {
+    void provideExtraExtension(const std::string &s, void *w) {
         m_extra_widgets[s] = w;
     }
 
@@ -112,7 +114,7 @@ public:
     }
 
 protected:
-    std::map <std::string, Widget *> m_extra_widgets;
+    std::map <std::string, void *> m_extra_widgets;
     ResourceManager *m_resourceManager;
     Keyboard *m_kbd;
     EffectManager *m_effectManager;
@@ -126,7 +128,8 @@ FSProtocolsContainer protocols;
 
 //GlobalMenuButton *menu_test = 0;
 FileViewWidget *main_view = 0;
-
+//TProcessCI tproc;
+//H_PROCESS h_proc = 0;
 
 unsigned int last_time, fps, fps_count;
 bool _inited = false;
@@ -158,6 +161,12 @@ ExtManager & extensionManager() {
 FSProtocolsContainer & protocolsContainer() {
     return protocols;
 }
+
+
+
+
+BOOL (*ProcMngr_TerminateProcess) (H_PROCESS hProc, T_PARAM wParam) =
+        (BOOL (*)(H_PROCESS, T_PARAM))(0x4657587C+1);
 
 
 
@@ -292,7 +301,8 @@ void Screen_OnKeyDown(int key)
             break;
 
         case KEY_END:
-            TaskMngr_AppExit(0, 0, 0);
+            //TaskMngr_AppExit(0, 0, 0);
+            ProcMngr_TerminateProcess((H_PROCESS)my_application, 0);
             break;
     }
 
@@ -522,6 +532,11 @@ int listener(unsigned long event_id, unsigned long wparam, unsigned long lparam)
 }
 
 
+void elf_init(int *)
+{
+
+}
+
 
 void init_fds();
 int main(int argc, char *argv[])
@@ -536,9 +551,43 @@ int main(int argc, char *argv[])
     init_fds();
     ext_manager = new ExtManager(elfdir);
 
+
     static ELF_PARASITE_INFO parasite;
     my_application = RegisterApplicationEventListener(&parasite, listener, L"MyMegaApplication");
-    return 0;
+
+    return my_application;
+
+#if 0
+
+    //Доступность процесса
+    tproc.enAccessLevel = ACCESSLEVEL_SYSTEM;
+    //Задаём адрес кода (чтобы при закрытии автоматически очистить)
+    //У нас это весь эльф целиком
+    tproc.CodeArea = (T_ADDR)0;
+    //Задаём адрес данных (чтобы при закрытии автоматически очистить)
+    //Зададим пустышку
+    tproc.DataArea = (T_ADDR)0;
+    //Зададим ф-ию для инициализации (обычно это инициализация API)
+    tproc.PxeInitAddr = (T_ADDR)elf_init;
+    //Зададим ф-ию для обработки событий процесса
+    tproc.PxeRunAddr = (T_ADDR)listener;
+    //Зададим имя процесса
+    tproc.pszAppName = L"Process";
+    //Остальные параметры
+    tproc.hAppDrive = 0;
+    tproc.hAppDir   = 0;
+
+    //Создаём непосредственно процесс
+    h_proc = ProcMngr_CreateProcess(&tproc, TRUE);
+
+    /* Старт процесса */
+    ProcMngr_StartProcess(h_proc, 0, FOREGROUND_PRIORITY);
+
+    my_application = ProcMngr_GetNum(h_proc, PROCTYPE_FOREGROUND);
+
+    printf("H_PROCESS: %X\n", h_proc);
+    return (int)h_proc;
+#endif
 }
 
 

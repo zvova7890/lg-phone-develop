@@ -265,7 +265,7 @@ void fte_close(ft_engine *fte, int clean_now)
 
 
 
-int fte_cache_symbol(fte_info *fti, unsigned long letter)
+int fte_cache_symbol(fte_info *fti, unsigned int letter)
 {
     if(!_initialized)
         return -3;
@@ -435,7 +435,7 @@ int fte_clear_cache(ft_engine *fte)
 }
 
 
-fte_info *fte_open_cache_by_metrics(ft_engine *fte, unsigned long size)
+fte_info *fte_open_cache_by_metrics(ft_engine *fte, unsigned int size)
 {
     if(!_initialized)
         return 0;

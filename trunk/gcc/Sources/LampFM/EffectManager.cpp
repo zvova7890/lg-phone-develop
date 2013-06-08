@@ -101,23 +101,69 @@ void EffectManager::start(int effect, int delay)
 
 
 
-void ScaleAndPaint(unsigned short *bitmap, int w, int h, int xfrom, int yfrom, int newWidth, int newHeight)
+void ScaleAndPaint(GLContext *ctx, const unsigned short *bitmap, int w, int h, int xfrom, int yfrom,
+                   int newWidth, int newHeight, unsigned char alpha)
 {
     int width = w;
     int height = h;
 
-    GLContext *ctx = glActiveContext();
-    for(int y = 0; y < newHeight; y++)
-    {
-        int dy = (y * height) / newHeight;
-        for(int x = 0; x < newWidth; x++)
-        {
-            int dx = (x * width) / newWidth;
-            int nx = x+xfrom;
-            int ny = y+yfrom;
+    int y2 = yfrom + newHeight;
+    int x2 = xfrom + newWidth;
+    int xfrom_range = xfrom;
+    int yfrom_range = yfrom;
 
-            if(nx >= ctx->clip_x1 && nx < ctx->clip_x2 &&  ny >= ctx->clip_y1 && ny < ctx->clip_y2)
-                glPutPixel16c(ctx, nx, ny, *(bitmap + dy*w+dx));
+
+    if(yfrom_range < ctx->clip_y1)
+        yfrom_range = ctx->clip_y1;
+
+    if(xfrom_range < ctx->clip_x1)
+        xfrom_range = ctx->clip_x1;
+
+
+    if(y2 > ctx->clip_y2)
+        y2 = ctx->clip_y2;
+
+    if(x2 > ctx->clip_x2)
+        x2 = ctx->clip_x2;
+
+
+    if(alpha != 0xff) {
+        for(int y = yfrom_range; y < y2; y++)
+        {
+            int dy = ((y-yfrom) * height) / newHeight;
+            for(int x = xfrom_range; x < x2; x++)
+            {
+                int dx = ((x-xfrom) * width) / newWidth;
+                int nx = x;
+                int ny = y;
+
+                //if(nx >= ctx->clip_x1 && nx < ctx->clip_x2 &&  ny >= ctx->clip_y1 && ny < ctx->clip_y2) {
+                    //glPutPixel16c(ctx, nx, ny, *(bitmap + dy*w+dx));
+                    glDrawPixel16ca(ctx, nx, ny, *(bitmap + dy*w+dx), alpha);
+                /*} else {
+
+                    printf("lol: nx %d, ny: %d\n", nx, ny);
+                }*/
+            }
+        }
+    } else {
+        for(int y = yfrom_range; y < y2; y++)
+        {
+            int dy = ((y-yfrom) * height) / newHeight;
+            for(int x = xfrom_range; x < x2; x++)
+            {
+                int dx = ((x-xfrom) * width) / newWidth;
+                int nx = x;
+                int ny = y;
+
+                //if(nx >= ctx->clip_x1 && nx < ctx->clip_x2 &&  ny >= ctx->clip_y1 && ny < ctx->clip_y2) {
+                    glPutPixel16c(ctx, nx, ny, *(bitmap + dy*w+dx));
+                    //glDrawPixel16ca(ctx, nx, ny, *(bitmap + dy*w+dx), alpha);
+                /*} else {
+
+                    printf("lol: nx %d, ny: %d\n", nx, ny);
+                }*/
+            }
         }
     }
 }
@@ -235,7 +281,8 @@ void EffectManager::scaleEffect(int t)
             }
 
             //drawImage(0, 0, &prev_img);
-            ScaleAndPaint((unsigned short*)prev_img.bitmap, rect().w(), rect().h(), xpos, ypos, w_sz, h_sz);
+            ScaleAndPaint(glActiveContext(), (unsigned short*)prev_img.bitmap, rect().w(), rect().h(),
+                          xpos, ypos, w_sz, h_sz, 255);
         }
     }
 

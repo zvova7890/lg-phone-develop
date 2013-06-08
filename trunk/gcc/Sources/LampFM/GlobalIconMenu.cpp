@@ -8,7 +8,7 @@
 
 GlobalIconMenu::GlobalIconMenu(const Rect &r, Widget *parent) :
     Widget(r, parent),
-    m_scroll1(Rect(0, 3, r.w(), r.h()-3), ScrollArea::Horizontal, this)
+    m_scroll1(Rect(0, 3, r.w(), r.h()-3), ScrollList::Horizontal, this)
 {
     m_style.setBorder(Brush());
     m_style.setPressedBorder(Brush());
@@ -64,7 +64,7 @@ Button *GlobalIconMenu::addIcon(int row, const std::string &n, Image *i, const s
     b->releasedSignal().connect(f);
 
 
-    ScrollArea *scroll = 0;
+    ScrollList *scroll = 0;
     scroll = &m_scroll1;
 
 
@@ -103,16 +103,16 @@ void GlobalIconMenu::resizeEvent()
 }
 
 
-void GlobalIconMenu::hide()
+bool GlobalIconMenu::hide()
 {
     m_hideAction.trigger(this);
-    Widget::hide();
+    return Widget::hide();
 }
 
 
-void GlobalIconMenu::show()
+bool GlobalIconMenu::show()
 {
-    Widget::show();
+    return Widget::show();
 }
 
 

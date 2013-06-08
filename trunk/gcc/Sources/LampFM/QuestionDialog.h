@@ -19,15 +19,27 @@ public:
     void paintEvent();
     void resizeEvent();
 
+    virtual bool show();
+    virtual bool hide();
+
     typedef signal_slot::multi_signal <QuestionDialog *, int> signal;
 
     signal & choisPressedSignal() {
         return m_buttonPressed;
     }
 
+protected:
+    void timerEvent(Timer *);
+
 private:
+    GLContext *context;
+    unsigned char *framebuffer;
     std::string m_question;
     signal m_buttonPressed;
+    Timer animation;
+    int done;
+    int speed;
+    char effect_type;
 };
 
 #endif // QUESTIONDIALOG_H
