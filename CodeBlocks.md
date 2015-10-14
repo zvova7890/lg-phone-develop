@@ -1,0 +1,60 @@
+<div>
+Примечание: скрины старые, могут быть не соответсвия с текстом, делаем по тексту.<br>
+</div>
+
+
+# 1. Settings -> Compiler and debuger settings. #
+Выбираете в списке "GNU ARM GCC Compiler" и жмём Copy. Новый компилятор называем "[LG](LG.md) GNU ARM GCC Compiler"
+> ![http://lg-phone-develop.googlecode.com/svn/wiki/imgs/снимок1.png](http://lg-phone-develop.googlecode.com/svn/wiki/imgs/снимок1.png)
+<br />
+
+# 2. Вкладка Compiler settings, подвкладка Compiler Flags #
+Ставим галочки на -mlittle-endian и -msoft-float
+<br />
+
+## Вкладка Other options ##
+пишем:
+```
+ -mcpu=arm926ej-s -nostdlib -fshort-wchar 
+ -fno-exceptions -fdata-sections -ffunction-sections
+```
+<br />
+
+# 3. Следующая вкладка Linker settings #
+Other linker options:
+```
+ -Wl-marmelf,-zmax-page-size=1,-nostdlib 
+```
+![http://lg-phone-develop.googlecode.com/svn/wiki/imgs/снимок2.png](http://lg-phone-develop.googlecode.com/svn/wiki/imgs/снимок2.png)
+<br />
+
+# 4. Следующая вкладка Search directories #
+Компилятору прописываем путь к папке include, линкеру к папке libs
+<br />
+
+# 5. Следующая вкладка Toolchain executables #
+Compiler`s installation directory прописываем путь к папке с компиялторами, далее:
+C compiller: arm-eabi-gcc
+C++ compiller: arm-eabi-g++
+Linker for dynamic libs: arm-eabi-gcc
+Linker for static libs: arm-eabi-ar
+Make program: make
+
+![http://lg-phone-develop.googlecode.com/svn/wiki/imgs/снимок3.png](http://lg-phone-develop.googlecode.com/svn/wiki/imgs/снимок3.png)
+<br />
+
+# 6. Пропускаем одну вкладку и идём на Other settings #
+## Тут вы можете выставить прогресс бар сборки, число потоков и так далее, это сами. ##
+> Скрин моих настроек:
+![http://lg-phone-develop.googlecode.com/svn/wiki/imgs/снимок4.png](http://lg-phone-develop.googlecode.com/svn/wiki/imgs/снимок4.png)
+
+## Тут же на вкладке тыкаем на Advanced options вкладка Commands ##
+### Выбираем из списка Link object files to dynamic library и прписываем: ###
+```
+$linker -fPIC -nostartfiles -shared -Wl,-shared,-Bsymbolic,-Bsymbolic-function,-soname=$exe_name.$exe_ext $libdirs $link_objects $link_resobjects -o $exe_output $link_options $libs 
+```
+
+### Link object files to (executable и console executable) ###
+```
+$linker -pie $libdirs -o $exe_output $link_objects $link_resobjects $link_options $libs
+```
